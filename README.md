@@ -43,7 +43,7 @@ WakuTabi는 **관광 + 소셜 매칭**을 결합한 웹 애플리케이션으로
 ### Frontend
 - **Template Engine**: Thymeleaf
 - **Layout**: Thymeleaf Layout Dialect
-- **Styling**: CSS/JavaScript
+- **Styling**: BootStrap 5.3.7 / Jquery 3.7.1
 
 ### Infrastructure
 - **Build Tool**: Gradle

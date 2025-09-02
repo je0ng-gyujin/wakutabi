@@ -59,31 +59,25 @@ WakuTabi는 **관광 + 소셜 매칭**을 결합한 웹 애플리케이션으로
 
 ### 설치 및 실행
 
-1. **저장소 클론**
-```bash
-git clone [repository-url]
-cd wakutabi
-```
-
-2. **데이터베이스 설정**
+1. **데이터베이스 설정**
 ```sql
 CREATE DATABASE jsl22;
 CREATE USER 'jsl22'@'localhost' IDENTIFIED BY '1234';
 GRANT ALL PRIVILEGES ON jsl22.* TO 'jsl22'@'localhost';
 ```
 
-3. **설정 파일 수정**
+2. **설정 파일 수정**
 `application.properties`에서 다음 설정을 본인 환경에 맞게 수정:
 - 데이터베이스 연결 정보
 - 이메일 설정 (Gmail SMTP)
 - 파일 업로드 경로
 
-4. **애플리케이션 실행**
+3. **애플리케이션 실행**
 ```bash
 ./gradlew bootRun
 ```
 
-5. **브라우저에서 접속**
+4. **브라우저에서 접속**
 ```
 http://localhost:8088
 ```
@@ -116,23 +110,6 @@ src/
 ### 보안
 - **Spring Security**로 인증/인가 처리
 - 이메일 인증 기반 회원가입
-
-### 파일 업로드
-- 최대 파일 크기: 5MB
-- 최대 요청 크기: 20MB
-- 업로드 경로: `D:/upload/item`
-
-## 🤝 기여하기
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 있습니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
 
 ## 📞 문의사항
 

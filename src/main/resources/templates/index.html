@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/base}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>index</title>
+<th:block layout:fragment="head">
+
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+  <!-- Main Content -->
+  <main class="container py-5">
+    <!-- Hero Section -->
+    <section class="text-center mb-5 fade-in-up">
+      <h1 class="hero-title text-dark mb-3">새로운 여행 친구를 만나보세요</h1>
+      <p class="hero-subtitle mb-4">비슷한 일정과 취향의 여행자들과 함께하는 특별한 여행 경험</p>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="mb-5">
+      <div class="card quick-actions-card rounded-4 border-0 shadow">
+        <div class="card-body text-center py-4">
+          <h3 class="card-title h4 text-dark mb-4">지금 바로 시작하세요!</h3>
+          <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="/schedule/create"
+              class="btn btn-wakutabi-primary btn-lg rounded-pill px-4 btn-hover-effect">
+              <i class="bi bi-plus-circle me-2"></i>여행일정 만들기
+            </a> <a href="/schedules"
+              class="btn btn-wakutabi-outline btn-lg rounded-pill px-4">
+              <i class="bi bi-search me-2"></i>일정 둘러보기
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Function Grid -->
+    <section class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="card function-card h-100 rounded-4 border-0 shadow"
+          onclick="location.href='/schedule/create'">
+          <div class="card-body text-center p-4">
+            <div class="function-icon mb-3">📅</div>
+            <h3 class="function-title card-title text-dark mb-3">여행일정
+              등록</h3>
+            <p class="card-text text-muted mb-4">
+              나의 여행 계획을 공유하고<br>함께할 동행자를 찾아보세요
+            </p>
+            <a href="/schedule/create"
+              class="btn btn-wakutabi-primary rounded-pill">일정 만들기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card function-card h-100 rounded-4 border-0 shadow"
+          onclick="location.href='/matching'">
+          <div class="card-body text-center p-4">
+            <div class="function-icon mb-3">🤝</div>
+            <h3 class="function-title card-title text-dark mb-3">스마트
+              매칭</h3>
+            <p class="card-text text-muted mb-4">
+              취향과 일정이 맞는<br>완벽한 여행 파트너를 찾아드려요
+            </p>
+            <a href="/matching"
+              class="btn btn-wakutabi-primary rounded-pill">매칭 시작</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card function-card h-100 rounded-4 border-0 shadow"
+          onclick="location.href='/schedules'">
+          <div class="card-body text-center p-4">
+            <div class="function-icon mb-3">🗺️</div>
+            <h3 class="function-title card-title text-dark mb-3">일정
+              탐색</h3>
+            <p class="card-text text-muted mb-4">
+              다양한 여행 일정을 둘러보고<br>참가 신청해보세요
+            </p>
+            <a href="/schedules"
+              class="btn btn-wakutabi-primary rounded-pill">일정 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card function-card h-100 rounded-4 border-0 shadow"
+          onclick="location.href='/regions'">
+          <div class="card-body text-center p-4">
+            <div class="function-icon mb-3">🏛️</div>
+            <h3 class="function-title card-title text-dark mb-3">지역
+              정보</h3>
+            <p class="card-text text-muted mb-4">
+              인기 관광지 정보와<br>실제 여행자들의 생생한 후기
+            </p>
+            <a href="/regions"
+              class="btn btn-wakutabi-primary rounded-pill">지역 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card function-card h-100 rounded-4 border-0 shadow"
+          onclick="location.href='/chat'">
+          <div class="card-body text-center p-4">
+            <div class="function-icon mb-3">💬</div>
+            <h3 class="function-title card-title text-dark mb-3">채팅</h3>
+            <p class="card-text text-muted mb-4">
+              매칭된 여행자들과<br>실시간으로 소통해보세요
+            </p>
+            <a href="/chat"
+              class="btn btn-wakutabi-primary rounded-pill">채팅하기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="card function-card h-100 rounded-4 border-0 shadow"
+          onclick="location.href='/profile'">
+          <div class="card-body text-center p-4">
+            <div class="function-icon mb-3">👤</div>
+            <h3 class="function-title card-title text-dark mb-3">마이페이지</h3>
+            <p class="card-text text-muted mb-4">
+              내 여행 기록과 평점,<br>업적을 관리해보세요
+            </p>
+            <a href="/profile"
+              class="btn btn-wakutabi-primary rounded-pill">프로필 보기</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+
+
+</html>

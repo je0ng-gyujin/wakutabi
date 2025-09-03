@@ -1,0 +1,139 @@
+        :root {
+            --primary-color: #00FF9C;
+            --secondary-color: #B6FFA1;
+            --background-color: #FEFFA7;
+            --accent-color: #FFE700;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Custom Bootstrap Color Override */
+        .btn-wakutabi-primary {
+            --bs-btn-bg: var(--primary-color);
+            --bs-btn-border-color: var(--primary-color);
+            --bs-btn-hover-bg: #00cc7a;
+            --bs-btn-hover-border-color: #00cc7a;
+            --bs-btn-active-bg: #00b36b;
+            --bs-btn-active-border-color: #00b36b;
+            --bs-btn-color: #fff;
+        }
+        
+        .btn-wakutabi-outline {
+            --bs-btn-color: var(--primary-color);
+            --bs-btn-border-color: var(--primary-color);
+            --bs-btn-hover-bg: var(--primary-color);
+            --bs-btn-hover-border-color: var(--primary-color);
+            --bs-btn-hover-color: #fff;
+            --bs-btn-active-bg: var(--primary-color);
+            --bs-btn-active-border-color: var(--primary-color);
+            --bs-btn-active-color: #fff;
+        }
+        
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--secondary-color) 100%) !important;
+        }
+        
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .nav-link-custom {
+            font-weight: 500;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin: 0 0.25rem;
+        }
+        
+        .nav-link-custom:hover {
+            background-color: var(--primary-color);
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+        
+        .quick-actions-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        .function-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .function-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 255, 156, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        .function-icon {
+            font-size: 3rem;
+        }
+        
+        .function-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .footer-glass {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--primary-color);
+        }
+        
+        .footer-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: #00cc7a;
+        }
+        
+        .btn-hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 156, 0.3);
+        }
+        
+        /* Animation Classes */
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }

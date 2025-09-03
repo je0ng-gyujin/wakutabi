@@ -1,20 +1,22 @@
         :root {
-            --primary-color: #00FF9C;
-            --secondary-color: #B6FFA1;
-            --background-color: #FEFFA7;
-            --accent-color: #FFE700;
+            --primary-color: #60B5FF;
+            --secondary-color: #AFDDFF;
+            --background-color: #FFECDB;
+            --accent-color: #1E73BE;
+            --warning-color: #FF9149;
             --glass-bg: rgba(255, 255, 255, 0.9);
             --glass-border: rgba(255, 255, 255, 0.3);
+            --gray-color: #606060;
         }
         
         /* Custom Bootstrap Color Override */
         .btn-wakutabi-primary {
             --bs-btn-bg: var(--primary-color);
             --bs-btn-border-color: var(--primary-color);
-            --bs-btn-hover-bg: #00cc7a;
-            --bs-btn-hover-border-color: #00cc7a;
-            --bs-btn-active-bg: #00b36b;
-            --bs-btn-active-border-color: #00b36b;
+            --bs-btn-hover-bg: var(--accent-color);
+            --bs-btn-hover-border-color: var(--accent-color);
+            --bs-btn-active-bg: var(--accent-color);
+            --bs-btn-active-border-color: var(--accent-color);
             --bs-btn-color: #fff;
         }
         
@@ -103,9 +105,10 @@
         }
         
         .footer-glass {
-            background: rgba(255, 255, 255, 0.95) !important;
+            background: white !important;
             backdrop-filter: blur(10px);
             border-top: 2px solid var(--primary-color);
+            margin-top: 0px !important;
         }
         
         .footer-link {

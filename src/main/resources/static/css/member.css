@@ -1,0 +1,73 @@
+@charset "UTF-8";
+body {
+      background-color: #f8f9fa;
+    }
+.mb-4{
+      margin-top: 20px;
+      color:#60B5FF;
+    }
+    .form-control{
+      font-size:16px;
+    }
+    .btn-warning{
+      color:rgb(255, 255, 255);
+      background-color: #60B5FF;
+      border:none;
+    }
+
+    .btn-warning:hover {
+      background-color:  #1e73be;
+    }
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 40px;
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .form-control {
+      margin-bottom: 15px;
+    }
+
+    .form a{
+      color:#777;
+    }
+    .login-btn {
+      background-color: #60B5FF;
+      color: white;
+    }
+
+    .login-btn:hover {
+      background-color:  #1e73be;
+    }
+
+    .form-check-label{
+      margin-bottom:20px;
+    }
+
+    .link-custom {
+      text-decoration: none;     /* 밑줄 제거 */
+      color: #000000;            /* 검정색 글씨 */
+      margin-top:auto;
+      margin: 0 20px;             /* 링크 간 간격 */
+      font-weight: 300;
+      font-size:14px;
+    }
+
+    .link-custom:hover {
+      color:  #1e73be;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    
+    .bg-gradient-custom {
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--secondary-color) 100%) !important;
+        }

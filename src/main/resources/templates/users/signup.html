@@ -3,59 +3,21 @@
 <html
 	lang="ko"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<th:block layout:fragment="head">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/clean}">
+
 <head>
+<th:block layout:fragment="head">
   <meta charset="UTF-8">
   <title>Wakutabi signup</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap 5.3.7 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- jQuery 3.7.1 -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-  <style>
-
-    .mb-4{
-      margin-top: 20px;
-      color:#60B5FF;
-    }
-    .form-control{
-      font-size:16px;
-    }
-    .btn-warning{
-      color:rgb(255, 255, 255);
-      background-color: #60B5FF;
-      border:none;
-    }
-
-    .btn-warning:hover {
-      background-color:  #1e73be;
-    }
-
-    .link-custom {
-      text-decoration: none;
-      color: #626262;
-      margin: 0 10px;
-      font-size:14px;
-    }
-
-    .link-custom:hover {
-      color:  #1e73be;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 0.9rem;
-      color: #777;
-    }
-  </style>
+<link rel="stylesheet" th:href="@{/css/member.css}">
+  </th:block>
 </head>
-</th:block>
-<body>
+
+<body class="bg-gradient-custom min-vh-100">
 <th:block layout:fragment="content">
-<div layout:fragment="content">
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-5">
@@ -99,7 +61,7 @@
 
             <!-- 링크들 -->
             <div class="text-center">
-              <a href="login.html" class="link-custom">로그인</a>
+              <a href="/login" class="link-custom">로그인</a>
               <a href="#" class="link-custom">아이디/비밀번호 찾기</a>
             </div>
           </form>
@@ -107,14 +69,12 @@
       </div>
     </div>
   </div>
-</div>
 </th:block>
 <footer>
-    <p>Copyright © 2025 Wakutabi Co.,Ltd. All Rights Reserved.</p>
+    <!--  <p>Copyright © 2025 Wakutabi Co.,Ltd. All Rights Reserved.</p>-->
   </footer>
 
-<!-- Ajax 스크립트 -->
-<th:block layout:fragment="script">
+<!-- Ajax 스크립트
   <script>
     $("#username").on("blur", function () {
       const username = $(this).val();
@@ -130,10 +90,6 @@
         }
       });
     });
-  </script>
-</th:block>
-
-<!-- Bootstrap JS (필요시) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  </script> -->
 </body>
 </html>

@@ -1,6 +1,5 @@
-/*$(document)
-	.ready(*/
-		function() {
+$(document).ready(
+		function () {
 			// 태그 클릭 이벤트
 			$('.tag-item').click(function() {
 				$(this).toggleClass('active');
@@ -107,4 +106,4 @@
 							.addClass(
 								'btn-wakutabi-outline');
 					});
-		}/*);*/
+		});

@@ -10,6 +10,7 @@
 <title>여행 일정 검색</title>
 <th:block layout:fragment="head">
 </th:block>
+<script defer th:src="@{/js/travel.js}"></script>
 </head>
 
 <body>
@@ -48,7 +49,7 @@
             <!-- Quick Filter Tags -->
             <div class="row">
               <div class="col-12">
-                <h6 class="mb-3 text-muted">인기 태그</h6>
+                <h6 class="mb-3 text-muted">주요 태그</h6>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                   <span class="badge tag-item px-3 py-2 rounded-pill"
                     data-tag="식도락">🍜 식도락</span> <span
@@ -513,7 +514,5 @@
       </div>
     </div>
   </div>
-
-<script defer src="/js/travel.js"></script>
 </body>
 </html>

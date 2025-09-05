@@ -1,4 +1,5 @@
--- 사용자 관련
+-- [사용자 관련]
+-- 사용자
 CREATE TABLE users (
     id         BIGINT                               NOT NULL PRIMARY KEY,                 -- 고유ID
     username   VARCHAR(20)                          NOT NULL UNIQUE,                      -- 사용자ID
@@ -13,6 +14,18 @@ CREATE TABLE users (
     introduce  TEXT,                                                                      -- 자기소개글
     created_at DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- 생성일자
     updated_at DATETIME                                      DEFAULT CURRENT_TIMESTAMP    -- 수정일자
+);
+-- 사용자 선호도
+CREATE TABLE user_prefer (
+	id	       BIGINT   NOT NULL	DEFAULT auto_increment, -- 선호도 고유ID
+	user_id	   BIGINT	NOT NULL,	               -- 사용자ID
+	city	   BOOLEAN	            DEFAULT FALSE, -- 도시선호타입
+	country	   BOOLEAN	            DEFAULT FALSE, -- 시골선호타입',
+	eating	   BOOLEAN	            DEFAULT FALSE, -- 식도락선호타입',
+	hot_spring BOOLEAN	            DEFAULT FALSE, -- 온천선호타입',
+	otaku	   BOOLEAN	            DEFAULT FALSE, -- 오타쿠선호타입'
+
+	CONSTRAINT fk_user_prefer_user_id FOREIGN KEY (user_id) REFERENCES users (id)
 );
 -- 여행등록 관련
 

@@ -1,5 +1,5 @@
 -- 사용자 관련
-CREATE TABLE USERS (
+CREATE TABLE users (
     id         BIGINT                               NOT NULL PRIMARY KEY,                 -- 고유ID
     username   VARCHAR(20)                          NOT NULL UNIQUE,                      -- 사용자ID
     nickname   VARCHAR(20)                          NOT NULL UNIQUE,                      -- 닉네임(미입력 시 사용자ID)

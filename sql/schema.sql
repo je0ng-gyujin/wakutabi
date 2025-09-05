@@ -1,21 +1,19 @@
--- 이용자 관련
-CREATE TABLE USERS(
-    id BIGINT NOT NULL PRIMARY KEY,
-    username VARCHAR(20) NOT NULL,
-    nickname VARCHAR(20) NOT NULL,
-    password VARCHAR(256) NOT NULL,
-    gender ENUM('MALE','FEMALE','OTHER','NONE') DEFAULT 'NONE',
-    birth DATETIME,
-    email VARCHAR(255) NOT NULL,
-    is_public BOOLEAN NOT NULL DEFAULT TRUE,
-    role VARCHAR(5) NOT NULL DEFAULT 'USER',
-    statue ENUM('ACTIVE','SUSPENDED','BANNED') NOT NULL DEFAULT 'ACTIVE',
-    introduce TEXT,
-    created_at DATETIME NOT NULL DEFAULT 'CURRENT_TIMESTAMP',
-    updated_at DATETIME DEFAULT 'CURRENT_TIMESTAMP'
+-- 사용자 관련
+CREATE TABLE USERS (
+    id         BIGINT                               NOT NULL PRIMARY KEY,                 -- 고유ID
+    username   VARCHAR(20)                          NOT NULL UNIQUE,                      -- 사용자ID
+    nickname   VARCHAR(20)                          NOT NULL UNIQUE,                      -- 닉네임(미입력 시 사용자ID)
+    password   VARCHAR(256)                         NOT NULL,                             -- 비밀번호
+    gender     ENUM('MALE','FEMALE','OTHER','NONE')          DEFAULT 'NONE',              -- 성별
+    birth      DATETIME,                                                                  -- 생일
+    email      VARCHAR(255)                         NOT NULL UNIQUE,                      -- 이메일
+    is_public  BOOLEAN                              NOT NULL DEFAULT TRUE,                -- 공개여부
+    role       ENUM('USER','ADMIN')                 NOT NULL DEFAULT 'USER',              -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
+    statue     ENUM('ACTIVE','SUSPENDED','BANNED')  NOT NULL DEFAULT 'ACTIVE',            -- 계정상태('ACTIVE':활성화, 'SUSPEND':일시정지, 'BANNED':영구정지)
+    introduce  TEXT,                                                                      -- 자기소개글
+    created_at DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- 생성일자
+    updated_at DATETIME                                      DEFAULT CURRENT_TIMESTAMP    -- 수정일자
 );
--- 관리자 관련
-
 -- 여행등록 관련
 
 -- 여행후기 관련

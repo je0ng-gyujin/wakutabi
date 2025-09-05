@@ -1,7 +1,7 @@
 -- [사용자 관련]
 -- 사용자
 CREATE TABLE users (
-    id         BIGINT                               AUTO_INCREMENT PRIMARY KEY,  -- 고유ID
+    id         BIGINT                               AUTO_INCREMENT PRIMARY KEY,           -- 고유ID
     username   VARCHAR(20)                          NOT NULL UNIQUE,                      -- 사용자ID
     nickname   VARCHAR(20)                          NOT NULL UNIQUE,                      -- 닉네임(미입력 시 사용자ID)
     password   VARCHAR(256)                         NOT NULL,                             -- 비밀번호

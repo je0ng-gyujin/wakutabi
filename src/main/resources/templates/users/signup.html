@@ -45,14 +45,21 @@
             <!-- 이름 -->
             <div class="mb-3">
               <input type="text" name="name" id="name" class="form-control form-control-lg"
-                     placeholder="이름을 입력해 주세요">
+                     placeholder="닉네임을 입력해 주세요">
+              <p>*닉네임을 적지 않으시면 ID로 대체됩니다.</p>
             </div>
-
+			
             <!-- 이메일 -->
             <div class="mb-3">
               <input type="email" name="email" id="email" class="form-control form-control-lg"
                      placeholder="이메일을 입력해 주세요">
             </div>
+            
+            <!-- 생일 -->
+			<div class="mb-3">
+			  <label for="birthdate" class="form-label">생일을 선택해주세요</label>
+			  <input type="date" id="birthdate" name="birthdate" class="form-control form-control-lg" required>
+			</div>
 
             <!-- 제출 버튼 -->
             <div class="d-grid mb-3">

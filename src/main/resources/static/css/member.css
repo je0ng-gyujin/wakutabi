@@ -6,9 +6,12 @@ body {
       margin-top: 20px;
       color:#60B5FF;
     }
+    
     .form-control{
       font-size:16px;
+      margin-top: 15px;
     }
+    
     .btn-warning{
       color:rgb(255, 255, 255);
       background-color: #60B5FF;
@@ -28,9 +31,6 @@ body {
       text-align: center;
     }
 
-    .form-control {
-      margin-bottom: 15px;
-    }
 
     .form a{
       color:#777;
@@ -70,4 +70,16 @@ body {
     
     .bg-gradient-custom {
             background: linear-gradient(135deg, var(--background-color) 0%, var(--secondary-color) 100%) !important;
-        }
+    }
+    
+    .mb-3 p{
+    	font-size:12px;
+    	margin-left:10px;
+    	color:#ccc;
+    }
+    
+    .form-label{
+    	font-size:12px;
+    	margin-left:10px;
+    	margin-bottom: 0;
+    }

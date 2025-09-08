@@ -29,7 +29,8 @@ body {
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    max-width: 1000px
+    max-width: 1000px;
+    position: relative; /* 자식의 절대위치 기준 */
 }
 
 h3.fw-bold {
@@ -114,4 +115,61 @@ button.btn-primary:hover {
     padding: 8px;
     font-size: 1rem;
     outline: none;
+}
+
+/* 선택창 스타일 */
+.form-row select {
+    width: 78%;          /* 가로 꽉 채우기 */
+    padding: 8px;         /* 안쪽 여백 */
+    font-size: 1rem;      /* 폰트 크기 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 4px;   /* 둥근 모서리 */
+    background-color: #eef5ff; /* 기존 input 배경색과 맞춤 */
+    outline: none;
+    box-sizing: border-box; /* 패딩 포함 너비 계산 */
+    transition: border-color 0.2s ease-in-out;
+}
+
+.form-row select:focus {
+    border-color: var(--primary-color); /* 포커스 시 색 변경 */
+    box-shadow: 0 0 5px var(--primary-color);
+}
+
+.delete-id{
+	display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  gap: 10px; /* 버튼 사이 간격 */
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: calc(100% - 40px); /* padding 감안 */
+}
+
+.delete-id button{
+	background-color: red;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-id button:hover{
+	background-color: darkred;
+}
+
+.delete-id a{
+	color: #1E73BE;
+    text-decoration: none;
+    padding-top: 14px;
+    padding:12px;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 100%;
+}
+
+.delete-id a:hover{
+	text-decoration: underline;
+    color: #003399;
 }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyPage</title>
+<th:block layout:fragment="head">
+	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+  <div class="container shadow p-4 bg-white rounded">
+    <div class="row">
+        <!-- 사이드메뉴 -->
+        <div class="col-md-3 border-end">
+            <h5 class="fw-bold mb-4">My page</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
+            </ul>
+        </div>
+		<div class="col-md-9">
+			  <h2>회원 탈퇴</h2>
+			  <p style="color:red;">※회원 탈퇴 시 모든 정보가 삭제되며 복구가 불가능합니다.</p>
+        
+            <form method="post" action="/user/delete">
+			  <div class="form-row">
+				  <label for="password">비밀번호 확인</label>
+				  <input type="password" id="password" name="password" required>
+			  </div>
+			  <div class="form-row">
+				  <label for="reason">탈퇴 사유 (선택)</label>
+				  <select id="reason" name="reason">
+				    <option value="">선택하세요</option>
+				    <option value="privacy">개인정보 문제</option>
+				    <option value="service">서비스 불만족</option>
+				    <option value="other">기타</option>
+				  </select>
+			  </div>
+			  <div class="delete-id">
+				  <button type="submit">탈퇴하기</button>
+				  <a href="#">취소</a>
+			  </div>
+			</form>
+		</div>
+        </div>
+    </div>
+</div>
+</body>
+
+
+</html>

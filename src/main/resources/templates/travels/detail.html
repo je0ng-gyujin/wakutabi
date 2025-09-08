@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/base}">
+<head>
+<meta charset="UTF-8" />
+<title>여행 상세보기</title>
+<link rel="stylesheet" th:href="@{/css/travel.css}" />
+<th:block layout:fragment="head">
+</th:block>
+</head>
+<body>
+  <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+    <div class="container py-4">
+      <div class="row mb-4">
+        <div class="col-12 text-center">
+          <h1 class="mb-2">도쿄 3박 4일 먹방 투어</h1>
+          <p class="text-muted">
+            <i class="bi bi-geo-alt-fill me-1"></i>도쿄, 일본
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+              <h4 class="card-title fw-bold mb-3">여행 정보</h4>
+              <p class="card-text text-muted">맛있는 음식과 함께하는 도쿄 여행!
+                숨겨진 로컬 맛집부터 유명한 음식점까지 함께 뿌시러 갈 동행 구합니다. 먹는 것에 진심인 분들
+                환영해요!</p>
+              <hr />
+              <div class="row text-center mb-4">
+                <div class="col-6 col-md-3 mb-3">
+                  <span class="badge bg-secondary-subtle text-dark">
+                    <i class="bi bi-calendar me-1"></i> <strong>일정</strong>
+                  </span>
+                  <p class="mb-0 mt-1">2025년 9월 중</p>
+                </div>
+                <div class="col-6 col-md-3 mb-2">
+                  <span class="badge bg-secondary-subtle text-dark">
+                    <i class="bi bi-people me-1"></i> <strong>인원</strong>
+                  </span>
+                  <p class="mb-0 mt-1">3/4명</p>
+                </div>
+
+                <div class="col-6 col-md-3 mb-2">
+                  <span class="badge bg-secondary-subtle text-dark">
+                    <i class="bi bi-person-circle me-1"></i> <strong>연령</strong>
+                  </span>
+                  <p class="mb-0 mt-1">24세 ~ 29세</p>
+                </div>
+
+                <div class="col-6 col-md-3 mb-2">
+                  <span class="badge bg-success-subtle text-dark">
+                    <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
+                  </span>
+                  <p class="mb-0 mt-1">모집 중</p>
+                  <!-- <span class="badge bg-danger-subtle text-dark">
+                    <i class="bi bi-check-circle-fill me-1"></i> <strong>상태</strong>
+                  </span>
+                  <p class="mb-0 mt-1">모집 완료</p> -->
+                  <!-- <span class="badge bg-warning-subtle text-dark">
+                    <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
+                  </span>
+                  <p class="mb-0 mt-1">종료</p> -->
+                  <!-- <span class="badge bg-secondary-subtle text-dark">
+                    <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
+                  </span>
+                  <p class="mb-0 mt-1">취소</p> -->
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <span class="badge schedule-tag me-1">식도락</span> <span
+                  class="badge schedule-tag me-1">현지체험</span> <span
+                  class="badge schedule-tag me-1">소수정예</span>
+              </div>
+              <div class="row g-2">
+                <div class="col-4">
+                  <img
+                    src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=200&fit=crop"
+                    class="img-fluid rounded-3" alt="여행 이미지" />
+                </div>
+                <div class="col-4">
+                  <img
+                    src="https://images.unsplash.com/photo-1590559899731-a382839e5549?w=400&h=250&fit=crop"
+                    class="img-fluid rounded-3" alt="여행 이미지" />
+                </div>
+                <div class="col-4">
+                  <img
+                    src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=200&fit=crop"
+                    class="img-fluid rounded-3" alt="여행 이미지" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm rounded-4 p-4 sticky-top"
+            style="top: 20px">
+            <div class="text-center mb-3">
+              <img
+                src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=80&h=80&fit=crop&crop=face"
+                alt="프로필 이미지" class="rounded-circle mb-2"
+                style="width: 80px; height: 80px; object-fit: cover" />
+              <h5 class="mb-0">여행 작성자</h5>
+              <small class="text-muted">@김민지</small>
+            </div>
+            <div class="d-grid mb-3">
+              <button class="btn btn-wakutabi-primary btn-lg">참가
+                신청하기</button>
+            </div>
+            <p class="text-muted text-center small">여행 참가 신청 시,
+              작성자에게 알림이 전송됩니다.</p>
+            <hr />
+            <h6 class="fw-bold mb-3">참여자 목록</h6>
+            <ul class="list-unstyled">
+              <li class="d-flex align-items-center mb-2"><img
+                src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face"
+                alt="참여자" class="participant-avatar" /> <span
+                class="ms-2">박지훈</span></li>
+              <li class="d-flex align-items-center mb-2"><img
+                src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face"
+                alt="참여자" class="participant-avatar" /> <span
+                class="ms-2">최수민</span></li>
+              <li class="d-flex align-items-center"><img
+                src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face"
+                alt="참여자" class="participant-avatar" /> <span
+                class="ms-2">김유정</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

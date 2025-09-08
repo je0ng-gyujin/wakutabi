@@ -87,7 +87,7 @@ http://localhost:8088
 ```
 src/
 ├── main/
-│   ├── java/com/shop/
+│   ├── java/com/wakutabi/
 │   │   ├── domain/          # 엔티티 클래스
 │   │   ├── controller/      # 컨트롤러
 │   │   ├── service/         # 서비스 레이어
@@ -108,7 +108,7 @@ src/
 - **MyBatis**로 복잡한 쿼리 처리
 
 ### 보안
-- **Spring Security**로 인증/인가 처리
+- **Spring Security**로 인증 및 인가 처리
 - 이메일 인증 기반 회원가입
 
 ## 📞 문의사항

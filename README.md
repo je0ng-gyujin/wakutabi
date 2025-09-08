@@ -61,9 +61,9 @@ WakuTabi는 **관광 + 소셜 매칭**을 결합한 웹 애플리케이션으로
 
 1. **데이터베이스 설정**
 ```sql
-CREATE DATABASE jsl22;
-CREATE USER 'jsl22'@'localhost' IDENTIFIED BY '1234';
-GRANT ALL PRIVILEGES ON jsl22.* TO 'jsl22'@'localhost';
+CREATE DATABASE wakutabi;
+CREATE USER 'wakutabi'@'localhost' IDENTIFIED BY '1234';
+GRANT ALL PRIVILEGES ON wakutabi.* TO 'wakutabi'@'localhost';
 ```
 
 2. **설정 파일 수정**

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WakuTabi - 도쿄 3박4일 먹방 여행</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #60B5FF;
+            --secondary-color: #AFDDFF;
+            --background-color: #FFECDB;
+            --accent-color: #1E73BE;
+            --warning-color: #FF9149;
+            --warning-color-rgb: rgba(255, 145, 73);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --gray-color: #606060;
+        }
+
+        .btn-wakutabi-primary {
+            --bs-btn-bg: var(--primary-color);
+            --bs-btn-border-color: var(--primary-color);
+            --bs-btn-hover-bg: var(--accent-color);
+            --bs-btn-hover-border-color: var(--accent-color);
+            --bs-btn-active-bg: var(--accent-color);
+            --bs-btn-active-border-color: var(--accent-color);
+            --bs-btn-color: #fff;
+        }
+
+        .btn-wakutabi-outline {
+            --bs-btn-color: var(--primary-color);
+            --bs-btn-border-color: var(--primary-color);
+            --bs-btn-hover-bg: var(--primary-color);
+            --bs-btn-hover-border-color: var(--primary-color);
+            --bs-btn-hover-color: #fff;
+            --bs-btn-active-bg: var(--primary-color);
+            --bs-btn-active-border-color: var(--primary-color);
+            --bs-btn-active-color: #fff;
+        }
+
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--secondary-color) 100%) !important;
+        }
+
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-link-custom {
+            font-weight: 500;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin: 0 0.25rem;
+        }
+
+        .nav-link-custom:hover {
+            background-color: var(--primary-color);
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .detail-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .image-gallery {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 20px;
+            color: white;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .thumbnail:hover, .thumbnail.active {
+            opacity: 1;
+            transform: scale(1.05);
+            border: 2px solid var(--primary-color);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .status-badge.full {
+            background: rgba(220, 53, 69, 0.9);
+        }
+
+        .status-badge.soon {
+            background: rgba(255, 145, 73, 0.9);
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .organizer-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .organizer-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(96, 181, 255, 0.2);
+        }
+
+        .participant-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+
+        .schedule-tag {
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .itinerary-day {
+            background: rgba(255, 255, 255, 0.6);
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .itinerary-day:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+        }
+
+        .time-badge {
+            background: var(--secondary-color);
+            color: var(--accent-color);
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .footer-glass {
+            background: white !important;
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--primary-color);
+        }
+
+        .footer-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #00cc7a;
+        }
+
+        .btn-hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(96, 181, 255, 0.3);
+        }
+
+        .rating-stars {
+            color: #ffc107;
+        }
+
+        .progress-custom {
+            background-color: rgba(96, 181, 255, 0.2);
+        }
+
+        .progress-custom .progress-bar {
+            background-color: var(--primary-color);
+        }
+
+        .comment-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .fixed-apply-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--primary-color);
+            padding: 15px 0;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .fixed-apply-section {
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-glass">
+            <div class="container">
+                <a class="navbar-brand logo-text text-decoration-none" href="/">
+                    WakuTabi
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" href="/search">여행찾기</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" href="/register">일정등록</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom" href="/mypage">마이페이지</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="bg-gradient-custom min-vh-100">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <div class="p-4 rounded-4 detail-container shadow-sm">
+                        <div class="image-gallery mb-4 shadow">
+                            <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=800&h=400&fit=crop"
+                                class="main-image" alt="대표 이미지">
+                            <div class="status-badge">마감 임박</div>
+                            <div class="image-overlay">
+                                <h1 class="mb-1 fw-bold">도쿄 3박4일 먹방 여행</h1>
+                                <p class="lead fw-light">2025년 10월 1일 ~ 10월 4일 (3박 4일간)</p>
+                            </div>
+                        </div>
+
+                        <div class="thumbnail-container">
+                            <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=80&h=80&fit=crop"
+                                class="thumbnail active" alt="썸네일">
+                            <img src="https://images.unsplash.com/photo-1528642398579-399a071855a8?w=80&h=80&fit=crop"
+                                class="thumbnail" alt="썸네일">
+                            <img src="https://images.unsplash.com/photo-1524823524672-005167b0b695?w=80&h=80&fit=crop"
+                                class="thumbnail" alt="썸네일">
+                        </div>
+
+                        <div class="row mt-4 mb-4 g-3">
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded-3 text-center">
+                                    <i class="bi bi-geo-alt fs-5 text-primary"></i>
+                                    <p class="mb-0 fw-bold">지역</p>
+                                    <p class="mb-0 text-muted">일본, 도쿄</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded-3 text-center">
+                                    <i class="bi bi-calendar-check fs-5 text-primary"></i>
+                                    <p class="mb-0 fw-bold">여행 기간</p>
+                                    <p class="mb-0 text-muted">3박 4일</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded-3 text-center">
+                                    <i class="bi bi-people fs-5 text-primary"></i>
+                                    <p class="mb-0 fw-bold">모집 인원</p>
+                                    <p class="mb-0 text-muted">3/4명</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="section-card p-4 rounded-4 shadow-sm mb-4">
+                            <h4 class="mb-3">여행 소개</h4>
+                            <p class="text-muted">
+                                도쿄의 숨겨진 맛집을 찾아 떠나는 먹방 여행입니다. 스시, 라멘, 몬자야키 등 다양한 음식을 맛보고,
+                                현지인들이 자주 찾는 명소도 방문할 예정이에요. 함께 맛있는 추억을 만들 분을 기다립니다!
+                            </p>
+                            <div class="d-flex flex-wrap mt-3">
+                                <span class="schedule-tag">#먹방</span>
+                                <span class="schedule-tag">#도쿄</span>
+                                <span class="schedule-tag">#단기여행</span>
+                                <span class="schedule-tag">#액티비티</span>
+                            </div>
+                        </div>
+
+                        <div class="section-card p-4 rounded-4 shadow-sm mb-4">
+                            <h4 class="mb-3">일정표</h4>
+                            <div class="itinerary-day p-3 rounded-3 mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h5 class="flex-grow-1 mb-0">1일차</h5>
+                                    <small class="text-muted">2025.10.01</small>
+                                </div>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="d-flex align-items-center mb-2">
+                                        <span class="time-badge p-2 rounded-2 me-3">10:00</span>
+                                        <p class="mb-0">나리타 공항 도착 후 도쿄 시내 이동</p>
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <span class="time-badge p-2 rounded-2 me-3">12:30</span>
+                                        <p class="mb-0">아사쿠사 몬자야키 맛집 방문 및 점심 식사</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="itinerary-day p-3 rounded-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h5 class="flex-grow-1 mb-0">2일차</h5>
+                                    <small class="text-muted">2025.10.02</small>
+                                </div>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="d-flex align-items-center mb-2">
+                                        <span class="time-badge p-2 rounded-2 me-3">09:00</span>
+                                        <p class="mb-0">츠키지 시장에서 스시 먹방</p>
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <span class="time-badge p-2 rounded-2 me-3">14:00</span>
+                                        <p class="mb-0">신주쿠 투어 및 쇼핑</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="section-card p-4 rounded-4 shadow-sm mb-4">
+                            <h4 class="mb-3">댓글</h4>
+                            <div class="mb-3">
+                                <textarea class="form-control" rows="3" placeholder="댓글을 입력하세요"></textarea>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <button class="btn btn-wakutabi-primary">등록</button>
+                                </div>
+                            </div>
+                            <div class="comment-card p-3 rounded mb-3">
+                                <div class="d-flex gap-3">
+                                    <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face"
+                                        class="participant-avatar" alt="사용자">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <strong>박준호</strong>
+                                            <small class="text-muted">5시간 전</small>
+                                        </div>
+                                        <p class="mb-2">일정이 너무 알차네요! 참가 신청하고 싶습니다.
+                                            항공편은 각자 예약하는 건가요?</p>
+                                        <button class="btn btn-link btn-sm p-0 text-primary">답글</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="comment-card p-3 rounded">
+                                <div class="d-flex gap-3">
+                                    <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face"
+                                        class="participant-avatar" alt="사용자">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <strong>이서연</strong>
+                                            <small class="text-muted">1일 전</small>
+                                        </div>
+                                        <p class="mb-0">정말 멋진 계획이네요! 동행이 필요했는데 잘 찾아온 것 같아요!</p>
+                                        <button class="btn btn-link btn-sm p-0 text-primary">답글</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="p-4 rounded-4 organizer-card shadow-sm mb-4">
+                        <h5 class="mb-3">주최자 정보</h5>
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face"
+                                class="participant-avatar" alt="주최자">
+                            <div class="ms-3">
+                                <strong class="d-block">김철수</strong>
+                                <span class="badge bg-primary">주최자</span>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">평점</h6>
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                                        class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                                        class="bi bi-star-half"></i>
+                                    <small class="ms-1 text-muted">(4.5)</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-wakutabi-outline btn-sm">프로필</button>
+                        </div>
+                        <div class="progress progress-custom" style="height: 25px;">
+                            <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75"
+                                aria-valuemin="0" aria-valuemax="100">
+                                75%
+                            </div>
+                        </div>
+                        <p class="mt-2 text-muted text-center" style="font-size: 0.8rem;">
+                            목표 달성률 (평균 4명 중 3명 모집)
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-4 organizer-card shadow-sm">
+                        <h5 class="mb-3">참여자 목록</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&h=50&fit=crop&crop=face"
+                                class="participant-avatar" alt="참여자">
+                            <img src="https://images.unsplash.com/photo-1528642398579-399a071855a8?w=50&h=50&fit=crop&crop=face"
+                                class="participant-avatar" alt="참여자">
+                            <img src="https://images.unsplash.com/photo-1524823524672-005167b0b695?w=50&h=50&fit=crop&crop=face"
+                                class="participant-avatar" alt="참여자">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed-apply-section shadow-lg">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="me-3">
+                <span class="badge bg-primary fs-5 me-2">3/4명</span>
+                <span class="text-muted">모집 중</span>
+            </div>
+            <button class="btn btn-wakutabi-primary btn-hover-effect">
+                <i class="bi bi-person-plus me-2"></i>참가 신청하기
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 자바스크립트 로직은 여기에 추가
+        // 예: 썸네일 클릭 시 메인 이미지 변경
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainImage = document.querySelector('.main-image');
+            document.querySelectorAll('.thumbnail').forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    mainImage.src = this.src.replace(/w=80&h=80/, 'w=800&h=400');
+                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

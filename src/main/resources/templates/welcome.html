@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html
+	lang="ko"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layouts/clean}">
+<head>
+<th:block layout:fragment="head">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wakutabi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/welcome.css}">
+</th:block>
+</head>
+<body>
+<th:block layout:fragment="content">
+  <!-- Hero Section -->
+  <header>
+    <h1>나만의 여행, 새로운 만남</h1>
+    <h1>Wakutabi</h1>
+    <a href="#start">지금 시작하기</a>
+    <p>비슷한 일정과 취향의 여행자를 매칭해드립니다</p>
+  </header>
+
+  <!-- Features Section -->
+  <section id="start">
+    <h2 style="text-align:center;">Wakutabi와</h2>
+    <div class="features">
+      <div>
+        <div class="feature-icon">🗓️</div>
+        <h3>여행 일정 등록</h3>
+        <p>여행 날짜, 시간, 장소를 간편하게 입력하고 공유하세요.</p>
+      </div>
+      <div>
+        <div class="feature-icon">🤝</div>
+        <h3>스마트 매칭</h3>
+        <p>장소, 시간, 취향 태그를 기반으로 자동으로 여행자를 연결해드립니다.</p>
+      </div>
+      <div>
+        <div class="feature-icon">👥</div>
+        <h3>모임 & 만남</h3>
+        <p>채팅으로 대화하고, 소규모 여행 모임도 만들어 보세요.</p>
+      </div>
+      <div>
+        <div class="feature-icon">🔐</div>
+        <h3>안전한 서비스</h3>
+        <p>이메일 인증과 Spring Security 기반으로 안심하고 사용할 수 있어요.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta">
+    <h2>당신의 여행, 함께 할 친구를 찾아보세요!</h2>
+    <p>지금 여행 일정을 등록하고, 새로운 만남을 경험하세요.</p>
+    <a href="/">여행 등록하기</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    ⓒ 2025 Wakutabi | contact@Wakutabi.com
+  </footer>
+<th:block>
+</body>
+</html>

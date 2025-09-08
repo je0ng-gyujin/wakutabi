@@ -87,7 +87,7 @@ http://localhost:8088
 ```
 src/
 ├── main/
-│   ├── java/com/shop/
+│   ├── java/com/wakutabi/
 │   │   ├── domain/          # 엔티티 클래스
 │   │   ├── controller/      # 컨트롤러
 │   │   ├── service/         # 서비스 레이어

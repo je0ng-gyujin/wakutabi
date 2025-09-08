@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyPage</title>
+<th:block layout:fragment="head">
+	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+  <div class="container shadow p-4 bg-white rounded">
+    <div class="row">
+        <!-- 사이드메뉴 -->
+        <div class="col-md-3 border-end">
+            <h5 class="fw-bold mb-4">My page</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
+            </ul>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="col-md-9">
+        <div class="mb-4">
+        	<img src="/image/member.png" class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
+            <h3 class="form-control-plaintextname">닉네임</h3>
+		</div>
+		<p class="text-muted">자기소개.</p>
+            <form method="post" th:action="@{/user/update}">
+                 <div class="mb-3">
+                    <label class="form-label fw-bold">이메일</label>
+                    <div class="form-control-plaintext">user@example.com</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">생일</label>
+                    <div class="form-control-plaintext">1995-05-20</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">성별</label>
+                    <div class="form-control-plaintext">남자</div>
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4">회원정보 수정</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+
+
+</html>

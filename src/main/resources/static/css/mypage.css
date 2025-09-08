@@ -1,0 +1,117 @@
+@charset "UTF-8";
+:root {
+	--primary-color: #60B5FF;
+	--secondary-color: #AFDDFF;
+	--background-color: #FFECDB;
+	--accent-color: #1E73BE;
+	--warning-color: #FF9149;
+	--glass-bg: rgba(255, 255, 255, 0.9);
+	--glass-border: rgba(255, 255, 255, 0.3);
+	--gray-color: #606060;
+}
+
+body {
+   	height: 100%;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, var(--background-color) 0%, var(--secondary-color) 100%) fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.bg-gradient-custom2{
+	margin:50px;
+}
+.container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    max-width: 1000px
+}
+
+h3.fw-bold {
+    margin-bottom: 10px;
+}
+
+.text-muted {
+    margin-bottom: 30px;
+}
+
+input.form-control:read-only {
+    background-color: #e9ecef;
+}
+
+ul.list-unstyled li a {
+    transition: all 0.2s;
+}
+
+ul.list-unstyled li a:hover {
+    color: #0d6efd;
+    font-weight: bold;
+}
+
+button.btn-primary {
+    background-color: #60B5FF;
+}
+
+button.btn-primary:hover {
+    background-color: #1E73BE;
+}
+
+.mb-4{
+	display: flex;
+	padding-bottom:20px;
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 2px solid #dee2e6;
+    background-color: #fff;
+}
+
+.form-control-plaintextname{
+	margin-left:20px;
+	padding-top:80px;
+}
+
+.position-absolute{
+	bottom: 30px;
+	right: 0px;
+	background-color: #AFDDFF;
+	color:#111;
+	font-weight:500;
+}
+.position-absolute:hover{
+	background-color: #1E73BE;
+	color:#fff;
+}
+
+/* 비밀번호 변경 폼 전용 스타일 */
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 12px 0;
+}
+
+.form-row label {
+    width: 150px;
+    font-weight: 500;
+    color: #003399;
+    margin-right: 10px;
+}
+
+.form-row input[type="password"] {
+    flex: 1;
+    border: none;
+    background-color: #eef5ff;
+    padding: 8px;
+    font-size: 1rem;
+    outline: none;
+}

@@ -36,6 +36,7 @@ body {
       color:#777;
     }
     .login-btn {
+      margin-top:15px;
       background-color: #60B5FF;
       color: white;
     }

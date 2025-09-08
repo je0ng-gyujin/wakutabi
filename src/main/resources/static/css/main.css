@@ -4,6 +4,7 @@
 	--background-color: #FFECDB;
 	--accent-color: #1E73BE;
 	--warning-color: #FF9149;
+	--warning-color-rgb:rgba(255, 145, 73);
 	--glass-bg: rgba(255, 255, 255, 0.9);
 	--glass-border: rgba(255, 255, 255, 0.3);
 	--gray-color: #606060;
@@ -34,6 +35,12 @@
 .bg-gradient-custom {
 	background: linear-gradient(135deg, var(--background-color) 0%,
 		var(--secondary-color) 100%) !important;
+}
+
+.bg-warning {
+	--bs-warning-rgb: 255, 145, 73 !important;
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .glass-effect {

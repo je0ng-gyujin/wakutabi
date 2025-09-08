@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WakuTabi - 여행 일정 등록</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/travel_edit.css}">
+    <style>
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-glass">
+            <div class="container">
+                <a class="navbar-brand logo-text text-decoration-none" href="/">
+                    WakuTabi
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom px-3 py-2" href="/schedules">여행일정</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom px-3 py-2" href="/matching">매칭</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom px-3 py-2" href="/reviews">후기</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom px-3 py-2" href="/regions">지역정보</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom px-3 py-2" href="/community">커뮤니티</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-wakutabi-outline position-relative">
+                            <i class="bi bi-bell-fill"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
+                                99+
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </button>
+                        <a href="/login" class="btn btn-wakutabi-outline rounded-pill">로그인</a>
+                        <a href="/register" class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">회원가입</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="bg-gradient-custom min-vh-100">
+        <div class="container py-4">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h1 class="text-center mb-2">새로운 여행 일정 등록</h1>
+                    <p class="text-center text-muted">멋진 여행 계획을 공유하고 함께할 동행자를 찾아보세요</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Registration Form -->
+                <div class="col-lg-8">
+                    <div class="registration-container rounded-4 p-4 shadow-sm">
+                        <form id="travelRegistrationForm">
+                            <!-- 기본 정보 섹션 -->
+                            <div class="form-section p-3 rounded mb-4">
+                                <h5 class="mb-3 text-primary">
+                                    <i class="bi bi-info-circle me-2"></i>기본 정보
+                                </h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-8 mb-3">
+                                        <label class="form-label fw-bold">여행 제목 *</label>
+                                        <input type="text" class="form-control form-control-lg" 
+                                               placeholder="예: 🗼 도쿄 3박4일 먹방 여행" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">지역 *</label>
+                                        <select class="form-select form-select-lg" required>
+                                            <option value="">지역 선택</option>
+                                            <option value="hokkaido">홋카이도</option>
+                                            <option value="honshu">혼슈</option>
+                                            <option value="shikoku">시코쿠</option>
+                                            <option value="kyushu">규슈</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">여행 설명 *</label>
+                                    <textarea class="form-control" rows="4" 
+                                              placeholder="여행의 매력을 소개해주세요. 어떤 경험을 할 수 있나요?" required></textarea>
+                                </div>
+                            </div>
+
+                            <!-- 일정 정보 섹션 -->
+                            <div class="form-section p-3 rounded mb-4">
+                                <h5 class="mb-3 text-primary">
+                                    <i class="bi bi-calendar-event me-2"></i>일정 정보
+                                </h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">출발일 *</label>
+                                        <input type="date" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">귀국일 *</label>
+                                        <input type="date" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">여행 기간</label>
+                                        <input type="text" class="form-control" readonly placeholder="자동 계산됩니다">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">출발 공항</label>
+                                        <select class="form-select">
+                                            <option value="">출발지 선택</option>
+                                            <option value="icn">인천국제공항 (ICN)</option>
+                                            <option value="gmp">김포공항 (GMP)</option>
+                                            <option value="pus">김해국제공항 (PUS)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">도착 공항</label>
+                                        <select class="form-select">
+                                            <option value="">도착지 선택</option>
+                                            <option value="nrt">나리타공항 (NRT)</option>
+                                            <option value="hnd">하네다공항 (HND)</option>
+                                            <option value="kix">간사이공항 (KIX)</option>
+                                            <option value="cts">신치토세공항 (CTS)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 참가자 정보 섹션 -->
+                            <div class="form-section p-3 rounded mb-4">
+                                <h5 class="mb-3 text-primary">
+                                    <i class="bi bi-people me-2"></i>참가자 정보
+                                </h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">총 모집 인원 *</label>
+                                        <select class="form-select" required>
+                                            <option value="">인원 선택</option>
+                                            <option value="2">2명</option>
+                                            <option value="3">3명</option>
+                                            <option value="4">4명</option>
+                                            <option value="5">5명</option>
+                                            <option value="6">6명</option>
+                                            <option value="7">7명</option>
+                                            <option value="8">8명</option>
+                                            <option value="9">9명</option>
+                                            <option value="10">10명 이상</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">성별 제한</label>
+                                        <select class="form-select">
+                                            <option value="all">제한 없음</option>
+                                            <option value="male">남성만</option>
+                                            <option value="female">여성만</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">연령 제한</label>
+                                        <select class="form-select">
+                                            <option value="all">제한 없음</option>
+                                            <option value="20s">20대</option>
+                                            <option value="30s">30대</option>
+                                            <option value="40s">40대</option>
+                                            <option value="mixed">혼합</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 태그 섹션 -->
+                            <div class="form-section p-3 rounded mb-4">
+                                <h5 class="mb-3 text-primary">
+                                    <i class="bi bi-tags me-2"></i>여행 태그
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">인기 태그 선택</label>
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <input type="checkbox" class="btn-check" id="tag-food" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm" for="tag-food">🍜 식도락</label>
+                                        
+                                        <input type="checkbox" class="btn-check" id="tag-onsen" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm" for="tag-onsen">♨️ 온천</label>
+                                        
+                                        <input type="checkbox" class="btn-check" id="tag-culture" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm" for="tag-culture">🏛️ 문화</label>
+                                        
+                                        <input type="checkbox" class="btn-check" id="tag-nature" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm" for="tag-nature">🌲 자연</label>
+                                        
+                                        <input type="checkbox" class="btn-check" id="tag-shopping" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm" for="tag-shopping">🛍️ 쇼핑</label>
+                                        
+                                        <input type="checkbox" class="btn-check" id="tag-activity" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm" for="tag-activity">🏃 액티비티</label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">커스텀 태그 추가</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="태그 입력 후 Enter" id="customTagInput">
+                                        <button class="btn btn-wakutabi-outline" type="button" id="addTagBtn">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="tag-input-container mt-2" id="customTagsContainer">
+                                        <small class="text-muted">추가된 태그가 여기에 표시됩니다</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 이미지 업로드 섹션 -->
+                            <div class="form-section p-3 rounded mb-4">
+                                <h5 class="mb-3 text-primary">
+                                    <i class="bi bi-images me-2"></i>여행 이미지
+                                </h5>
+                                
+                                <div class="image-upload-area" id="imageUploadArea">
+                                    <div class="text-center">
+                                        <i class="bi bi-cloud-upload text-primary" style="font-size: 3rem;"></i>
+                                        <p class="mt-2 mb-1 fw-bold">이미지를 드래그하거나 클릭하여 업로드</p>
+                                        <small class="text-muted">JPG, PNG, GIF 파일 지원 (최대 5MB)</small>
+                                    </div>
+                                    <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                                </div>
+                                <div class="uploaded-images" id="uploadedImages"></div>
+                            </div>
+
+                            <!-- 추가 정보 섹션 -->
+                            <div class="form-section p-3 rounded mb-4">
+                                <h5 class="mb-3 text-primary">
+                                    <i class="bi bi-chat-dots me-2"></i>추가 정보
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">특별 요청사항</label>
+                                    <textarea class="form-control" rows="3" 
+                                              placeholder="참가자들에게 알리고 싶은 특별한 사항이 있나요?"></textarea>
+                                </div>
+
+
+                            </div>
+
+                            <!-- 제출 버튼 -->
+                            <div class="d-flex gap-3 justify-content-end">
+                                <button type="button" class="btn btn-outline-secondary btn-lg px-4">임시저장</button>
+                                <button type="submit" class="btn btn-wakutabi-primary btn-lg px-4 btn-hover-effect">
+                                    <i class="bi bi-check-circle me-2"></i>여행 일정 등록
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="col-lg-4">
+                    <div class="sticky-top">
+                        <div class="preview-card rounded-4 p-4 shadow-sm">
+                            <h5 class="mb-3 text-primary">
+                                <i class="bi bi-eye me-2"></i>미리보기
+                            </h5>
+                            
+                            <div class="card border-0 shadow-sm">
+                                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=200&fit=crop" 
+                                     class="card-img-top" alt="미리보기" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0" id="previewTitle">여행 제목을 입력하세요</h6>
+                                        <span class="badge bg-secondary" id="previewRegion">지역</span>
+                                    </div>
+                                    
+                                    <div class="text-muted mb-2" style="font-size: 0.875rem;">
+                                        <i class="bi bi-calendar-event me-1"></i>
+                                        <span id="previewDates">날짜를 선택하세요</span>
+                                    </div>
+                                    
+                                    <p class="card-text text-muted" style="font-size: 0.875rem;" id="previewDescription">
+                                        여행 설명을 입력하세요
+                                    </p>
+                                    
+                                    <div class="mb-3" id="previewTags">
+                                        <span class="badge bg-primary me-1">태그</span>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="bg-light p-2 rounded">
+                                            <small>
+                                                <i class="bi bi-people me-1"></i>
+                                                <strong id="previewParticipants">0/0명</strong> 참여 중
+                                            </small>
+                                        </div>
+                                        <div class="d-flex gap-1">
+                                            <button class="btn btn-outline-primary btn-sm">상세보기</button>
+                                            <button class="btn btn-primary btn-sm">참가신청</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    실시간으로 입력된 내용이 반영됩니다
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-glass mt-5">
+        <div class="container py-4">
+            <div class="text-center text-muted">
+                <p class="mb-2">© 2025 Wakutabi | contact@wakutabi.com</p>
+                <p class="mb-0">
+                    <a href="/support" class="footer-link me-3">고객센터</a>
+                    <span class="text-muted">|</span>
+                    <a href="/terms" class="footer-link mx-3">이용약관</a>
+                    <span class="text-muted">|</span>
+                    <a href="/privacy" class="footer-link ms-3">개인정보처리방침</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+<script defer src="/js/travel_edit.js"></script>
+</html>

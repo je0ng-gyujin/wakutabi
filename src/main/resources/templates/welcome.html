@@ -1,104 +1,24 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html
+	lang="ko"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layouts/clean}">
 <head>
+<th:block layout:fragment="head">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wakutabi</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-  <style>
-    html {
-      scroll-behavior: smooth;
-    }
-    body {
-      margin: 0;
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #ffffff;
-      color: #333;
-    }
-   header {
-  position: relative;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(255, 233, 220, 0.6), #ffffff), 
-              url('/image/premium.jpg') no-repeat center center/cover;
-  height: 800px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  
-}
-    header h1 {
-      font-size: 60px;
-      margin-bottom: 10px;
-      color: white;
-    }
-    header p {
-      font-size: 20px;
-      margin-bottom: 30px;
-      color: rgb(0, 0, 0);
-    }
-    header a {
-      padding: 12px 28px;
-      background: #7f6cff;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 18px;
-      transition: background 0.3s;
-      margin-top:400px;
-    }
-    header a:hover {
-      background: #ff4757;
-    }
-    section {
-      padding: 60px 20px;
-      max-width: 1600px;
-      margin: 0 auto;
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      text-align: center;
-    }
-    .feature-icon {
-      font-size: 40px;
-      margin-bottom: 10px;
-    }
-    .cta {
-      
-      text-align: center;
-      background: linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 233, 220, 0.6), #ffb0805d);
-      padding: 40px 20px;
-      margin-top: 40px;
-      border-radius: 12px;
-    }
-    .cta a{padding: 12px 28px;
-      background: #7f6cff;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 18px;
-      transition: background 0.3s;
-      margin-top:400px;
-    }
-    .cta a:hover {
-      background: #ff4757;
-    }
-    footer {
-      background: #606060;
-      color: #aaa;
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/welcome.css}">
+</th:block>
 </head>
 <body>
-
+<th:block layout:fragment="content">
   <!-- Hero Section -->
   <header>
     <h1>나만의 여행, 새로운 만남</h1>
+    <h1>Wakutabi</h1>
     <a href="#start">지금 시작하기</a>
     <p>비슷한 일정과 취향의 여행자를 매칭해드립니다</p>
   </header>
@@ -141,6 +61,6 @@
   <footer>
     ⓒ 2025 Wakutabi | contact@Wakutabi.com
   </footer>
-
+<th:block>
 </body>
 </html>

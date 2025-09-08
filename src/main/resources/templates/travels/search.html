@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/base}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" th:href="@{/css/travel.css}">
+<title>여행 일정 검색</title>
+<th:block layout:fragment="head">
+</th:block>
+<script defer th:src="@{/js/travel.js}"></script>
+</head>
+
+<body>
+  <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+    <div class="container py-4">
+      <!-- Page Header -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h1 class="text-center mb-2">여행 일정 검색</h1>
+          <p class="text-center text-muted">태그와 필터를 활용해 원하는 여행 일정을
+            찾아보세요</p>
+        </div>
+      </div>
+
+      <!-- Search Container -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="search-container rounded-4 p-4 shadow-sm">
+            <!-- Search Input -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-primary"></i>
+                  </span> <input type="text"
+                    class="form-control border-start-0 ps-0"
+                    placeholder="여행지, 키워드로 검색해보세요..." id="searchInput">
+                  <button class="btn btn-wakutabi-primary px-4"
+                    type="button">
+                    <i class="bi bi-search me-2"></i>검색
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Filter Tags -->
+            <div class="row">
+              <div class="col-12">
+                <h6 class="mb-3 text-muted">주요 태그</h6>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <span class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="식도락">🍜 식도락</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="온천">♨️ 온천</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="문화">🏛️ 문화</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="자연">🌲 자연</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="쇼핑">🛍️ 쇼핑</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="혼자">👤 혼자여행</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="그룹">👥 그룹여행</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="액티비티">🏃 액티비티</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Results -->
+      <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 mb-4">
+          <div class="filter-section p-3 shadow-sm sticky-top">
+            <h5 class="mb-3">상세 필터</h5>
+
+            <!-- 지역 필터 -->
+            <div class="mb-4">
+              <h6 class="mb-2 text-muted">지역</h6>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                  id="tokyo"> <label class="form-check-label"
+                  for="tokyo">홋카이도</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                  id="osaka"> <label class="form-check-label"
+                  for="osaka">혼슈</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                  id="kyoto"> <label class="form-check-label"
+                  for="kyoto">시코쿠</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                  id="hiroshima"> <label
+                  class="form-check-label" for="hiroshima">규슈</label>
+              </div>
+            </div>
+
+            <!-- 기간 필터 -->
+            <!-- <div class="mb-4">
+                        <h6 class="mb-2 text-muted">여행 기간</h6>
+                        <select class="form-select">
+                            <option value="">전체</option>
+                            <option value="1-2">1-2일</option>
+                            <option value="3-4">3-4일</option>
+                            <option value="5-7">5-7일</option>
+                            <option value="8+">8일 이상</option>
+                        </select>
+                    </div> -->
+            <div class="mb-4">
+              <h6 class="mb-2 text-muted">여행 기간</h6>
+
+              <h6 class="mb-2 mt-4 text-muted">2025년</h6>
+              <div class="month-btn-container">
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-jan"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-jan">1월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-feb"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-feb">2월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-mar"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-mar">3월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-apr"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-apr">4월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-may"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-may">5월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-jun"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-jun">6월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-jul"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-jul">7월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-aug"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-aug">8월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-sep"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-sep">9월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-oct"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-oct">10월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-nov"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-nov">11월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2025-dec"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2025-dec">12월</label>
+                </div>
+              </div>
+
+              <h6 class="mb-2 mt-4 text-muted">2026년</h6>
+              <div class="month-btn-container">
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-jan"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-jan">1월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-feb"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-feb">2월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-mar"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-mar">3월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-apr"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-apr">4월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-may"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-may">5월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-jun"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-jun">6월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-jul"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-jul">7월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-aug"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-aug">8월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-sep"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-sep">9월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-oct"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-oct">10월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-nov"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-nov">11월</label>
+                </div>
+                <div class="month-btn-col">
+                  <input type="checkbox" class="btn-check" id="2026-dec"
+                    autocomplete="off"> <label
+                    class="btn btn-outline-secondary btn-sm btn-month"
+                    for="2026-dec">12월</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 참가인원 필터 -->
+            <div class="mb-4">
+              <h6 class="mb-2 text-muted">모집 인원</h6>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                  id="small"> <label class="form-check-label"
+                  for="small">소수 (2-4명)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                  id="medium-group"> <label
+                  class="form-check-label" for="medium-group">중간
+                  (5-8명)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                  id="large"> <label class="form-check-label"
+                  for="large">대규모 (9명+)</label>
+              </div>
+            </div>
+
+            <button class="btn btn-wakutabi-primary w-100 mb-2">필터
+              적용</button>
+            <button class="btn btn-outline-secondary w-100">초기화</button>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="col-lg-9">
+          <!-- Results Header -->
+          <div
+            class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <span class="search-result-count">총 24개</span>의 여행 일정을
+              찾았습니다
+            </div>
+            <div class="d-flex gap-2">
+              <select class="form-select form-select-sm"
+                style="width: auto;">
+                <option>최신순</option>
+                <option>인기순</option>
+                <option>마감임박순</option>
+                <option>평점순</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Schedule Cards -->
+          <div class="row g-4">
+            <!-- Schedule Card 1 -->
+            <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="도쿄">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">🗼 도쿄 3박4일 먹방
+                          여행</h5>
+                        <span class="badge region-badge">도쿄</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2025년 12월 중 (2~5일간)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">도쿄의 숨은
+                        맛집들을 찾아다니는 진짜 먹방 여행! 현지인만 아는 라멘집부터 미슐린 레스토랑까지 함께
+                        즐겨요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">식도락</span>
+                        <span class="badge schedule-tag me-1">현지체험</span>
+                        <span class="badge schedule-tag me-1">소수정예</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            <small> <i class="bi bi-people me-1"></i>
+                              <strong>3/6명</strong> 참여 중
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-primary btn-sm">참가신청</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schedule Card 2 -->
+            <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="교토">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">🏛️ 교토 전통 문화 체험</h5>
+                        <span class="badge region-badge">교토</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2024년
+                        12월 중 (3일간)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">교토의 전통
+                        문화를 깊이 체험하는 여행. 기모노 체험, 다도, 전통 공예 등 일본의 진짜 문화를
+                        만나보세요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">문화</span>
+                        <span class="badge schedule-tag me-1">체험</span>
+                        <span class="badge schedule-tag me-1">전통</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            <small> <i class="bi bi-people me-1"></i>
+                              <strong>5/8명</strong> 참여 중
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-primary btn-sm">참가신청</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schedule Card 3 -->
+            <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1590559899731-a382839e5549?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="온천">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">♨️ 하코네 온천 힐링 여행</h5>
+                        <span class="badge region-badge">하코네</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2025년 6월 중 (미정)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">후지산이 보이는
+                        하코네에서 온천과 자연을 만끽하는 힐링 여행. 스트레스를 완전히 날려버릴 완벽한 휴식을
+                        경험해보세요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">온천</span>
+                        <span class="badge schedule-tag me-1">휴양</span>
+                        <span class="badge schedule-tag me-1">자연</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            <small> <i class="bi bi-people me-1"></i>
+                              <strong>2/4명</strong> 참여 중
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-primary btn-sm">참가신청</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="d-flex justify-content-center mt-5">
+            <nav>
+              <ul class="pagination">
+                <!-- disabled 속성 없애면 클릭 가능해짐 -->
+                <li class="page-item disabled"><a class="page-link">이전</a></li>
+                <li class="page-item"><span class="page-link">1</span></li>
+                <li class="page-item"><a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">3</a>
+                <li class="page-item"><a class="page-link" href="#">4</a>
+                <li class="page-item"><a class="page-link" href="#">5</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">다음</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

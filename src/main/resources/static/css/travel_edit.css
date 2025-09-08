@@ -1,0 +1,198 @@
+@import url("/css/travel.css");
+
+:root {
+	--primary-color: #60B5FF;
+	--secondary-color: #AFDDFF;
+	--background-color: #FFECDB;
+	--accent-color: #1E73BE;
+	--warning-color: #FF9149;
+	--warning-color-rgb: rgba(255, 145, 73);
+	--glass-bg: rgba(255, 255, 255, 0.9);
+	--glass-border: rgba(255, 255, 255, 0.3);
+	--gray-color: #606060;
+}
+
+.btn-wakutabi-primary {
+	--bs-btn-bg: var(--primary-color);
+	--bs-btn-border-color: var(--primary-color);
+	--bs-btn-hover-bg: var(--accent-color);
+	--bs-btn-hover-border-color: var(--accent-color);
+	--bs-btn-active-bg: var(--accent-color);
+	--bs-btn-active-border-color: var(--accent-color);
+	--bs-btn-color: #fff;
+}
+
+.btn-wakutabi-outline {
+	--bs-btn-color: var(--primary-color);
+	--bs-btn-border-color: var(--primary-color);
+	--bs-btn-hover-bg: var(--primary-color);
+	--bs-btn-hover-border-color: var(--primary-color);
+	--bs-btn-hover-color: #fff;
+	--bs-btn-active-bg: var(--primary-color);
+	--bs-btn-active-border-color: var(--primary-color);
+	--bs-btn-active-color: #fff;
+}
+
+.bg-gradient-custom {
+	background: linear-gradient(135deg, var(--background-color) 0%,
+		var(--secondary-color) 100%) !important;
+}
+
+.glass-effect {
+	background: var(--glass-bg);
+	backdrop-filter: blur(10px);
+	border: 1px solid var(--glass-border);
+}
+
+.navbar-glass {
+	background: rgba(255, 255, 255, 0.95) !important;
+	backdrop-filter: blur(10px);
+	border-bottom: 2px solid var(--primary-color);
+}
+
+.logo-text {
+	font-size: 2rem;
+	font-weight: bold;
+	color: var(--primary-color);
+}
+
+.nav-link-custom {
+	font-weight: 500;
+	border-radius: 25px;
+	transition: all 0.3s ease;
+	margin: 0 0.25rem;
+}
+
+.nav-link-custom:hover {
+	background-color: var(--primary-color);
+	color: white !important;
+	transform: translateY(-2px);
+}
+
+.registration-container {
+	background: var(--glass-bg);
+	backdrop-filter: blur(10px);
+	border: 1px solid var(--glass-border);
+}
+
+.form-section {
+	background: rgba(255, 255, 255, 0.6);
+	border-left: 4px solid var(--primary-color);
+}
+
+.tag-input-container {
+	background: rgba(255, 255, 255, 0.8);
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	min-height: 100px;
+	padding: 10px;
+}
+
+.tag-item-input {
+	background: var(--secondary-color);
+	color: var(--accent-color);
+	border: 1px solid var(--primary-color);
+	border-radius: 20px;
+	padding: 4px 12px;
+	margin: 2px;
+	display: inline-block;
+	font-size: 0.875rem;
+	position: relative;
+}
+
+.tag-item-input .remove-tag {
+	margin-left: 8px;
+	cursor: pointer;
+	color: var(--accent-color);
+}
+
+.tag-item-input .remove-tag:hover {
+	color: #dc3545;
+}
+
+.preview-card {
+	background: var(--glass-bg);
+	backdrop-filter: blur(10px);
+	border: 1px solid var(--glass-border);
+	transition: all 0.3s ease;
+}
+
+.preview-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	border-color: var(--primary-color);
+}
+
+.footer-glass {
+	background: white !important;
+	backdrop-filter: blur(10px);
+	border-top: 2px solid var(--primary-color);
+}
+
+.footer-link {
+	color: var(--primary-color);
+	text-decoration: none;
+}
+
+.footer-link:hover {
+	color: #00cc7a;
+}
+
+.btn-hover-effect:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(96, 181, 255, 0.3);
+}
+
+.image-upload-area {
+	border: 2px dashed var(--primary-color);
+	border-radius: 12px;
+	min-height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	background: rgba(96, 181, 255, 0.05);
+}
+
+.image-upload-area:hover {
+	background: rgba(96, 181, 255, 0.1);
+	border-color: var(--accent-color);
+}
+
+.uploaded-images {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: 10px;
+	margin-top: 15px;
+}
+
+.uploaded-image {
+	position: relative;
+	aspect-ratio: 1;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.uploaded-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.remove-image {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	background: rgba(220, 53, 69, 0.8);
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	font-size: 12px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

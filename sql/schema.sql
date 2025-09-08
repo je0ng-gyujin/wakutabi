@@ -11,7 +11,7 @@ CREATE TABLE users (
     is_public  BOOLEAN                              NOT NULL DEFAULT TRUE,                -- 공개여부
     role       ENUM('USER','ADMIN')                 NOT NULL DEFAULT 'USER',              -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
     status     ENUM('ACTIVE','SUSPENDED','BANNED')  NOT NULL DEFAULT 'ACTIVE',            -- 계정상태('ACTIVE':활성화, 'SUSPEND':일시정지, 'BANNED':영구정지)
-    introduce  TEXT                                     NULL DEFAULT NUll,                                                                      -- 자기소개글
+    introduce  TEXT                                     NULL,                             -- 자기소개글
     created_at DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- 생성일자
     updated_at DATETIME                                      DEFAULT CURRENT_TIMESTAMP    -- 수정일자
 );

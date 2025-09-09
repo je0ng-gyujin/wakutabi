@@ -192,3 +192,9 @@ document.querySelector('.btn-outline-secondary').addEventListener('click', funct
 	console.log('임시저장 완료');
 	alert('현재 작성 내용이 임시저장되었습니다.');
 });
+
+document.querySelectorAll('.tag-item').forEach(tag => {
+    tag.addEventListener('click', () => {
+        tag.classList.toggle('selected');
+    });
+});

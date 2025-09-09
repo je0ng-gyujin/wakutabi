@@ -6,14 +6,175 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" th:href="@{/css/travel_review.css}" />
 <title>index</title>
+<script defer th:src="@{/js/travel_review.js}"></script>
 </head>
-
 <body>
-<div class="bg-gradient-custom min-vh-100" layout:fragment="content">
-여기에 작업하시면 됩니다
-</div>
+  <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+    <div class="bg-gradient-custom min-vh-100">
+      <div class="container py-4">
+        <!-- Page Header -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h1 class="text-center mb-2">여행 후기 작성</h1>
+            <p class="text-center text-muted">즐거웠던 여행의 추억을 다른 여행자들과
+              공유해보세요</p>
+          </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="form-container rounded-4 p-4 shadow-sm">
+              <!-- 여행 일정 정보 -->
+              <div class="schedule-info mb-4">
+                <h5 class="mb-2">🗼 도쿄 3박4일 먹방 여행</h5>
+                <p class="mb-1">
+                  <i class="bi bi-calendar-event me-2"></i>2024년 12월 20일
+                  ~ 23일
+                </p>
+                <p class="mb-0">
+                  <i class="bi bi-geo-alt me-2"></i>도쿄, 일본
+                </p>
+              </div>
+
+              <form method="get" name="review" action="dokokaro"
+                enctype="multipart/form-data" id="reviewForm">
+                <!-- 전체 평점 -->
+                <div class="mb-4">
+                  <p class="form-label h5">여행 평점</p>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="rating-container">
+                      <input type="radio" id="rating5" name="rating" value="5" class="d-none">
+                      <label for="rating5" class="rating-stars">★</label>
+                      <input type="radio" id="rating4" name="rating" value="4" class="d-none">
+                      <label for="rating4" class="rating-stars">★</label>
+                      <input type="radio" id="rating3" name="rating" value="3" class="d-none">
+                      <label for="rating3" class="rating-stars">★</label>
+                      <input type="radio" id="rating2" name="rating" value="2" class="d-none">
+                      <label for="rating2" class="rating-stars">★</label>
+                      <input type="radio" id="rating1" name="rating" value="1" class="d-none">
+                      <label for="rating1" class="rating-stars">★</label>
+                    </div>
+                    <span class="rating-text text-muted">별점을
+                      선택해주세요</span>
+                  </div>
+                </div>
+
+                <!-- 제목 -->
+                <div class="mb-4">
+                  <label for="reviewTitle" class="form-label h6">후기
+                    제목 *</label> <input type="text"
+                    class="form-control form-control-lg"
+                    id="reviewTitle" placeholder="여행 후기의 제목을 작성해주세요"
+                    maxlength="50" name="title">
+                  <div class="form-text">최대 50자까지 입력 가능합니다.</div>
+                </div>
+
+                <!-- 후기 내용 -->
+                <div class="mb-4">
+                  <label for="reviewContent" class="form-label h6">후기
+                    내용 *</label>
+                  <textarea class="form-control" id="reviewContent"
+                    rows="8" name="content"
+                    placeholder="여행에서 경험한 특별한 순간들을 자세히 적어주세요.
+
+• 가장 기억에 남는 순간
+• 추천하고 싶은 장소나 음식
+• 함께 여행한 동행자들과의 에피소드
+• 다른 여행자들에게 전하고 싶은 팁
+
+여러분의 솔직한 후기가 다른 여행자들에게 큰 도움이 됩니다!"></textarea>
+                  <div class="form-text">최소 100자 이상 작성해주세요.</div>
+                </div>
+
+                <!-- 사진 업로드 -->
+                <div class="mb-4">
+                  <label class="form-label h6">여행 사진</label>
+                  <div class="image-upload-area p-4 text-center mb-3"
+                    onclick="document.getElementById('imageInput').click()">
+                    <i
+                      class="bi bi-cloud-upload display-4 text-muted mb-2"></i>
+                    <p class="mb-0">클릭하여 사진을 업로드하세요</p>
+                    <small class="text-muted">JPG, PNG, GIF 파일만
+                      업로드 가능 (최대 5장)</small>
+                  </div>
+                  <input type="file" id="imageInput" multiple
+                    accept="image/*" style="display: none;">
+                  <div id="imagePreview" class="mt-3"></div>
+                </div>
+
+                <!-- 세부 평가 -->
+                <div class="mb-4">
+                  <p class="form-label h6">여행자 평가</p>
+                  <p class="mb-2 text-muted">&#8680; 이번 여행에 함께한
+                    여행자들은 어땠나요?</p>
+                  <div class="row">
+                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+    <div class="col-md-6 mb-3">
+        <img
+            src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&amp;h=50&amp;fit=crop&amp;crop=face"
+            alt="참여자" class="participant-avatar"> <span
+            class="ms-2">박지훈</span>
+        <div class="rating-container">
+            <input type="radio" th:id="'star'+${i}+'_5'" th:name="'user'+${i}" value="5" class="d-none">
+            <label th:for="'star'+${i}+'_5'" class="rating-stars">★</label>
+            <input type="radio" th:id="'star'+${i}+'_4'" th:name="'user'+${i}" value="4" class="d-none">
+            <label th:for="'star'+${i}+'_4'" class="rating-stars">★</label>
+            <input type="radio" th:id="'star'+${i}+'_3'" th:name="'user'+${i}" value="3" class="d-none">
+            <label th:for="'star'+${i}+'_3'" class="rating-stars">★</label>
+            <input type="radio" th:id="'star'+${i}+'_2'" th:name="'user'+${i}" value="2" class="d-none">
+            <label th:for="'star'+${i}+'_2'" class="rating-stars">★</label>
+            <input type="radio" th:id="'star'+${i}+'_1'" th:name="'user'+${i}" value="1" class="d-none">
+            <label th:for="'star'+${i}+'_1'" class="rating-stars">★</label>
+        </div>
+    </div>
+</th:block>
+                  </div>
+                </div>
+
+                <!-- 비공개 여행 팁 -->
+                <div class="mb-4">
+                  <label for="travelTip" class="form-label h6">여행
+                    팁 (선택사항)</label>
+                  <textarea class="form-control" id="travelTip" rows="3"
+                    placeholder="다른 여행자들에게 도움이 될만한 팁이나 주의사항이 있다면 알려주세요"></textarea>
+                </div>
+
+                <!-- 공개 설정 -->
+                <div class="mb-4">
+                  <label class="form-label h6">공개 설정</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                      name="visibility" id="public" value="public"
+                      checked> <label class="form-check-label"
+                      for="public"> 전체 공개 - 모든 사용자가 볼 수 있습니다 </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                      name="visibility" id="members" value="members">
+                    <label class="form-check-label" for="members">
+                      동행자만 공개 - 함께 여행한 사람들만 볼 수 있습니다 </label>
+                  </div>
+                </div>
+
+                <!-- 버튼 -->
+                <div class="d-flex gap-3 justify-content-end">
+                  <button type="button"
+                    class="btn btn-outline-secondary btn-lg">임시저장</button>
+                  <button type="button"
+                    class="btn btn-wakutabi-outline btn-lg">미리보기</button>
+                  <button type="submit"
+                    class="btn btn-wakutabi-primary btn-lg">후기
+                    등록</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
-
-
 </html>

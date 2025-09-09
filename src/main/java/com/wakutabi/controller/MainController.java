@@ -18,5 +18,9 @@ public class MainController {
 	public String signupForm() {
 		return "users/signup";
 	}
+	@GetMapping("/login")
+	public String loginForm() {
+		return "users/login";
+	}
 	
 }

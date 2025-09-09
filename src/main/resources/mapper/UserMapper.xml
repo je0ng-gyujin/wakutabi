@@ -12,4 +12,7 @@
 		insert into users (username,password,nickname,birth,email) values 
 		(#{username},#{password},#{nickname},#{birth},#{email})
 	</insert>
+	<select id="findByUsername" resultType="com.wakutabi.domain.UserDto">
+		select * from users where username=#{username}
+	</select>
 </mapper>

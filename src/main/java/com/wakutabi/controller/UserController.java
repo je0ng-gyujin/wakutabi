@@ -23,7 +23,7 @@ public class UserController {
 	public String signRegister(UserDto user) {
 		userService.register(user);
 		return "redirect:/";
-	}
+	}	
 	@GetMapping("/check-username")
 	@ResponseBody
 	public String checkUsername(@RequestParam("username") String username) {
@@ -35,5 +35,6 @@ public class UserController {
 			return "error";
 		}
 	}
+	
 	
 }

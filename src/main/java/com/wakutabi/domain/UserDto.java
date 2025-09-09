@@ -12,5 +12,11 @@ public class UserDto {
 	private String password; 
     private LocalDate birth;                               
     private String email;                                              
-    private LocalDateTime createdAt;   
+    private LocalDateTime createdAt; 
+    private Role role;
+    public enum Role {
+        USER,   // 일반 사용자
+        ADMIN   // 관리자
+    }
+
 }

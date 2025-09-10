@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>문의 작성</title>
+<th:block layout:fragment="head">
+	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+	<script defer src="/js/main.js"></script>
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+  <div class="container shadow p-4 rounded">
+    <div class="row">
+        <!-- 사이드메뉴 -->
+        <div class="col-md-3 border-end">
+            <h5 class="fw-bold mb-4">My page</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark fw-bold">내 문의 내역</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
+            </ul>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="col-md-9">
+            
+                <h2>문의 작성</h2>
+                <div class="mb-3">
+				    <label for="category" class="form-label">문의 유형</label>
+				    <select class="form-select" id="category" name="category" required>
+				        <option value="">-- 선택하세요 --</option>
+				        <option value="general">일반 문의</option>
+				        <option value="account">계정 관련</option>
+				        <option value="payment">결제 관련</option>
+				        <option value="bug">버그 신고</option>
+				        <option value="other">기타</option>
+				    </select>
+				</div>
+				<div class="mb-3">
+				    <label for="title" class="form-label">제목</label>
+				    <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요" required>
+				</div>
+				<div class="mb-3">
+				    <label for="content" class="form-label">문의 내용</label>
+				    <textarea class="form-control" id="content" name="content" rows="6" placeholder="자세한 문의 내용을 입력해주세요." required></textarea>
+				</div>
+				<div class="mb-3">
+				    <label for="file" class="form-label">첨부파일 (선택)</label>
+				    <input type="file" class="form-control" id="file" name="file">
+				</div>
+				<div class="mb-3">
+				    <label for="email" class="form-label">답변 받을 이메일</label>
+				    <input type="email" class="form-control" id="email" name="email" placeholder="예: example@email.com">
+				</div>
+				<div class="form-check mb-3">
+				    <input class="form-check-input" type="checkbox" id="agree" required>
+				    <label class="form-check-label" for="agree">
+				        문의 접수 처리를 위한 개인정보 수집에 동의합니다.
+				    </label>
+				</div>
+					<div class="d-grid">
+				    <button type="submit" class="btn btn-primary">문의 제출</button>
+				</div>
+               
+            
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

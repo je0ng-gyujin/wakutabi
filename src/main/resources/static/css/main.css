@@ -147,3 +147,49 @@ to {
 	transform: translateY(0);
 }
 }
+
+/* Notification Sidebar */
+
+.sidebar-header{
+	background-color:var(--secondary-color);
+	margin-bottom:10px;
+}
+
+.notification-sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px; /* Initially hidden */
+  width: 300px;
+  height: 100vh;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+  border-left: 2px solid var(--primary-color);
+  z-index: 1050;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+
+.notification-sidebar.open {
+  right:0;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1040;
+  display: none;
+}
+
+.sidebar-overlay.show {
+  display: block;
+}
+
+.mb-0{
+	margin:10px 0;
+	color:var(--accent-color);
+}

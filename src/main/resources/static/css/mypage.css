@@ -33,6 +33,9 @@ body {
     position: relative; /* 자식의 절대위치 기준 */
 }
 
+h2{
+	color:var(--accent-color);
+}
 h3.fw-bold {
     margin-bottom: 10px;
 }
@@ -172,4 +175,7 @@ button.btn-primary:hover {
 .delete-id a:hover{
 	text-decoration: underline;
     color: #003399;
+}
+.custom-file-label {
+	 background-color: var(--primary-color); /* 원하는 색상 */
 }

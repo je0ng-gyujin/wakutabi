@@ -28,7 +28,9 @@ CREATE TABLE user_prefer (
 	CONSTRAINT fk_user_prefer_user_id FOREIGN KEY (user_id) REFERENCES users (id)
 );
 -- 여행등록 관련
+CREATE TABLE trip_article (
 
+);
 -- 여행후기 관련
 
 -- 고객센터 관련

@@ -27,6 +27,6 @@ public class CustomUserDetailService implements UserDetailsService  {
 					.username(dto.getUsername())
 					.password(dto.getPassword())
 					.roles(dto.getRole().name())
-					.build();
+					.build();    
 	}
 }

@@ -13,6 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" th:href="@{/css/member.css}">
+  <script defer src="/js/signup.js"></script>
   </th:block>
 </head>
 
@@ -80,38 +81,5 @@
 <footer>
     <!--  <p>Copyright © 2025 Wakutabi Co.,Ltd. All Rights Reserved.</p>-->
   </footer>
-
- 
- <!-- <script>
-  $(document).ready(function () {
-    $("#username").on("blur", function () {
-    	console.log("blur 이벤트 발생");
-      const username = $(this).val().trim();
-
-      if (username === "") {
-        $("#id-check-msg").text("아이디를 입력해주세요").css("color", "red");
-        return;
-      }
-
-      $.ajax({
-        url: "/user/check-username",   // 컨트롤러 매핑 주소
-        type: "get",                   // GET으로 변경
-        data: { username: username },  // 서버로 전달할 파라미터
-        success: function (result) {
-        	console.log("서버 응답:", result);
-          if (result === "exist") {
-            $("#id-check-msg").text("이미 사용중인 아이디 입니다").css("color", "red");
-          } else {
-            $("#id-check-msg").text("사용 가능한 아이디 입니다").css("color", "green");
-          }
-        },
-        error: function () {
-        	 console.log("AJAX 에러:", status, error);
-          $("#id-check-msg").text("중복 확인 중 오류 발생").css("color", "red");
-        }
-      });
-    });
-  });
-</script> -->
 </body>
 </html>

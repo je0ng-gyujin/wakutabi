@@ -6,9 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyPage</title>
+<title>회원 탈퇴</title>
 <th:block layout:fragment="head">
 	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+	<script defer src="/js/mypage.js"></script>
 </th:block>
 </head>
 
@@ -46,6 +47,10 @@
 				    <option value="other">기타</option>
 				  </select>
 			  </div>
+			  <div class="form-row" id="other-reason-row" style="display:none;">
+					    <label for="otherReason">기타 사유</label>
+					    <input type="text" id="otherReason" name="otherReason" placeholder="사유를 입력해주세요">
+					</div>
 			  <div class="delete-id">
 				  <button type="submit">탈퇴하기</button>
 				  <a href="#">취소</a>

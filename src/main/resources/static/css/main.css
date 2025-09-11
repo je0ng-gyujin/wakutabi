@@ -188,8 +188,3 @@ to {
 .sidebar-overlay.show {
   display: block;
 }
-
-.mb-0{
-	margin:10px 0;
-	color:var(--accent-color);
-}

@@ -49,6 +49,18 @@ CREATE TABLE trip_article (
 
 	CONSTRAINT fk_trip_article_host_user_id FOREIGN KEY (host_user_id) REFERENCES users (id)
 );
+-- 여행등록 이미지
+CREATE TABLE trip_article_image (
+	id	                   BIGINT          AUTO_INCREMENT PRIMARY KEY,   -- 여행등록 이미지 고유ID
+	trip_article_id	       BIGINT	       NOT NULL,                     -- 여행등록ID
+	image_path             VARCHAR(255),                                 -- 이미지
+	image_path_content	   TEXT,                                         -- 이미지내용
+	is_main	               BOOLEAN,                                      -- 메인이미지 여부
+	order_number           INT,                                          -- 이미지 표시 순서
+
+	CONSTRAINT fk_trip_article_image_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
+);
+
 -- 여행후기 관련
 
 -- 고객센터 관련

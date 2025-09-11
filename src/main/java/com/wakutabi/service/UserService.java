@@ -14,8 +14,7 @@ public class UserService {
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 	
-	
-	public int countByusername(String username) {
+	public int countByUsername(String username) {
 		int result = userMapper.countByUsername(username);
 		return result;
 	}

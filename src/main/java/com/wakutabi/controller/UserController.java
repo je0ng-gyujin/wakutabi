@@ -28,7 +28,7 @@ public class UserController {
 	@ResponseBody
 	public String checkUsername(@RequestParam("username") String username) {
 		try {
-			int count = userService.countByusername(username);
+			int count = userService.countByUsername(username);
 			return count > 0 ? "exist" : "ok";
 		}catch(Exception e){
 			e.printStackTrace();

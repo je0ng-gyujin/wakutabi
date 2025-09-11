@@ -147,3 +147,8 @@ to {
 	transform: translateY(0);
 }
 }
+
+.form-control-plaintextname{
+	margin-left:20px;
+	padding-top:80px;
+}

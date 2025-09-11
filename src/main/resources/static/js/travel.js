@@ -6,11 +6,17 @@ $(document).ready(
 				updateSearch();
 			});
 
-			// 검색 기능
+			/*// 검색 기능
 			$('#searchInput').on('input', function() {
 				updateSearch();
-			});
+			});*/
 
+				
+			/*// 검색 버튼 클릭 이벤트
+			$('.btn-wakutabi-primary').click(function() {
+			    updateSearch();
+			});*/
+			
 			// 필터 변경 감지
 			$('input[type="checkbox"], select').change(
 				function() {
@@ -28,7 +34,7 @@ $(document).ready(
 				var searchQuery = $('#searchInput').val();
 
 				// 실제 구현에서는 AJAX로 서버에 요청
-				console.log('검색 조건:', {
+				/*console.log('검색 조건:', {
 					tags: selectedTags,
 					query: searchQuery,
 					filters: getFilterValues()
@@ -36,8 +42,31 @@ $(document).ready(
 
 				// 검색 결과 업데이트 (예시)
 				updateResultCount(selectedTags.length,
-					searchQuery);
-			}
+					searchQuery);*/
+					
+					// 카드 필터링
+					    $('.schedule-card').each(function () {
+					        var cardText = $(this).text().toLowerCase();
+					        var matchesQuery = searchQuery.length === 0 || cardText.includes(searchQuery);
+
+					        // 태그 조건 (선택된 태그가 없으면 통과, 있으면 하나라도 포함되어야 함)
+					        var matchesTags = selectedTags.length === 0;
+					        if (!matchesTags) {
+					            matchesTags = selectedTags.some(tag => cardText.includes(tag.toLowerCase()));
+					        }
+
+					        if (matchesQuery && matchesTags) {
+					            $(this).show();
+					        } else {
+					            $(this).hide();
+					        }
+					    });
+
+					    // 결과 개수 갱신
+					    var visibleCount = $('.schedule-card:visible').length;
+					    $('.search-result-count').text('총 ' + visibleCount + '개');
+					}
+			
 
 			function getFilterValues() {
 				var filters = {
@@ -106,4 +135,10 @@ $(document).ready(
 							.addClass(
 								'btn-wakutabi-outline');
 					});
+		});
+		
+		document.querySelectorAll('.region-item').forEach(item => {
+		  item.addEventListener('click', () => {
+		    item.classList.toggle('active'); // 여러 개 선택 가능
+		  });
 		});

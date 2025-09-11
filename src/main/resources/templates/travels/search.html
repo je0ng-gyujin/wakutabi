@@ -32,17 +32,20 @@
             <!-- Search Input -->
             <div class="row mb-3">
               <div class="col-12">
+              <form action="/travels/search" method="get">
                 <div class="input-group input-group-lg">
                   <span class="input-group-text bg-white border-end-0">
                     <i class="bi bi-search text-primary"></i>
                   </span> <input type="text"
                     class="form-control border-start-0 ps-0"
-                    placeholder="여행지, 키워드로 검색해보세요..." id="searchInput">
+                    placeholder="여행지, 키워드로 검색해보세요..." id="searchInput"
+                    name="keyward">
                   <button class="btn btn-wakutabi-primary px-4"
-                    type="button">
+                    type="submit">
                     <i class="bi bi-search me-2"></i>검색
                   </button>
                 </div>
+                </form>
               </div>
             </div>
 
@@ -81,30 +84,34 @@
           <div class="filter-section p-3 shadow-sm sticky-top">
             <h5 class="mb-3">상세 필터</h5>
 
-            <!-- 지역 필터 -->
-            <div class="mb-4">
-              <h6 class="mb-2 text-muted">지역</h6>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                  id="tokyo"> <label class="form-check-label"
-                  for="tokyo">홋카이도</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                  id="osaka"> <label class="form-check-label"
-                  for="osaka">혼슈</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                  id="kyoto"> <label class="form-check-label"
-                  for="kyoto">시코쿠</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                  id="hiroshima"> <label
-                  class="form-check-label" for="hiroshima">규슈</label>
-              </div>
-            </div>
+            <div class="accordion mb-4" id="regionAccordion">
+			  <div class="accordion-item">
+			    <h2 class="accordion-header" id="headingRegion">
+			      <button class="accordion-button collapsed" type="button" 
+			              data-bs-toggle="collapse" 
+			              data-bs-target="#collapseRegion" 
+			              aria-expanded="false" aria-controls="collapseRegion">지역
+			      </button>
+			    </h2>
+			    <div id="collapseRegion" class="accordion-collapse collapse" 
+			         aria-labelledby="headingRegion" data-bs-parent="#regionAccordion">
+			      <div class="accordion-body">
+			        <div class="region-list">
+			          <button type="button" value="hokkaido" class="region-item">홋카이도</button>
+			          <button type="button" value="tohoku" class="region-item">도호쿠</button>
+			          <button type="button" value="kanto" class="region-item">간토</button>
+			          <button type="button" value="chubu" class="region-item">주부</button>
+			          <button type="button" value="kansai" class="region-item">간사이</button>
+			          <button type="button" value="chugoku" class="region-item">주고쿠</button>
+			          <button type="button" value="shikoku" class="region-item">시코쿠</button>
+			          <button type="button" value="kyushu" class="region-item">규슈</button>
+			          <button type="button" value="okinawa" class="region-item">오키나와</button>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+
 
             <!-- 기간 필터 -->
             <!-- <div class="mb-4">

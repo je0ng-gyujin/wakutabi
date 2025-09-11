@@ -114,3 +114,34 @@
 	padding: 0;
 	font-size: 0.875rem; /* 글자 크기 조정 */
 }
+
+.accordion-body {
+  padding: 0; /* 기본 padding 제거 */
+}
+
+.region-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.region-item {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 0;         /* 모서리 둥글기 제거해서 칸처럼 */
+  padding: 0.75rem;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  border-bottom: none;
+}
+
+.region-item:last-child {
+  border-bottom: 1px solid #ddd; /* 마지막만 하단 border */
+}
+
+.region-item.active {
+  background-color: #AFDDFF;
+  color: black;
+  border-color: #AFDDFF;
+} 

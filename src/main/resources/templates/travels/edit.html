@@ -31,7 +31,8 @@
           <!-- Registration Form -->
           <div class="col-lg-8">
             <div class="registration-container rounded-4 p-4 shadow-sm">
-              <form id="travelRegistrationForm" action="uploadurl" method="get">
+              <form id="travelRegistrationForm" action="uploadurl"
+                method="get">
                 <!-- 기본 정보 섹션 -->
                 <div class="form-section p-3 rounded mb-4">
                   <h5 class="mb-3 text-primary">
@@ -160,37 +161,27 @@
                   </h5>
 
                   <div class="mb-3">
-                    <label class="form-label fw-bold">인기 태그 선택</label>
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                      <input type="checkbox" class="btn-check"
-                        id="tag-food" autocomplete="off"> <label
-                        class="btn btn-outline-primary btn-sm"
-                        for="tag-food">🍜 식도락</label> <input
-                        type="checkbox" class="btn-check" id="tag-onsen"
-                        autocomplete="off"> <label
-                        class="btn btn-outline-primary btn-sm"
-                        for="tag-onsen">♨️ 온천</label> <input
-                        type="checkbox" class="btn-check"
-                        id="tag-culture" autocomplete="off"> <label
-                        class="btn btn-outline-primary btn-sm"
-                        for="tag-culture">🏛️ 문화</label> <input
-                        type="checkbox" class="btn-check"
-                        id="tag-nature" autocomplete="off"> <label
-                        class="btn btn-outline-primary btn-sm"
-                        for="tag-nature">🌲 자연</label> <input
-                        type="checkbox" class="btn-check"
-                        id="tag-shopping" autocomplete="off"> <label
-                        class="btn btn-outline-primary btn-sm"
-                        for="tag-shopping">🛍️ 쇼핑</label> <input
-                        type="checkbox" class="btn-check"
-                        id="tag-activity" autocomplete="off"> <label
-                        class="btn btn-outline-primary btn-sm"
-                        for="tag-activity">🏃 액티비티</label>
+                    <p class="form-label fw-bold">이번 여행과 관련된
+                      태그를 선택해주세요</p>
+                    <div class="tag-list">
+                      <span class="tag-item" data-tag="식도락">🍜
+                        식도락</span> <span class="tag-item" data-tag="온천">♨️
+                        온천</span> <span class="tag-item" data-tag="문화">🏛️
+                        문화</span> <span class="tag-item" data-tag="자연">🌲
+                        자연</span> <span class="tag-item" data-tag="쇼핑">🛍️
+                        쇼핑</span> <span class="tag-item" data-tag="액티비티">🏃
+                        액티비티</span> <span class="tag-item" data-tag="힐링">🧘
+                        힐링</span> <span class="tag-item" data-tag="모험">🎒
+                        모험</span> <span class="tag-item" data-tag="야경">🌃
+                        야경</span> <span class="tag-item" data-tag="전통">🏮
+                        전통</span> <span class="tag-item" data-tag="현지체험">👘
+                        현지체험</span> <span class="tag-item" data-tag="소수정예">👥
+                        소수정예</span>
                     </div>
                   </div>
 
                   <div class="mb-3">
-                    <label class="form-label fw-bold">커스텀 태그 추가</label>
+                    <label class="form-label fw-bold">태그 추가</label>
                     <div class="input-group">
                       <input type="text" class="form-control"
                         placeholder="태그 입력 후 Enter" id="customTagInput">
@@ -292,7 +283,8 @@
                       <span class="badge bg-primary me-1">태그</span>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div
+                      class="d-flex justify-content-between align-items-center">
                       <div class="bg-light p-2 rounded">
                         <small> <i class="bi bi-people me-1"></i>
                           <strong id="previewParticipants">0/0명</strong>

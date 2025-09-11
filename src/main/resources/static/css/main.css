@@ -148,6 +148,7 @@ to {
 }
 }
 
+
 /* Notification Sidebar */
 
 .sidebar-header{
@@ -188,3 +189,9 @@ to {
 .sidebar-overlay.show {
   display: block;
 }
+
+.form-control-plaintextname{
+	margin-left:20px;
+	padding-top:80px;
+}
+

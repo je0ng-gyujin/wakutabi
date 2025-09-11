@@ -13,10 +13,7 @@
 
 <link rel="stylesheet" th:href="@{/css/member.css}">
   <style>
-    
 
-    
-    
   </style>
   </th:block>
 </head>
@@ -29,9 +26,9 @@
      <img src="/image/icon.png"alt="Wakutabi" height="50" class="me-2">
     <h4 class="mb-4">Login</h4>
 
-    <form>
-      <input type="text" class="form-control" placeholder="아이디 입력">
-      <input type="password" class="form-control" placeholder="패스워드 입력">
+    <form th:action="@{/login}" method="post"> 
+      <input type="text" class="form-control" name="username" placeholder="아이디 입력">
+      <input type="password" class="form-control" name="password" placeholder="패스워드 입력">
       <button type="submit" class="btn login-btn w-100 mb-3">로그인</button>
       <div class="form-check text-start">
         <input type="checkbox" class="form-check-input" id="keepLogin">

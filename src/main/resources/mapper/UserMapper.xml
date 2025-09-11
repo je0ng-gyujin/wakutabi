@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.UserMapper">
+	
+	
+	<select id="countByUsername" resultType="int">
+		select count(*) from users where username = #{username}
+	</select>
+	
+	
+	<insert id="insertUser" parameterType="com.wakutabi.domain.UserDto">
+		insert into users (username,password,nickname,birth,email) values 
+		(#{username},#{password},#{nickname},#{birth},#{email})
+	</insert>
+	<select id="findByUsername" resultType="com.wakutabi.domain.UserDto">
+		select * from users where username=#{username}
+	</select>
+</mapper>

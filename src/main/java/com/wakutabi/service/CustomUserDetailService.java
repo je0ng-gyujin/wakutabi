@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.wakutabi.domain.UserDto;
+import com.wakutabi.domain.SignUpDto;
 import com.wakutabi.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class CustomUserDetailService implements UserDetailsService  {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserDto dto = userMapper.findByUsername(username);
+		SignUpDto dto = userMapper.findByUsername(username);
 		if(dto==null) {
 			throw new UsernameNotFoundException("사용자를 찾을 수 없다"+username);
 		}

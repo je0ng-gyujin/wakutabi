@@ -3,10 +3,12 @@ package com.wakutabi.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class UserDto {
+@Builder
+public class SignUpDto {
 	private String username; 
 	private String nickname;                    
 	private String password; 

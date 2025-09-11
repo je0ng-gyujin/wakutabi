@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.wakutabi.domain.UserDto;
+import com.wakutabi.domain.SignUpDto;
 import com.wakutabi.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class UserController {
 	private final UserService userService;
 	
 	@PostMapping("/signup")
-	public String signRegister(UserDto user) {
+	public String signRegister(SignUpDto user) {
 		userService.register(user);
 		return "redirect:/";
 	}	

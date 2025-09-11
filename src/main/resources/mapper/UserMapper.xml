@@ -8,11 +8,11 @@
 	</select>
 	
 	
-	<insert id="insertUser" parameterType="com.wakutabi.domain.UserDto">
+	<insert id="insertUser" parameterType="com.wakutabi.domain.SignUpDto">
 		insert into users (username,password,nickname,birth,email) values 
 		(#{username},#{password},#{nickname},#{birth},#{email})
 	</insert>
-	<select id="findByUsername" resultType="com.wakutabi.domain.UserDto">
+	<select id="findByUsername" resultType="com.wakutabi.domain.LoginDto">
 		select * from users where username=#{username}
 	</select>
 </mapper>

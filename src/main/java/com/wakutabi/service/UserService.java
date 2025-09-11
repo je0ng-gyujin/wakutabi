@@ -3,7 +3,7 @@ package com.wakutabi.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.wakutabi.domain.UserDto;
+import com.wakutabi.domain.SignUpDto;
 import com.wakutabi.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class UserService {
 		return result;
 	}
 	
-	public void register(UserDto user) {
+	public void register(SignUpDto user) {
 		String pw = passwordEncoder.encode(user.getPassword());
 		
 		user.setPassword(pw);

@@ -33,6 +33,9 @@ body {
     position: relative; /* 자식의 절대위치 기준 */
 }
 
+h2{
+	color:var(--accent-color);
+}
 h3.fw-bold {
     margin-bottom: 10px;
 }
@@ -132,13 +135,10 @@ button.btn-primary:hover {
 }
 
 .delete-id{
-	display: flex;
+  display: flex;
   justify-content: flex-end; /* 오른쪽 정렬 */
   gap: 10px; /* 버튼 사이 간격 */
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: calc(100% - 40px); /* padding 감안 */
+  margin-top: 24px; /* 버튼과 위 요소 간격 */
 }
 
 .delete-id button{
@@ -168,4 +168,16 @@ button.btn-primary:hover {
 .delete-id a:hover{
 	text-decoration: underline;
     color: #003399;
+}
+.custom-file-label {
+	 background-color: var(--primary-color); /* 원하는 색상 */
+}
+
+#other-reason-row input {
+    flex: 1;
+    border: none;
+    background-color: #eef5ff;
+    padding: 8px;
+    font-size: 1rem;
+    outline: none;
 }

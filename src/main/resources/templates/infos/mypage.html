@@ -20,8 +20,9 @@
         <div class="col-md-3 border-end">
             <h5 class="fw-bold mb-4">My page</h5>
             <ul class="list-unstyled">
-                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark fw-bold">프로필</a></li>
                 <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 문의 내역</a></li>
                 <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
                 <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
                 <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
@@ -32,7 +33,7 @@
         <div class="col-md-9">
         <div class="mb-4">
         	<img src="/image/member.png" class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
-            <h3 class="form-control-plaintextname">닉네임</h3>
+            <h2 class="form-control-plaintextname">닉네임</h2>
 		</div>
 		<p class="text-muted">자기소개.</p>
             <form method="post" th:action="@{/user/update}">

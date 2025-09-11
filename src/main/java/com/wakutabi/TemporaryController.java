@@ -23,7 +23,7 @@ public class TemporaryController {
 	}
 
 
-	@GetMapping("{folder:layouts|users|travels|infos}/{filename}")
+	@GetMapping("{folder:layouts|users|travels|infos|admins}/{filename}")
 	String show(@PathVariable("folder") String folder, @PathVariable("filename") String filename) {
 		log.info("filename = {}", filename);
 		return folder + "/" + filename;

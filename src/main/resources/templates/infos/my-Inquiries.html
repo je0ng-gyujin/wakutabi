@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 문의 내역</title>
+<th:block layout:fragment="head">
+	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+	<script defer src="/js/main.js"></script>
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+  <div class="container shadow p-4 rounded">
+    <div class="row">
+        <!-- 사이드메뉴 -->
+        <div class="col-md-3 border-end">
+            <h5 class="fw-bold mb-4">My page</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark fw-bold">내 문의 내역</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
+            </ul>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="col-md-9">
+            
+                <h2>내 문의 내역</h2>
+                <table class="table table-striped mt-4">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>문의 유형</th>
+        <th>상태</th>
+        <th>작성일</th>
+        <th>상세보기</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>3</td>
+        <td>결제 오류 관련 문의</td>
+        <td>결제</td>
+        <td><span class="badge bg-success">답변 완료</span></td>
+        <td>2025-08-30</td>
+        <td><a href="#" class="btn btn-sm btn-primary">보기</a></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>비밀번호 변경 요청</td>
+        <td>계정</td>
+        <td><span class="badge bg-warning">답변 대기</span></td>
+        <td>2025-08-28</td>
+        <td><a href="#" class="btn btn-sm btn-primary">보기</a></td>
+      </tr>
+      <!-- 반복 데이터 -->
+    </tbody>
+  </table>
+
+  <!-- 페이징 -->
+  <nav aria-label="Page navigation example">
+  	<div class="d-flex justify-content-end mb-3">
+	  <a href="user-inquiry" class="btn btn-primary">문의 작성</a>
+	</div>
+    <ul class="pagination justify-content-center">
+      <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">이전</a></li>
+      <li class="page-item active"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item"><a class="page-link" href="#">다음</a></li>
+    </ul>
+  </nav>
+               
+            
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

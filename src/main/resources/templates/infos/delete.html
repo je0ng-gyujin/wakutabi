@@ -6,9 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyPage</title>
+<title>회원 탈퇴</title>
 <th:block layout:fragment="head">
 	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+	<script defer src="/js/mypage.js"></script>
 </th:block>
 </head>
 
@@ -22,8 +23,9 @@
             <ul class="list-unstyled">
                 <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
                 <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 문의 내역</a></li>
                 <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
-                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark fw-bold">회원 탈퇴</a></li>
                 <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
             </ul>
         </div>
@@ -45,6 +47,10 @@
 				    <option value="other">기타</option>
 				  </select>
 			  </div>
+			  <div class="form-row" id="other-reason-row" style="display:none;">
+					    <label for="otherReason">기타 사유</label>
+					    <input type="text" id="otherReason" name="otherReason" placeholder="사유를 입력해주세요">
+					</div>
 			  <div class="delete-id">
 				  <button type="submit">탈퇴하기</button>
 				  <a href="#">취소</a>

@@ -134,26 +134,25 @@
                   </div>
                 </div>
 
-                <!-- 비공개 여행 팁 -->
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                   <label for="travelTip" class="form-label h6">여행
                     팁 (선택사항)</label>
                   <textarea class="form-control" id="travelTip" rows="3"
                     placeholder="다른 여행자들에게 도움이 될만한 팁이나 주의사항이 있다면 알려주세요"></textarea>
-                </div>
+                </div> -->
 
                 <!-- 공개 설정 -->
                 <div class="mb-4">
                   <label class="form-label h6">공개 설정</label>
                   <div class="form-check">
                     <input class="form-check-input" type="radio"
-                      name="visibility" id="public" value="public"
+                      name="ispublic" id="public" value="true"
                       checked> <label class="form-check-label"
                       for="public"> 전체 공개 - 모든 사용자가 볼 수 있습니다 </label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio"
-                      name="visibility" id="members" value="members">
+                      name="ispublic" id="members" value="false">
                     <label class="form-check-label" for="members">
                       동행자만 공개 - 함께 여행한 사람들만 볼 수 있습니다 </label>
                   </div>
@@ -161,13 +160,12 @@
 
                 <!-- 버튼 -->
                 <div class="d-flex gap-3 justify-content-end">
-                  <button type="button"
+                  <!-- <button type="button"
                     class="btn btn-outline-secondary btn-lg">임시저장</button>
                   <button type="button"
-                    class="btn btn-wakutabi-outline btn-lg">미리보기</button>
+                    class="btn btn-wakutabi-outline btn-lg">미리보기</button> -->
                   <button type="submit"
-                    class="btn btn-wakutabi-primary btn-lg">후기
-                    등록</button>
+                    class="btn btn-wakutabi-primary btn-lg">후기 등록</button>
                 </div>
               </form>
             </div>

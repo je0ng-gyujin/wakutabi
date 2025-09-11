@@ -1,39 +1,3 @@
-// 커스텀 태그 추가 기능
-document.getElementById('addTagBtn').addEventListener('click', function() {
-	addCustomTag();
-});
-
-document.getElementById('customTagInput').addEventListener('keypress', function(e) {
-	if (e.key === 'Enter') {
-		e.preventDefault();
-		addCustomTag();
-	}
-});
-
-function addCustomTag() {
-	const input = document.getElementById('customTagInput');
-	const container = document.getElementById('customTagsContainer');
-	const tagText = input.value.trim();
-
-	if (tagText) {
-		// 기존 안내 문구 제거
-		const helpText = container.querySelector('.text-muted');
-		if (helpText) helpText.remove();
-
-		// 새 태그 생성
-		const tagElement = document.createElement('span');
-		tagElement.className = 'tag-item-input';
-		tagElement.innerHTML = `
-            ${tagText}
-            <span class="remove-tag" onclick="this.parentElement.remove()">&times;</span>
-        `;
-
-		container.appendChild(tagElement);
-		input.value = '';
-		updatePreview();
-	}
-}
-
 // 이미지 업로드 기능
 const imageUploadArea = document.getElementById('imageUploadArea');
 const imageInput = document.getElementById('imageInput');
@@ -81,12 +45,12 @@ function handleFiles(files) {
 
 // 미리보기 업데이트 기능
 function updatePreview() {
-	const title = document.querySelector('input[placeholder*="여행 제목"]').value || '여행 제목을 입력하세요';
+	const title = document.querySelector('#title').value || '여행 제목을 입력하세요';
 	const region = document.querySelector('select[required]').value || '지역';
 	const description = document.querySelector('textarea[placeholder*="여행의 매력"]').value || '여행 설명을 입력하세요';
 	const totalPeople = document.querySelector('select[required]:nth-of-type(2)').value || '0';
 
-	document.getElementById('previewTitle').textContent = title;
+	document.getElementById('#previewTitle').textContent = title;
 	document.getElementById('previewRegion').textContent = region === 'hokkaido' ? '홋카이도' :
 		region === 'honshu' ? '혼슈' :
 			region === 'shikoku' ? '시코쿠' :
@@ -122,21 +86,6 @@ function updatePreview() {
 			tagsContainer.appendChild(span);
 		}
 	});
-
-	// 커스텀 태그
-	document.querySelectorAll('.tag-item-input').forEach(tag => {
-		const span = document.createElement('span');
-		span.className = 'badge bg-primary me-1 mb-1';
-		span.textContent = tag.textContent.replace('×', '').trim();
-		tagsContainer.appendChild(span);
-	});
-
-	if (tagsContainer.children.length === 0) {
-		const span = document.createElement('span');
-		span.className = 'badge bg-secondary me-1';
-		span.textContent = '태그';
-		tagsContainer.appendChild(span);
-	}
 }
 
 // 실시간 미리보기 업데이트를 위한 이벤트 리스너

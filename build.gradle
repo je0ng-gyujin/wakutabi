@@ -37,6 +37,10 @@ dependencies {
 
 	// Author: 탁영복
 	// Description: Lombok 추가
+	/**
+	 * @author 탁영복
+	 * @description lombok 라이브러리 의존성 추가 및 테스트 환경 설정
+	 */
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/clean}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <th:block layout:fragment="head">
+        <link rel="stylesheet" th:href="@{/css/admin.css}">
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    </th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+    <div class="container shadow p-4 bg-white rounded">
+        <div class="row">
+            <!-- 사이드메뉴 -->
+            <div class="col-md-3 border-end sidebar">
+                <h5 class="fw-bold mb-4">관리자</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><a href="#" class="text-decoration-none">회원 관리</a></li>
+                    <li class="mb-3"><a href="#" class="text-decoration-none">문의 목록</a></li>
+                    <li class="mb-3"><a href="/" class="text-decoration-none">홈으로</a></li>
+                    <li class="mb-3"><a href="#" class="text-decoration-none text-red">로그아웃</a></li>
+                </ul>
+            </div>
+
+            <!-- 메인 컨텐츠 -->
+            <div class="col-md-9">
+                <!-- 페이지 제목 -->
+                <div class="mb-4">
+                    <h2 class="admin-title"><i class="fas fa-users-cog me-2"></i>회원 관리</h2>
+                </div>
+
+                <!-- 검색 및 필터 -->
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-5 mb-2">
+                        <input type="text" class="form-control" placeholder="이름 또는 이메일 검색">
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <select class="form-select">
+                            <option value="">가입일순</option>
+                            <option value="recent">최근 가입</option>
+                            <option value="old">오래된 가입</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-2 d-grid">
+                        <button class="btn btn-custom"><i class="fas fa-search me-1"></i>검색</button>
+                    </div>
+                </div>
+
+                <!-- 회원 목록 -->
+                <div class="content-card">
+                    <h5><i class="fas fa-users me-2"></i>회원 목록</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>이름</th>
+                                    <th>이메일</th>
+                                    <th>가입일</th>
+                                    <th>상태</th>
+                                    <th class="text-center">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 예시 데이터 -->
+                                <tr>
+                                    <td>홍길동</td>
+                                    <td>hong@email.com</td>
+                                    <td>2024-08-30</td>
+                                    <td><span class="badge bg-success">활동중</span></td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary">보기</button>
+										<button class="btn btn-sm btn-outline-danger">정지</button>
+										<button class="btn btn-sm btn-outline-warning">해제</button>
+                                    </td>
+                                </tr>
+
+                                <!-- 회원 없음 처리 -->
+                                <tr th:if="${#lists.isEmpty(users)}">
+                                    <td colspan="5" class="text-center text-muted">등록된 회원이 없습니다.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- content-card -->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

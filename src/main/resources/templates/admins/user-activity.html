@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/clean}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <th:block layout:fragment="head">
+        <link rel="stylesheet" th:href="@{/css/admin.css}">
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    </th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+    <div class="container shadow p-4 bg-white rounded">
+        <div class="row">
+            <!-- 사이드메뉴 -->
+            <div class="col-md-3 border-end sidebar">
+                <h5 class="fw-bold mb-4">관리자</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><a href="#" class="text-decoration-none">회원 관리</a></li>
+                    <li class="mb-3"><a href="#" class="text-decoration-none">문의 목록</a></li>
+                    <li class="mb-3"><a href="/" class="text-decoration-none">홈으로</a></li>
+                    <li class="mb-3"><a href="#" class="text-decoration-none text-red">로그아웃</a></li>
+                </ul>
+            </div>
+
+            <!-- 메인 컨텐츠 -->
+            <div class="col-md-9">
+                <!-- 페이지 제목 -->
+                <div class="mb-4">
+                    <h2 class="admin-title"><i class="fas fa-users-cog me-2"></i>회원 활동 정보</h2>
+                </div>
+
+		    <!-- 유저 기본 정보 -->
+		    <div class="card mb-4 shadow-sm d-flex flex-row justify-content-between align-items-start p-3">
+		        <div class="card-body">
+		            <h5 class="card-title mb-3">👤 사용자 정보</h5>
+		            <p><strong>이름:</strong> 김철수</p>
+		            <p><strong>이메일:</strong> chulsoo@example.com</p>
+		            <p><strong>가입일:</strong> 2023-07-10</p>
+		        </div>
+		        <div>
+		        	<img src="/image/member.png" class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
+		        </div>
+		    </div>
+		
+		    <!-- 여행 일정 요약 -->
+		    <div class="card mb-4 shadow-sm">
+		        <div class="card-body">
+		            <h5 class="card-title mb-3">🧳 여행 일정 요약</h5>
+		            <ul class="list-group">
+		                <li class="list-group-item">
+		                    <strong>도쿄 먹방 여행</strong> (2024.10.15 ~ 2024.10.18)
+		                    <span class="badge bg-success ms-2">완료</span>
+		                </li>
+		                <li class="list-group-item">
+		                    <strong>교토 전통 체험</strong> (2025.03.20 ~ 2025.03.23)
+		                    <span class="badge bg-warning ms-2">예정</span>
+		                </li>
+		            </ul>
+		        </div>
+		    </div>
+		
+		    <!-- 사용자가 작성한 후기 -->
+		    <div class="card mb-4 shadow-sm">
+		        <div class="card-body">
+		            <h5 class="card-title mb-3">📝 사용자가 작성한 후기</h5>
+		            <div class="mb-2">
+		                <strong>하코네 온천 힐링 여행 후기</strong>
+		                <div class="d-flex align-items-center">
+			                <p class="small text-muted mb-0 me-2">“정말 힐링되는 여행이었어요. 온천도 좋고 숙소도 깔끔했어요!”</p>
+			                <div class="text-warning small d-flex align-items-center">
+							            <i class="bi bi-star-fill"></i>
+							            <i class="bi bi-star-fill"></i>
+							            <i class="bi bi-star-fill"></i>
+							            <i class="bi bi-star-fill"></i>
+							            <i class="bi bi-star-half"></i>
+						    </div>
+						</div>
+		            </div>
+		            <!-- 후기 항목 -->
+						<div class="mb-3">
+						    <strong>도쿄 먹방 여행 후기</strong>
+						    <div class="d-flex align-items-center">
+						        <p class="small text-muted mb-0 me-2">“긴자의 초밥집은 잊을 수 없어요. 다시 가고 싶네요!”</p>
+						        <div class="text-warning small d-flex align-items-center">
+						            <i class="bi bi-star-fill"></i>
+						            <i class="bi bi-star-fill"></i>
+						            <i class="bi bi-star-fill"></i>
+						            <i class="bi bi-star-fill"></i>
+						            <i class="bi bi-star-half"></i>
+						        </div>
+						    </div>
+						</div>
+		        </div>
+		    </div>
+		
+		    <!-- 유저에 대한 평가 후기 -->
+		    <div class="card mb-4 shadow-sm">
+		        <div class="card-body">
+		            <h5 class="card-title mb-3">🌟 다른 사용자들이 남긴 후기</h5>
+		            <div class="mb-2">
+		                <strong>정수현</strong> <span class="text-muted small">- 2024.11.01</span>
+		                <div class="d-flex align-items-center">
+		                <p class="small text-muted mb-0 me-2">“시간 약속을 잘 지키고 분위기를 좋게 만드는 사람이에요 :)”</p>
+		                 <!-- 별점 -->
+				            <div class="text-warning small d-flex align-items-center">
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-half"></i>
+				            </div>
+		            </div>
+		            <div>
+		            </div>
+		                <strong>이영희</strong> <span class="text-muted small">- 2024.10.20</span>
+		                <div class="d-flex align-items-center">
+		                <p class="small text-muted mb-0 me-2">“함께 여행하면 편안한 느낌! 추천합니다.”</p>
+		                <!-- 별점 -->
+				            <div class="text-warning small d-flex align-items-center">
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-fill"></i>
+				                <i class="bi bi-star-half"></i>
+				            </div>
+				        </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>    
+	</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin</title>
+<th:block layout:fragment="head">
+	<link rel="stylesheet" th:href="@{/css/admin.css}">
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+  <div class="container shadow p-4 bg-white rounded">
+    <div class="row">
+        <!-- 사이드메뉴 -->
+        <div class="col-md-3 border-end sidebar">
+            <h5 class="fw-bold mb-4">관리자</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 관리</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">문의 목록</a></li>
+                <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-red">로그아웃</a></li>
+            </ul>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="col-md-9">
+        <!-- 메인 콘텐츠 -->
+                <div class="col-md-9">
+                    <!-- 페이지 제목 -->
+                    <div class="mb-4">
+                        <h2 class="admin-title">
+                            <i class="fas fa-tachometer-alt me-2"></i>관리자 대시보드
+                        </h2>
+                    </div>
+
+                    <!-- 통계 카드 -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card text-center">
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <h4>1,247</h4>
+                                <p class="mb-0">총 회원 수</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card success text-center">
+                                <i class="fas fa-user-plus fa-2x mb-2"></i>
+                                <h4>43</h4>
+                                <p class="mb-0">신규 회원 (이번 달)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card warning text-center">
+                                <i class="fas fa-envelope fa-2x mb-2"></i>
+                                <h4>15</h4>
+                                <p class="mb-0">미처리 문의</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card info text-center">
+                                <i class="fas fa-chart-line fa-2x mb-2"></i>
+                                <h4>89%</h4>
+                                <p class="mb-0">시스템 상태</p>
+                            </div>
+                        </div>
+                      
+                     <!-- 최근 활동 -->
+                    <div class="row mb-4">
+                        <div class="col-md-12 mb-4">
+                            <div class="content-card">
+                                <h5><i class="fas fa-clock me-2"></i>최근 가입 회원</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>이름</th>
+                                                <th>이메일</th>
+                                                <th>가입일</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>김철수</td>
+                                                <td>kim@email.com</td>
+                                                <td>2024-09-09</td>
+                                            </tr>
+                                            <tr>
+                                                <td>박영희</td>
+                                                <td>park@email.com</td>
+                                                <td>2024-09-08</td>
+                                            </tr>
+                                            <tr>
+                                                <td>이민수</td>
+                                                <td>lee@email.com</td>
+                                                <td>2024-09-08</td>
+                                            </tr>
+                                            <tr>
+                                                <td>정수연</td>
+                                                <td>jung@email.com</td>
+                                                <td>2024-09-07</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-4">
+                            <div class="content-card">
+                                <h5>
+                                    <i class="fas fa-question-circle me-2"></i>최근 문의사항
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>제목</th>
+                                                <th>작성자</th>
+                                                <th>상태</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>로그인 오류 문의</td>
+                                                <td>홍길동</td>
+                                                <td><span class="badge bg-warning">대기중</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>회원탈퇴 문의</td>
+                                                <td>김영수</td>
+                                                <td><span class="badge bg-danger">미처리</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>기능 개선 제안</td>
+                                                <td>이수정</td>
+                                                <td><span class="badge bg-success">완료</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>비밀번호 재설정</td>
+                                                <td>박민호</td>
+                                                <td><span class="badge bg-warning">대기중</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    
+</body>
+
+
+</html>

@@ -3,6 +3,7 @@ package com.wakutabi.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.wakutabi.domain.LoginDto;
 import com.wakutabi.domain.SignUpDto;
 @Mapper
 public interface UserMapper {
@@ -11,5 +12,5 @@ public interface UserMapper {
 		//회원가입처리
 		int insertUser(SignUpDto user);
 		//로그인 처리
-		SignUpDto findByUsername(String username);
+		LoginDto findByUsername(String username);
 }

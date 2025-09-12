@@ -78,3 +78,29 @@ document.querySelectorAll('.tag-item').forEach(tag => {
 		tag.classList.toggle('selected');
 	});
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tagItems = document.querySelectorAll(".tag-item");
+  const tagInput = document.getElementById("tag");
+  let selectedTags = [];
+
+  tagItems.forEach(item => {
+    item.addEventListener("click", () => {
+      const tagValue = item.getAttribute("data-tag");
+
+      // 선택/해제 토글
+      if (selectedTags.includes(tagValue)) {
+        selectedTags = selectedTags.filter(tag => tag !== tagValue);
+        item.classList.remove("selected"); // 선택된 스타일 제거
+      } else {
+        selectedTags.push(tagValue);
+        item.classList.add("selected"); // 선택된 스타일 적용
+      }
+
+      // hidden input 값 업데이트 (콤마 구분)
+      tagInput.value = selectedTags.join(",");
+      console.log("현재 선택된 태그:", tagInput.value);
+    });
+  });
+});

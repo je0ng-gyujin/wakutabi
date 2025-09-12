@@ -60,7 +60,21 @@ CREATE TABLE trip_article_image (
 
 	CONSTRAINT fk_trip_article_image_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 );
+-- [여행후기 관련]
+-- 여행 리뷰
+CREATE TABLE trip_reviews(
+    id                 BIGINT       AUTO_INCREMENT PRIMARY KEY,                               -- 여행리뷰ID
+    user_id            BIGINT       NOT NULL,                                                 -- 여행참가자ID
+    trip_article_id    BIGINT       NOT NULL,                                                 -- 여행일정ID
+    rating             INT          NOT NULL,                                                 -- 평점
+    title              VARCHAR(50)  NOT NULL,                                                 -- 제목
+    content            TEXT,                                                                  -- 내용
+    is_public          BOOLEAN      NOT NULL DEFAULT FALSE,                                   -- 공개유무
+    created_at         DATETIME     NOT NULL CURRENT_TIMESTAMP,                               -- 생성일자
+    updated_at         DATETIME              CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   -- 수정일자
+    REFERENCES fk_trip_reviews_user_id         FOREIGN KEY (user_id)         REFERENCES users (id),
+    REFERENCES fk_trip_reviews_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
+):
 
--- 여행후기 관련
 
 -- 고객센터 관련

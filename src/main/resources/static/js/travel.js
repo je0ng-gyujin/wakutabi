@@ -142,3 +142,93 @@ $(document).ready(
 		    item.classList.toggle('active'); // 여러 개 선택 가능
 		  });
 		});
+		
+		const startDate = document.getElementById("startDate");
+		   const endDate = document.getElementById("endDate");
+		   const selectedPeriod = document.getElementById("selectedPeriod");
+
+		   startDate.addEventListener("change", () => {
+		     endDate.min = startDate.value; // 출발일 이후만 선택 가능
+		     updateSelectedPeriod();
+		   });
+
+		   endDate.addEventListener("change", () => {
+		     startDate.max = endDate.value; // 도착일 이전까지만 선택 가능
+		     updateSelectedPeriod();
+		   });
+
+		   function updateSelectedPeriod() {
+		     if (startDate.value && endDate.value) {
+		       selectedPeriod.textContent = `${startDate.value} ~ ${endDate.value}`;
+		     }
+		   }
+		   
+		   var slider = document.getElementById('slider');
+
+		   noUiSlider.create(slider, {
+		     start: [0, 2000000], // 초기값을 0~2000000으로 설정
+		     connect: true,
+		     range: {
+		       'min': 0,
+		       'max': 2000000
+		     }
+		   });
+
+		   var minInput = document.getElementById('minPrice');
+		   var maxInput = document.getElementById('maxPrice');
+
+		   // 슬라이더 → input 값 반영
+		   slider.noUiSlider.on('update', function(values, handle) {
+		     var value = Math.round(values[handle]);
+		     if (handle === 0) {
+		       minInput.value = value > 0 ? value : "";  // 0이면 비워둠
+		     } else {
+		       maxInput.value = value < 2000000 ? value : ""; // 최대값이면 비워둠
+		     }
+		   });
+
+		   // input → 슬라이더 값 반영
+		   minInput.addEventListener('change', function() {
+		     slider.noUiSlider.set([this.value || 0, null]);
+		   });
+
+		   maxInput.addEventListener('change', function() {
+		     slider.noUiSlider.set([null, this.value || 2000000]);
+		   });
+
+		   let selectedRegions = [];
+
+		   document.querySelectorAll(".region-item").forEach(btn => {
+		     btn.addEventListener("click", () => {
+		       const value = btn.value;
+
+		       if (selectedRegions.includes(value)) {
+		         // 이미 선택된 경우 → 해제
+		         selectedRegions = selectedRegions.filter(r => r !== value);
+		         btn.classList.remove("btn-primary", "text-white");
+		       } else {
+		         // 새로 선택
+		         selectedRegions.push(value);
+		         btn.classList.add("btn-primary", "text-white");
+		       }
+
+		       // hidden input에 값 넣기 (쉼표 구분)
+		       document.getElementById("regionInput").value = selectedRegions.join(",");
+		     });
+		   });
+
+		   let selectedTags = [];
+
+		   document.querySelectorAll(".tag-item").forEach(tag => {
+		     tag.addEventListener("click", () => {
+		       const tagValue = tag.dataset.tag;
+		       if (selectedTags.includes(tagValue)) {
+		         selectedTags = selectedTags.filter(t => t !== tagValue);
+		         tag.classList.remove("bg-primary", "text-white");
+		       } else {
+		         selectedTags.push(tagValue);
+		         tag.classList.add("bg-primary", "text-white");
+		       }
+		       document.getElementById("tagsInput").value = selectedTags.join(",");
+		     });
+		   });

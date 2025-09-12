@@ -14,6 +14,7 @@
 </head>
 
 <body>
+			
   <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
     <div class="container py-4">
       <!-- Page Header -->
@@ -39,7 +40,7 @@
                   </span> <input type="text"
                     class="form-control border-start-0 ps-0"
                     placeholder="여행지, 키워드로 검색해보세요..." id="searchInput"
-                    name="keyward">
+                    name="keyward" required>
                   <button class="btn btn-wakutabi-primary px-4"
                     type="submit">
                     <i class="bi bi-search me-2"></i>검색
@@ -49,30 +50,7 @@
               </div>
             </div>
 
-            <!-- Quick Filter Tags -->
-            <div class="row">
-              <div class="col-12">
-                <h6 class="mb-3 text-muted">주요 태그</h6>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                  <span class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="식도락">🍜 식도락</span> <span
-                    class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="온천">♨️ 온천</span> <span
-                    class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="문화">🏛️ 문화</span> <span
-                    class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="자연">🌲 자연</span> <span
-                    class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="쇼핑">🛍️ 쇼핑</span> <span
-                    class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="혼자">👤 혼자여행</span> <span
-                    class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="그룹">👥 그룹여행</span> <span
-                    class="badge tag-item px-3 py-2 rounded-pill"
-                    data-tag="액티비티">🏃 액티비티</span>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -81,7 +59,17 @@
       <div class="row">
         <!-- Sidebar Filters -->
         <div class="col-lg-3 mb-4">
+        <form action="/travels/search" method="get">
           <div class="filter-section p-3 shadow-sm sticky-top">
+          <div class="price-filter">
+			  <h5 class="mb-3">가격</h5>
+			  <div id="slider" style="margin:15px;"></div>
+			  <div class="d-flex mt-2 mb-3">
+			    <input type="number" id="minPrice" class="form-control me-2" placeholder="최소가격">
+			    <input type="number" id="maxPrice" class="form-control" placeholder="최대가격">
+			  </div>
+			</div>
+			
             <h5 class="mb-3">상세 필터</h5>
 
             <div class="accordion mb-4" id="regionAccordion">
@@ -96,6 +84,7 @@
 			    <div id="collapseRegion" class="accordion-collapse collapse" 
 			         aria-labelledby="headingRegion" data-bs-parent="#regionAccordion">
 			      <div class="accordion-body">
+			      <input type="hidden" id="regionInput" name="region">
 			        <div class="region-list">
 			          <button type="button" value="hokkaido" class="region-item">홋카이도</button>
 			          <button type="button" value="tohoku" class="region-item">도호쿠</button>
@@ -124,179 +113,59 @@
                             <option value="8+">8일 이상</option>
                         </select>
                     </div> -->
+                    <!-- 날짜 선택 팝업 -->
+			
+                    
             <div class="mb-4">
-              <h6 class="mb-2 text-muted">여행 기간</h6>
-
-              <h6 class="mb-2 mt-4 text-muted">2025년</h6>
-              <div class="month-btn-container">
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-jan"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-jan">1월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-feb"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-feb">2월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-mar"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-mar">3월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-apr"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-apr">4월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-may"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-may">5월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-jun"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-jun">6월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-jul"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-jul">7월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-aug"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-aug">8월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-sep"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-sep">9월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-oct"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-oct">10월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-nov"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-nov">11월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2025-dec"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2025-dec">12월</label>
-                </div>
-              </div>
-
-              <h6 class="mb-2 mt-4 text-muted">2026년</h6>
-              <div class="month-btn-container">
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-jan"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-jan">1월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-feb"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-feb">2월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-mar"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-mar">3월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-apr"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-apr">4월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-may"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-may">5월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-jun"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-jun">6월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-jul"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-jul">7월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-aug"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-aug">8월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-sep"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-sep">9월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-oct"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-oct">10월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-nov"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-nov">11월</label>
-                </div>
-                <div class="month-btn-col">
-                  <input type="checkbox" class="btn-check" id="2026-dec"
-                    autocomplete="off"> <label
-                    class="btn btn-outline-secondary btn-sm btn-month"
-                    for="2026-dec">12월</label>
-                </div>
-              </div>
+              <h5 class="mb-3">여행 기간</h5>
+              <p id="selectedPeriod" class="text-primary fw-bold"></p> <!-- 선택한 기간 표시 -->
+			<div class="mb-3">
+			  <label for="startDate" class="form-label">출발일</label>
+			  <input type="date" id="startDate" name="startDate" class="form-control form-control-lg">
+			</div>
+			<div class="mb-3">
+			  <label for="endDate" class="form-label">도착일</label>
+			  <input type="date" id="endDate" name="endDate" class="form-control form-control-lg">
+			</div>
             </div>
-
+			<!-- Quick Filter Tags -->
+			<h5 class="mb-3">주요 태그</h5>
+			<input type="hidden" id="tagsInput" name="tags">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <span class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="식도락">🍜 식도락</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="온천">♨️ 온천</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="문화">🏛️ 문화</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="자연">🌲 자연</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="쇼핑">🛍️ 쇼핑</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="혼자">👤 혼자여행</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="그룹">👥 그룹여행</span> <span
+                    class="badge tag-item px-3 py-2 rounded-pill"
+                    data-tag="액티비티">🏃 액티비티</span>
+                </div>
             <!-- 참가인원 필터 -->
             <div class="mb-4">
-              <h6 class="mb-2 text-muted">모집 인원</h6>
+              <h5 class="mb-3">모집 인원</h5>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox"
-                  id="small"> <label class="form-check-label"
+                  id="small" name="groupSize" value="small"> <label class="form-check-label"
                   for="small">소수 (2-4명)</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox"
-                  id="medium-group"> <label
+                  id="medium-group" name="groupSize" value="medium"> <label
                   class="form-check-label" for="medium-group">중간
                   (5-8명)</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox"
-                  id="large"> <label class="form-check-label"
+                  id="large" name="groupSize" value="large"> <label class="form-check-label"
                   for="large">대규모 (9명+)</label>
               </div>
             </div>
@@ -305,6 +174,7 @@
               적용</button>
             <button class="btn btn-outline-secondary w-100">초기화</button>
           </div>
+          </form>
         </div>
 
         <!-- Results Section -->

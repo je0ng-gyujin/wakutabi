@@ -61,6 +61,15 @@ CREATE TABLE trip_article_image (
 	CONSTRAINT fk_trip_article_image_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 );
 
--- 여행후기 관련
+-- [여행후기 관련]
+-- 사용자 간 리뷰
+CREATE TABLE user_by_user_review (
+    id                   BIGINT AUTO_INCREMENT PRIMARY KEY, -- 사용자 간 리뷰 고유ID
+    user_id              BIGINT NOT NULL,                   -- 주최자를 리뷰하는 유저 고유ID
+    reviewed_user_id     BIGINT NOT NULL,                   -- 리뷰를 받는 주최자 고유ID
+    rating               INT    NOT NULL,                   -- 별점
 
+    CONSTRAINT fk_user_by_user_review_user_id              FOREIGN KEY (user_id)              REFERENCES users (id),
+    CONSTRAINT fk_user_by_user_review_reviewed_user_id     FOREIGN KEY (reviewed_user_id)     REFERENCES users (id)
+);
 -- 고객센터 관련

@@ -39,7 +39,7 @@
                 </p>
               </div>
 
-              <form method="get" name="review" action="dokokaro"
+              <form method="post" name="review" action="https://httpbin.org/post"
                 enctype="multipart/form-data" id="reviewForm">
                 <!-- 전체 평점 -->
                 <div class="mb-4">
@@ -100,7 +100,7 @@
                     <small class="text-muted">JPG, PNG, GIF 파일만
                       업로드 가능 (최대 5장)</small>
                   </div>
-                  <input type="file" id="imageInput" multiple
+                  <input name="image" type="file" id="imageInput" multiple
                     accept="image/*" style="display: none;">
                   <div id="imagePreview" class="mt-3"></div>
                 </div>
@@ -112,25 +112,25 @@
                     여행자들은 어땠나요?</p>
                   <div class="row">
                     <th:block th:each="i : ${#numbers.sequence(1, 5)}">
-    <div class="col-md-6 mb-3">
-        <img
-            src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=50&amp;h=50&amp;fit=crop&amp;crop=face"
-            alt="참여자" class="participant-avatar"> <span
-            class="ms-2">박지훈</span>
-        <div class="rating-container">
-            <input type="radio" th:id="'star'+${i}+'_5'" th:name="'user'+${i}" value="5" class="d-none">
-            <label th:for="'star'+${i}+'_5'" class="rating-stars">★</label>
-            <input type="radio" th:id="'star'+${i}+'_4'" th:name="'user'+${i}" value="4" class="d-none">
-            <label th:for="'star'+${i}+'_4'" class="rating-stars">★</label>
-            <input type="radio" th:id="'star'+${i}+'_3'" th:name="'user'+${i}" value="3" class="d-none">
-            <label th:for="'star'+${i}+'_3'" class="rating-stars">★</label>
-            <input type="radio" th:id="'star'+${i}+'_2'" th:name="'user'+${i}" value="2" class="d-none">
-            <label th:for="'star'+${i}+'_2'" class="rating-stars">★</label>
-            <input type="radio" th:id="'star'+${i}+'_1'" th:name="'user'+${i}" value="1" class="d-none">
-            <label th:for="'star'+${i}+'_1'" class="rating-stars">★</label>
-        </div>
-    </div>
-</th:block>
+                      <div class="col-md-6 mb-3">
+                          <img
+                              src="/image/testuser.jpg" style="width:55px; height:55px;"
+                              alt="참여자" class="participant-avatar"> <span
+                              class="ms-2">박지훈</span>
+                          <div class="rating-container">
+                              <input type="radio" th:id="'star'+${i}+'_5'" th:name="'user'+${i}" value="5" class="d-none">
+                              <label th:for="'star'+${i}+'_5'" class="rating-stars">★</label>
+                              <input type="radio" th:id="'star'+${i}+'_4'" th:name="'user'+${i}" value="4" class="d-none">
+                              <label th:for="'star'+${i}+'_4'" class="rating-stars">★</label>
+                              <input type="radio" th:id="'star'+${i}+'_3'" th:name="'user'+${i}" value="3" class="d-none">
+                              <label th:for="'star'+${i}+'_3'" class="rating-stars">★</label>
+                              <input type="radio" th:id="'star'+${i}+'_2'" th:name="'user'+${i}" value="2" class="d-none">
+                              <label th:for="'star'+${i}+'_2'" class="rating-stars">★</label>
+                              <input type="radio" th:id="'star'+${i}+'_1'" th:name="'user'+${i}" value="1" class="d-none">
+                              <label th:for="'star'+${i}+'_1'" class="rating-stars">★</label>
+                          </div>
+                      </div>
+                    </th:block>
                   </div>
                 </div>
 

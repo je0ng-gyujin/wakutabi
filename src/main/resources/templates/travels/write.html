@@ -11,7 +11,7 @@
 
 </th:block>
 <link rel="stylesheet" th:href="@{/css/travel_edit.css}">
-<script defer th:src="@{/js/travel_edit.js}"></script>
+<script defer th:src="@{/js/travel_write.js}"></script>
 </head>
 
 <body>
@@ -31,8 +31,8 @@
           <!-- Registration Form -->
           <div class="col-lg-8">
             <div class="registration-container rounded-4 p-4 shadow-sm">
-              <form id="travelRegistrationForm" action="uploadurl"
-                method="get">
+              <form id="travelRegistrationForm" action="https://httpbin.org/post"
+                method="post" enctype="multipart/form-data">
                 <!-- 기본 정보 섹션 -->
                 <div class="form-section p-3 rounded mb-4">
                   <h5 class="mb-3 text-primary">
@@ -146,20 +146,20 @@
                   <div class="mb-3">
                     <p class="form-label fw-bold">이번 여행과 관련된 태그를
                       선택해주세요</p>
-                    <input type="hidden" id="tag" name="tag">
+                    <input type="hidden" id="tag" name="tag" value="">
                     <div class="tag-list">
-                      <span class="tag-item" data-tag="식도락">🍜 식도락</span>
-                      <span class="tag-item" data-tag="온천">♨️ 온천</span>
-                      <span class="tag-item" data-tag="문화">🏛️ 문화</span>
-                      <span class="tag-item" data-tag="자연">🌲 자연</span>
-                      <span class="tag-item" data-tag="쇼핑">🛍️ 쇼핑</span>
-                      <span class="tag-item" data-tag="액티비티">🏃 액티비티</span>
-                      <span class="tag-item" data-tag="힐링">🧘 힐링</span>
-                      <span class="tag-item" data-tag="모험">🎒 모험</span>
-                      <span class="tag-item" data-tag="야경">🌃 야경</span>
-                      <span class="tag-item" data-tag="전통">🏮 전통</span>
-                      <span class="tag-item" data-tag="현지체험">👘 현지체험</span>
-                      <span class="tag-item" data-tag="소수정예">👥 소수정예</span>
+                      <span class="tag-item" data-tag="food">🍜 식도락</span>
+                      <span class="tag-item" data-tag="shower">♨️ 온천</span>
+                      <span class="tag-item" data-tag="culture">🏛️ 문화</span>
+                      <span class="tag-item" data-tag="nature">🌲 자연</span>
+                      <span class="tag-item" data-tag="shopping">🛍️ 쇼핑</span>
+                      <span class="tag-item" data-tag="activity">🏃 액티비티</span>
+                      <span class="tag-item" data-tag="healing">🧘 힐링</span>
+                      <span class="tag-item" data-tag="adventure">🎒 모험</span>
+                      <span class="tag-item" data-tag="night">🌃 야경</span>
+                      <span class="tag-item" data-tag="traditional">🏮 전통</span>
+                      <span class="tag-item" data-tag="field">👘 현지체험</span>
+                      <span class="tag-item" data-tag="min">👥 소수정예</span>
                     </div>
                   </div>
                 </div>
@@ -196,13 +196,15 @@
                       <small class="text-muted">JPG, PNG, GIF 파일
                         지원 (최대 5MB)</small>
                     </div>
-                    <input type="file" id="imageInput" multiple
+                    <input name="image" type="file" id="imageInput" multiple
                       accept="image/*" style="display: none;">
+                    <input type="hidden" name="orderNumber" id="orderNumber">
                   </div>
-                  <div class="uploaded-images" id="uploadedImages"></div>
+                  <div class="uploaded-images" id="uploadedImages">
+                  </div>
                 </div>
 
-                <!-- 제출 버튼 -->
+                <!-- 제출 버튼 -->  
                 <div class="d-flex gap-3 justify-content-end">
                   <button type="button" class="btn btn-outline-secondary btn-lg px-4 d-none">임시저장</button>
                   <button type="submit"

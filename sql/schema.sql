@@ -92,7 +92,7 @@ CREATE TABLE trip_reviews (
     is_public          BOOLEAN      NOT NULL DEFAULT FALSE,                                   -- 공개유무
     created_at         DATETIME     NOT NULL CURRENT_TIMESTAMP,                               -- 생성일자
     updated_at         DATETIME              CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   -- 수정일자
-  
+
     CONSTRAINT fk_trip_reviews_user_id         FOREIGN KEY (user_id)         REFERENCES users (id),
     CONSTRAINT fk_trip_reviews_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 ):
@@ -192,15 +192,15 @@ CREATE TABLE qna_answers (
 -- [커뮤니티 관련]
 -- 커뮤니티 게시글
 CREATE TABLE community_article (
-    id          BIGINT       AUTO_INCREMENT PRIMARY KEY,                               -- 커뮤니티게시 고유ID
-    user_id     BIGINT       NOT NULL,                                                 -- 작성자ID
-    title       VARCHAR(50)  NOT NULL,                                                 -- 제목
-    content     TEXT,                                                                  -- 내용
-    image_path  VARCHAR(255),                                 -- 이미지
-    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,                               -- 생성일자
-    updated_at  DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   -- 수정일자
-    deleted_at  DATETIME,                                                                                                              -- 삭제일자
-  
+    id          BIGINT       AUTO_INCREMENT PRIMARY KEY,                                        -- 커뮤니티게시 고유ID
+    user_id     BIGINT       NOT NULL,                                                          -- 작성자ID
+    title       VARCHAR(50)  NOT NULL,                                                          -- 제목
+    content     TEXT,                                                                           -- 내용
+    image_path  VARCHAR(255),                                                                   -- 이미지
+    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,                                -- 생성일자
+    updated_at  DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,    -- 수정일자
+    deleted_at  DATETIME,                                                                       -- 삭제일자
+
     CONSTRAINT fk_community_article_user_id FOREIGN KEY (user_id) REFERENCES users (id)
 );
 -- 커뮤니티 댓글
@@ -212,7 +212,7 @@ CREATE TABLE community_comment (
     created_at      DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
     updated_at      DATETIME                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
     deleted_at      DATETIME,                                                                       -- 삭제일자
-  
+
     CONSTRAINT fk_community_comment_community_id    FOREIGN KEY (community_id)  REFERENCES  community_article   (id),
     CONSTRAINT fk_community_comment_user_id         FOREIGN KEY (user_id)       REFERENCES  users               (id)
 );

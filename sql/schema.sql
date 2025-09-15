@@ -16,17 +16,37 @@ CREATE TABLE users (
     updated_at DATETIME                                      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일자
     deleted_at DATETIME                                                                                             -- 삭제(탈퇴)일자
 );
--- (보류)사용자 선호도
-CREATE TABLE user_prefer (
-	id	       BIGINT     AUTO_INCREMENT PRIMARY KEY, -- 선호도 고유ID
-	user_id	   BIGINT	  NOT NULL,	                  -- 사용자ID
-	city	   BOOLEAN	            DEFAULT FALSE,    -- 도시선호타입
-	country	   BOOLEAN	            DEFAULT FALSE,    -- 시골선호타입
-	eating	   BOOLEAN	            DEFAULT FALSE,    -- 식도락선호타입
-	hot_spring BOOLEAN	            DEFAULT FALSE,    -- 온천선호타입
-	otaku	   BOOLEAN	            DEFAULT FALSE,    -- 오타쿠선호타입
+-- [태그 관련]
+-- 태그
+CREATE TABLE trip_tag (
+	id	          BIGINT      AUTO_INCREMENT PRIMARY KEY,  -- 트립태그 고유ID
+	foodie	      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 식도락
+	activity      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 액티비티
+	nature        BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 자연
+	otaku	      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 오타쿠
+	shopping      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 쇼핑
+	small_group	  BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 소수파
+	large_group	  BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 다수파
+	indoor	      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 실내파
+	outdoor	      BOOLEAN	  NOT NULL  DEFAULT FALSE      -- 실외파
+);
+-- 사용자 태그 중간테이블
+CREATE TABLE trip_tag_mid_users (
+    id           BIGINT   AUTO_INCREMENT,   -- 사용자태그 중간테이블 고유ID
+    user_id      BIGINT   NOT NULL,         -- 사용자 고유ID
+    trip_tag_id  BIGINT   NOT NULL,         -- 여행태그 고유ID
 
-	CONSTRAINT fk_user_prefer_user_id FOREIGN KEY (user_id) REFERENCES users (id)
+    CONSTRAINT fk_trip_tag_mid_users_user_id      FOREIGN KEY (user_id)      REFERENCES users (id),
+    CONSTRAINT fk_trip_tag_mid_users_trip_tag_id  FOREIGN KEY (trip_tag_id)  REFERENCES trip_tag (id)
+);
+-- 여행 태그 중간테이블
+CREATE TABLE trip_tag_mid_trip_article (
+    id                BIGINT   AUTO_INCREMENT,   -- 여행태그 중간테이블 고유ID
+    trip_tag_id       BIGINT   NOT NULL,         -- 여행태그 고유ID
+    trip_article_id   BIGINT   NOT NULL,         -- 여행일정 고유ID
+
+    CONSTRAINT fk_trip_tag_mid_trip_article_trip_tag_id      FOREIGN KEY (trip_tag_id)      REFERENCES trip_tag (id),
+    CONSTRAINT fk_trip_tag_mid_trip_article_trip_article_id  FOREIGN KEY (trip_article_id)  REFERENCES trip_article (id)
 );
 -- [여행등록 관련]
 -- 여행일정 등록

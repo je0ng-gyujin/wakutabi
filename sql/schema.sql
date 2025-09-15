@@ -16,7 +16,7 @@ CREATE TABLE users (
     updated_at DATETIME                                      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일자
     deleted_at DATETIME                                                                                             -- 삭제(탈퇴)일자
 );
--- 사용자 선호도
+-- (보류)사용자 선호도
 CREATE TABLE user_prefer (
 	id	       BIGINT     AUTO_INCREMENT PRIMARY KEY, -- 선호도 고유ID
 	user_id	   BIGINT	  NOT NULL,	                  -- 사용자ID
@@ -97,3 +97,79 @@ CREATE TABLE user_by_user_review (
 );
 
 -- 고객센터 관련
+-- Q&A 질문
+CREATE TABLE qna_questions (
+    id          BIGINT                                                      AUTO_INCREMENT PRIMARY KEY,                             -- Q&A 질문 고유ID
+    user_id     BIGINT                                          NOT NULL,                                                           -- 사용자ID
+    trip_id     BIGINT                                          NOT NULL,                                                           -- 여행일정ID(여행관련 질문인 경우)
+    type        ENUM('COMMON','ACCOUNT','PAYMENT','BUG',`ETC`)  NOT NULL    DEFAULT 'COMMON',                                       -- 질문유형('COMMON':일반,'ACCOUNT':계정,'PAYMENT':결제,'BUG':버그신고,'ETC':기타)
+    title       VARCHAR(50)                                     NOT NULL,                                                           -- 제목
+    content     TEXT                                            NOT NULL,                                                           -- 내용
+    email       VARCHAR(255)                                    NOT NULL,                                                           -- 이메일
+    is_public   BOOLEAN                                         NOT NULL    DEFAULT TRUE,                                           -- 공개여부(기본 공개)
+    status      ENUM('PROCESSING','DONE')                       NOT NULL    DEFAULT 'PENDING',                                      -- 상태('PENDING':답변대기,'DONE':답변완료)
+    created_at  DATETIME                                        NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
+    updated_at  DATETIME                                                    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
+    deleted_at  DATETIME,                                                                                                           -- 삭제일자
+
+    CONSTRAINT fk_qna_questions_user_id FOREIGN KEY (user_id) REFERENCES users (id),
+    CONSTRAINT fk_qna_questions_trip_id FOREIGN KEY (trip_id) REFERENCES trip_article (id)
+);
+-- Q&A 질문 이미지
+CREATE TABLE qna_question_images (
+    id              BIGINT          AUTO_INCREMENT PRIMARY KEY,   -- Q&A 질문 이미지 고유ID
+    question_id     BIGINT          NOT NULL,                     -- Q&A 질문ID
+    image_path      VARCHAR(255),                                 -- 이미지
+    order_number    INT,                                          -- 이미지 표시 순서
+
+    CONSTRAINT fk_qna_question_images_question_id FOREIGN KEY (question_id) REFERENCES qna_questions (id)
+);
+-- Q&A 답변
+CREATE TABLE qna_answers (
+    id          BIGINT                  AUTO_INCREMENT PRIMARY KEY,                             -- Q&A 답변 고유ID
+    user_id     BIGINT      NOT NULL,                                                           -- Q&A 질문자ID
+    question_id BIGINT      NOT NULL,                                                           -- Q&A 질문글ID
+    title       VARCHAR(50) NOT NULL,                                                           -- 제목
+    content     TEXT        NOT NULL,                                                           -- 내용
+    created_at  DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
+    updated_at  DATETIME                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
+
+    CONSTRAINT fk_qna_answers_user_id       FOREIGN KEY (user_id)       REFERENCES users            (id),
+    CONSTRAINT fk_qna_answers_question_id   FOREIGN KEY (question_id)   REFERENCES qna_questions    (id)
+);
+-- [커뮤니티 관련]
+-- 커뮤니티 게시글
+CREATE TABLE community_article (
+    id          BIGINT       AUTO_INCREMENT PRIMARY KEY,                               -- 커뮤니티게시 고유ID
+    user_id     BIGINT       NOT NULL,                                                 -- 작성자ID
+    title       VARCHAR(50)  NOT NULL,                                                 -- 제목
+    content     TEXT,                                                                  -- 내용
+    image_path  VARCHAR(255),                                 -- 이미지
+    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,                               -- 생성일자
+    updated_at  DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   -- 수정일자
+    deleted_at  DATETIME,                                                                                                              -- 삭제일자
+  
+    CONSTRAINT fk_community_article_user_id FOREIGN KEY (user_id) REFERENCES users (id)
+);
+-- 커뮤니티 댓글
+CREATE TABLE community_comment (
+    id              BIGINT      AUTO_INCREMENT  PRIMARY KEY,                                        -- 커뮤니티 댓글 고유ID
+    community_id    BIGINT      NOT NULL,                                                           -- 커뮤니티 게시글ID
+    user_id         BIGINT      NOT NULL,                                                           -- 작성자ID
+    content         TEXT        NOT NULL,                                                           -- 내용
+    created_at      DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
+    updated_at      DATETIME                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
+    deleted_at      DATETIME,                                                                       -- 삭제일자
+  
+    CONSTRAINT fk_community_comment_community_id    FOREIGN KEY (community_id)  REFERENCES  community_article   (id),
+    CONSTRAINT fk_community_comment_user_id         FOREIGN KEY (user_id)       REFERENCES  users               (id)
+);
+-- 커뮤니티 게시글 이미지
+CREATE TABLE community_article_image (
+    id              BIGINT          AUTO_INCREMENT  PRIMARY KEY,    -- 커뮤니티 게시글 이미지 고유ID
+    community_id    BIGINT          NOT NULL,                       -- 커뮤니티 게시글ID
+    image_path      VARCHAR(255),                                   -- 이미지
+    order_number    INT,                                            -- 이미지 표시 순서
+
+    CONSTRAINT fk_community_article_image_community_id  FOREIGN KEY (community_id)  REFERENCES  community_article (id)
+);

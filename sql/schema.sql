@@ -95,6 +95,7 @@ CREATE TABLE user_by_user_review (
     CONSTRAINT fk_user_by_user_review_user_id              FOREIGN KEY (user_id)              REFERENCES users (id),
     CONSTRAINT fk_user_by_user_review_reviewed_user_id     FOREIGN KEY (reviewed_user_id)     REFERENCES users (id)
 );
+-- [채팅관련]
 -- 채팅방
 CREATE TABLE chat_room (
     id                 BIGINT    AUTO_INCREMENT PRIMARY KEY,   -- 채팅방ID
@@ -127,6 +128,7 @@ CREATE TABLE chat_message (
 
     CONSTRAINT fk_chat_message_sender_id  FOREIGN KEY (user_id)  REFERENCES users (id)
 );
+-- [알림]
 -- 시스템알림
 CREATE TABLE system_notification (
     id           BIGINT        AUTO_INCREMENT PRIMARY KEY,  -- 알림ID

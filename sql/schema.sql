@@ -95,7 +95,7 @@ CREATE TABLE user_by_user_review (
     CONSTRAINT fk_user_by_user_review_user_id              FOREIGN KEY (user_id)              REFERENCES users (id),
     CONSTRAINT fk_user_by_user_review_reviewed_user_id     FOREIGN KEY (reviewed_user_id)     REFERENCES users (id)
 );
--- [채팅관련]
+-- [채팅 관련]
 -- 채팅방
 CREATE TABLE chat_room (
     id                 BIGINT    AUTO_INCREMENT PRIMARY KEY,   -- 채팅방ID
@@ -103,7 +103,32 @@ CREATE TABLE chat_room (
     created_at         DATETIME  NOT NULL CURRENT_TIMESTAMP,   -- 생성일자
     deleted_at         DATETIME,                               -- 삭제일자
 
--- 고객센터 관련
+    CONSTRAINT  fk_chat_room_trip_article_id    FOREIGN KEY (trip_article_id)   REFERENCES  trip_article (id)
+);
+-- 채팅참가자
+CREATE TABLE chat_participants (
+    id             BIGINT                              AUTO_INCREMENT PRIMARY KEY,       -- 채팅참가자ID
+    chat_room_id   BIGINT                              NOT NULL,                         -- 채팅방ID
+    user_id        BIGINT                              NOT NULL,                         -- 채팅에 참여한 유저ID
+    role           ENUM('HOST','PARTICIPANT')          NOT NULL DEFAULT 'PARTICIPANT',   -- 역할
+    status         ENUM('ACTIVE','LEFT','COMPLETED')   NOT NULL DEFAULT 'ACTIVE',        -- 참가상태
+    created_at     DATETIME                            NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
+    deleted_at     DATETIME,                                                             -- 삭제일자
+
+    CONSTRAINT fk_chat_participants_chat_room_id  FOREIGN KEY (chat_room_id)  REFERENCES chat_room (id),
+    CONSTRAINT fk_chat_participants_user_id       FOREIGN KEY (user_id)       REFERENCES users (id)
+);
+-- 채팅메세지
+CREATE TABLE chat_message (
+    id             BIGINT        AUTO_INCREMENT PRIMARY KEY,       -- 채팅 메세지ID
+    sender_id      BIGINT        NOT NULL,                         -- 발신자
+    message        TEXT          NOT NULL,                         -- 메세지
+    created_at     DATETIME      NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
+    deleted_at     DATETIME,                                       -- 삭제일자
+
+    CONSTRAINT fk_chat_message_sender_id  FOREIGN KEY (user_id)  REFERENCES users (id)
+);
+-- [고객센터 관련]
 -- Q&A 질문
 CREATE TABLE qna_questions (
     id          BIGINT                                                      AUTO_INCREMENT PRIMARY KEY,                             -- Q&A 질문 고유ID
@@ -181,30 +206,7 @@ CREATE TABLE community_article_image (
     CONSTRAINT fk_community_article_image_community_id  FOREIGN KEY (community_id)  REFERENCES  community_article (id)
     CONSTRAINT fk_chat_room_trip_article_id  FOREIGN KEY (trip_article_id)  REFERENCES trip_article (id)
 );
--- 채팅참가자
-CREATE TABLE chat_participants (
-    id             BIGINT                              AUTO_INCREMENT PRIMARY KEY,       -- 채팅참가자ID
-    chat_room_id   BIGINT                              NOT NULL,                         -- 채팅방ID
-    user_id        BIGINT                              NOT NULL,                         -- 채팅에 참여한 유저ID
-    role           ENUM('HOST','PARTICIPANT')          NOT NULL DEFAULT 'PARTICIPANT',   -- 역할
-    status         ENUM('ACTIVE','LEFT','COMPLETED')   NOT NULL DEFAULT 'ACTIVE',        -- 참가상태
-    created_at     DATETIME                            NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
-    deleted_at     DATETIME,                                                             -- 삭제일자
-
-    CONSTRAINT fk_chat_participants_chat_room_id  FOREIGN KEY (chat_room_id)  REFERENCES chat_room (id),
-    CONSTRAINT fk_chat_participants_user_id       FOREIGN KEY (user_id)       REFERENCES users (id)
-);
--- 채팅메세지
-CREATE TABLE chat_message (
-    id             BIGINT        AUTO_INCREMENT PRIMARY KEY,       -- 채팅 메세지ID
-    sender_id      BIGINT        NOT NULL,                         -- 발신자
-    message        TEXT          NOT NULL,                         -- 메세지
-    created_at     DATETIME      NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
-    deleted_at     DATETIME,                                       -- 삭제일자
-
-    CONSTRAINT fk_chat_message_sender_id  FOREIGN KEY (user_id)  REFERENCES users (id)
-);
--- [알림]
+-- [알림 관련]
 -- 시스템알림
 CREATE TABLE system_notification (
     id           BIGINT        AUTO_INCREMENT PRIMARY KEY,  -- 알림ID

@@ -1,52 +1,43 @@
 -- [사용자 관련]
 -- 사용자
 CREATE TABLE users (
-    id         BIGINT                               AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
-    username   VARCHAR(20)                          NOT NULL UNIQUE,                                                -- 사용자ID
-    nickname   VARCHAR(20)                          NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
-    password   VARCHAR(256)                         NOT NULL,                                                       -- 비밀번호
-    gender     ENUM('MALE','FEMALE','OTHER','NONE') NOT NULL DEFAULT 'NONE',                                        -- 성별
-    birth      DATETIME                             NOT NULL,                                                       -- 생일
-    email      VARCHAR(255)                         NOT NULL UNIQUE,                                                -- 이메일
-    is_public  BOOLEAN                              NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
-    role       ENUM('USER','ADMIN')                 NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
-    status     ENUM('ACTIVE','SUSPENDED','BANNED')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPEND':일시정지, 'BANNED':영구정지)
-    introduce  TEXT,                                                                                                -- 자기소개글
-    created_at DATETIME                             NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
-    updated_at DATETIME                                      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일자
-    deleted_at DATETIME                                                                                             -- 삭제(탈퇴)일자
+    id         BIGINT                                      AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
+    username   VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 사용자ID
+    nickname   VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
+    password   VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
+    gender     ENUM('MALE','FEMALE','OTHER','NONE')        NOT NULL DEFAULT 'NONE',                                        -- 성별
+    birth      DATETIME                                    NOT NULL,                                                       -- 생일
+    email      VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
+    is_public  BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
+    role       ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
+    status     ENUM('ACTIVE','SUSPENDED','BANNED','EXIT')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPEND':일시정지, 'BANNED':영구정지)
+    introduce  TEXT,                                                                                                       -- 자기소개글
+    created_at DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
+    updated_at DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일자
 );
 -- [태그 관련]
 -- 태그
 CREATE TABLE trip_tag (
-	id	          BIGINT      AUTO_INCREMENT PRIMARY KEY,  -- 트립태그 고유ID
-	foodie	      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 식도락
-	activity      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 액티비티
-	nature        BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 자연
-	otaku	      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 오타쿠
-	shopping      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 쇼핑
-	small_group	  BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 소수파
-	large_group	  BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 다수파
-	indoor	      BOOLEAN	  NOT NULL  DEFAULT FALSE,     -- 실내파
-	outdoor	      BOOLEAN	  NOT NULL  DEFAULT FALSE      -- 실외파
+	id	          BIGINT       AUTO_INCREMENT PRIMARY KEY,  -- 트립태그 고유ID
+	tag_name      VARCHAR(50)  NOT NULl UNIQUE              -- 태그 이름
 );
 -- 사용자 태그 중간테이블
 CREATE TABLE trip_tag_mid_users (
-    id           BIGINT   AUTO_INCREMENT,   -- 사용자태그 중간테이블 고유ID
     user_id      BIGINT   NOT NULL,         -- 사용자 고유ID
     trip_tag_id  BIGINT   NOT NULL,         -- 여행태그 고유ID
 
-    CONSTRAINT fk_trip_tag_mid_users_user_id      FOREIGN KEY (user_id)      REFERENCES users (id),
-    CONSTRAINT fk_trip_tag_mid_users_trip_tag_id  FOREIGN KEY (trip_tag_id)  REFERENCES trip_tag (id)
+    PRIMARY KEY (user_id, trip_tag_id),
+    CONSTRAINT fk_trip_tag_mid_users_user_id     FOREIGN KEY (user_id)     REFERENCES users    (id),
+    CONSTRAINT fk_trip_tag_mid_users_trip_tag_id FOREIGN KEY (trip_tag_id) REFERENCES trip_tag (id)
 );
 -- 여행 태그 중간테이블
 CREATE TABLE trip_tag_mid_trip_article (
-    id                BIGINT   AUTO_INCREMENT,   -- 여행태그 중간테이블 고유ID
     trip_tag_id       BIGINT   NOT NULL,         -- 여행태그 고유ID
     trip_article_id   BIGINT   NOT NULL,         -- 여행일정 고유ID
 
-    CONSTRAINT fk_trip_tag_mid_trip_article_trip_tag_id      FOREIGN KEY (trip_tag_id)      REFERENCES trip_tag (id),
-    CONSTRAINT fk_trip_tag_mid_trip_article_trip_article_id  FOREIGN KEY (trip_article_id)  REFERENCES trip_article (id)
+    PRIMARY KEY (trip_article_id, trip_tag_id),
+    CONSTRAINT fk_trip_tag_mid_trip_article_trip_tag_id     FOREIGN KEY (trip_tag_id)     REFERENCES trip_tag     (id),
+    CONSTRAINT fk_trip_tag_mid_trip_article_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 );
 -- [여행등록 관련]
 -- 여행일정 등록
@@ -74,8 +65,6 @@ CREATE TABLE trip_article_image (
 	id	                   BIGINT          AUTO_INCREMENT PRIMARY KEY,   -- 여행등록 이미지 고유ID
 	trip_article_id	       BIGINT	       NOT NULL,                     -- 여행등록ID
 	image_path             VARCHAR(255),                                 -- 이미지
-	image_path_content	   TEXT,                                         -- 이미지내용
-	is_main	               BOOLEAN,                                      -- 메인이미지 여부
 	order_number           INT,                                          -- 이미지 표시 순서
 
 	CONSTRAINT fk_trip_article_image_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
@@ -89,11 +78,10 @@ CREATE TABLE trip_reviews (
     rating             INT          NOT NULL,                                                 -- 평점
     title              VARCHAR(50)  NOT NULL,                                                 -- 제목
     content            TEXT,                                                                  -- 내용
-    is_public          BOOLEAN      NOT NULL DEFAULT FALSE,                                   -- 공개유무
+    is_public          BOOLEAN      NOT NULL,                                                 -- 공개유무
     created_at         DATETIME     NOT NULL CURRENT_TIMESTAMP,                               -- 생성일자
-    updated_at         DATETIME              CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   -- 수정일자
 
-    CONSTRAINT fk_trip_reviews_user_id         FOREIGN KEY (user_id)         REFERENCES users (id),
+    CONSTRAINT fk_trip_reviews_user_id         FOREIGN KEY (user_id)         REFERENCES users        (id),
     CONSTRAINT fk_trip_reviews_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 ):
 -- 여행 리뷰 이미지
@@ -107,13 +95,15 @@ CREATE TABLE trip_reviews_image (
 );
 -- 사용자 간 리뷰
 CREATE TABLE user_by_user_review (
-    id                   BIGINT AUTO_INCREMENT PRIMARY KEY, -- 사용자 간 리뷰 고유ID
-    user_id              BIGINT NOT NULL,                   -- 주최자를 리뷰하는 유저 고유ID
-    reviewed_user_id     BIGINT NOT NULL,                   -- 리뷰를 받는 주최자 고유ID
-    rating               INT    NOT NULL,                   -- 별점
+    id                      BIGINT  AUTO_INCREMENT PRIMARY KEY, -- 사용자 간 리뷰 고유ID
+    user_id                 BIGINT  NOT NULL,                   -- 주최자를 리뷰하는 유저 고유ID
+    chat_participants_id    BIGINT  NOT NULL,                   -- 여행 참가자(마지막 챗참가자) ID
+    reviewed_user_id        BIGINT  NOT NULL,                   -- 리뷰를 받는 주최자 고유ID
+    rating                  INT     NOT NULL,                   -- 별점
 
-    CONSTRAINT fk_user_by_user_review_user_id              FOREIGN KEY (user_id)              REFERENCES users (id),
-    CONSTRAINT fk_user_by_user_review_reviewed_user_id     FOREIGN KEY (reviewed_user_id)     REFERENCES users (id)
+    CONSTRAINT fk_user_by_user_review_user_id              FOREIGN KEY (user_id)              REFERENCES users             (id),
+    CONSTRAINT fk_user_by_user_review_reviewed_user_id     FOREIGN KEY (reviewed_user_id)     REFERENCES users             (id),
+    CONSTRAINT fk_user_by_user_review_chat_participants_id FOREIGN KEY (chat_participants_id) REFERENCES chat_participants (id)
 );
 -- [채팅 관련]
 -- 채팅방
@@ -123,7 +113,7 @@ CREATE TABLE chat_room (
     created_at         DATETIME  NOT NULL CURRENT_TIMESTAMP,   -- 생성일자
     deleted_at         DATETIME,                               -- 삭제일자
 
-    CONSTRAINT  fk_chat_room_trip_article_id    FOREIGN KEY (trip_article_id)   REFERENCES  trip_article (id)
+    CONSTRAINT  fk_chat_room_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES  trip_article (id)
 );
 -- 채팅참가자
 CREATE TABLE chat_participants (
@@ -135,37 +125,38 @@ CREATE TABLE chat_participants (
     created_at     DATETIME                            NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
     deleted_at     DATETIME,                                                             -- 삭제일자
 
-    CONSTRAINT fk_chat_participants_chat_room_id  FOREIGN KEY (chat_room_id)  REFERENCES chat_room (id),
-    CONSTRAINT fk_chat_participants_user_id       FOREIGN KEY (user_id)       REFERENCES users (id)
+    CONSTRAINT fk_chat_participants_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id),
+    CONSTRAINT fk_chat_participants_user_id      FOREIGN KEY (user_id)      REFERENCES users     (id)
 );
 -- 채팅메세지
 CREATE TABLE chat_message (
     id             BIGINT        AUTO_INCREMENT PRIMARY KEY,       -- 채팅 메세지ID
-    sender_id      BIGINT        NOT NULL,                         -- 발신자
-    message        TEXT          NOT NULL,                         -- 메세지
+    user_id        BIGINT        NOT NULL,                         -- 발신자
+    chat_room_id   BIGINT        NOT NULL,                         -- 채팅방ID
+    message        TEXT              NULL,                         -- 메세지
+    image_path     VARCHAR(255)      NULL,                         -- 이미지
     created_at     DATETIME      NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
     deleted_at     DATETIME,                                       -- 삭제일자
 
-    CONSTRAINT fk_chat_message_sender_id  FOREIGN KEY (user_id)  REFERENCES users (id)
+    CONSTRAINT fk_chat_message_user_id           FOREIGN KEY (user_id)      REFERENCES users     (id),
+    CONSTRAINT fk_chat_participants_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id)
 );
 -- [고객센터 관련]
 -- Q&A 질문
 CREATE TABLE qna_questions (
-    id          BIGINT                                                      AUTO_INCREMENT PRIMARY KEY,                             -- Q&A 질문 고유ID
-    user_id     BIGINT                                          NOT NULL,                                                           -- 사용자ID
-    trip_id     BIGINT                                          NOT NULL,                                                           -- 여행일정ID(여행관련 질문인 경우)
-    type        ENUM('COMMON','ACCOUNT','PAYMENT','BUG',`ETC`)  NOT NULL    DEFAULT 'COMMON',                                       -- 질문유형('COMMON':일반,'ACCOUNT':계정,'PAYMENT':결제,'BUG':버그신고,'ETC':기타)
-    title       VARCHAR(50)                                     NOT NULL,                                                           -- 제목
-    content     TEXT                                            NOT NULL,                                                           -- 내용
-    email       VARCHAR(255)                                    NOT NULL,                                                           -- 이메일
-    is_public   BOOLEAN                                         NOT NULL    DEFAULT TRUE,                                           -- 공개여부(기본 공개)
-    status      ENUM('PROCESSING','DONE')                       NOT NULL    DEFAULT 'PENDING',                                      -- 상태('PENDING':답변대기,'DONE':답변완료)
-    created_at  DATETIME                                        NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
-    updated_at  DATETIME                                                    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
-    deleted_at  DATETIME,                                                                                                           -- 삭제일자
+    id                  BIGINT                                          AUTO_INCREMENT PRIMARY KEY,                                         -- Q&A 질문 고유ID
+    user_id             BIGINT                                          NOT NULL,                                                           -- 사용자ID
+    trip_article_id     BIGINT                                          NOT NULL,                                                           -- 여행일정ID(여행관련 질문인 경우)
+    type                ENUM('COMMON','ACCOUNT','PAYMENT','BUG','ETC')  NOT NULL   DEFAULT 'COMMON',                                        -- 질문유형('COMMON':일반,'ACCOUNT':계정,'PAYMENT':결제,'BUG':버그신고,'ETC':기타)
+    title               VARCHAR(50)                                     NOT NULL,                                                           -- 제목
+    content             TEXT                                            NOT NULL,                                                           -- 내용
+    status              ENUM('PROCESSING','DONE')                       NOT NULL   DEFAULT 'PROCESSING',                                    -- 상태('PENDING':답변대기,'DONE':답변완료)
+    created_at          DATETIME                                        NOT NULL   DEFAULT CURRENT_TIMESTAMP,                               -- 생성일자
+    updated_at          DATETIME                                                   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   -- 수정일자
+    deleted_at          DATETIME,                                                                                                           -- 삭제일자
 
-    CONSTRAINT fk_qna_questions_user_id FOREIGN KEY (user_id) REFERENCES users (id),
-    CONSTRAINT fk_qna_questions_trip_id FOREIGN KEY (trip_id) REFERENCES trip_article (id)
+    CONSTRAINT fk_qna_questions_user_id         FOREIGN KEY (user_id)         REFERENCES users        (id),
+    CONSTRAINT fk_qna_questions_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 );
 -- Q&A 질문 이미지
 CREATE TABLE qna_question_images (
@@ -178,53 +169,15 @@ CREATE TABLE qna_question_images (
 );
 -- Q&A 답변
 CREATE TABLE qna_answers (
-    id          BIGINT                  AUTO_INCREMENT PRIMARY KEY,                             -- Q&A 답변 고유ID
-    user_id     BIGINT      NOT NULL,                                                           -- Q&A 질문자ID
-    question_id BIGINT      NOT NULL,                                                           -- Q&A 질문글ID
-    title       VARCHAR(50) NOT NULL,                                                           -- 제목
-    content     TEXT        NOT NULL,                                                           -- 내용
-    created_at  DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
-    updated_at  DATETIME                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
+    id               BIGINT      AUTO_INCREMENT PRIMARY KEY,                                         -- Q&A 답변 고유ID
+    user_id          BIGINT      NOT NULL,                                                           -- Q&A 질문자ID
+    qna_question_id  BIGINT      NOT NULL,                                                           -- Q&A 질문글ID
+    content          TEXT        NOT NULL,                                                           -- 내용
+    created_at       DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
+    updated_at       DATETIME                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
 
-    CONSTRAINT fk_qna_answers_user_id       FOREIGN KEY (user_id)       REFERENCES users            (id),
-    CONSTRAINT fk_qna_answers_question_id   FOREIGN KEY (question_id)   REFERENCES qna_questions    (id)
-);
--- [커뮤니티 관련]
--- 커뮤니티 게시글
-CREATE TABLE community_article (
-    id          BIGINT       AUTO_INCREMENT PRIMARY KEY,                                        -- 커뮤니티게시 고유ID
-    user_id     BIGINT       NOT NULL,                                                          -- 작성자ID
-    title       VARCHAR(50)  NOT NULL,                                                          -- 제목
-    content     TEXT,                                                                           -- 내용
-    image_path  VARCHAR(255),                                                                   -- 이미지
-    created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,                                -- 생성일자
-    updated_at  DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,    -- 수정일자
-    deleted_at  DATETIME,                                                                       -- 삭제일자
-
-    CONSTRAINT fk_community_article_user_id FOREIGN KEY (user_id) REFERENCES users (id)
-);
--- 커뮤니티 댓글
-CREATE TABLE community_comment (
-    id              BIGINT      AUTO_INCREMENT  PRIMARY KEY,                                        -- 커뮤니티 댓글 고유ID
-    community_id    BIGINT      NOT NULL,                                                           -- 커뮤니티 게시글ID
-    user_id         BIGINT      NOT NULL,                                                           -- 작성자ID
-    content         TEXT        NOT NULL,                                                           -- 내용
-    created_at      DATETIME    NOT NULL    DEFAULT CURRENT_TIMESTAMP,                              -- 생성일자
-    updated_at      DATETIME                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- 수정일자
-    deleted_at      DATETIME,                                                                       -- 삭제일자
-
-    CONSTRAINT fk_community_comment_community_id    FOREIGN KEY (community_id)  REFERENCES  community_article   (id),
-    CONSTRAINT fk_community_comment_user_id         FOREIGN KEY (user_id)       REFERENCES  users               (id)
-);
--- 커뮤니티 게시글 이미지
-CREATE TABLE community_article_image (
-    id              BIGINT          AUTO_INCREMENT  PRIMARY KEY,    -- 커뮤니티 게시글 이미지 고유ID
-    community_id    BIGINT          NOT NULL,                       -- 커뮤니티 게시글ID
-    image_path      VARCHAR(255),                                   -- 이미지
-    order_number    INT,                                            -- 이미지 표시 순서
-
-    CONSTRAINT fk_community_article_image_community_id  FOREIGN KEY (community_id)  REFERENCES  community_article (id)
-    CONSTRAINT fk_chat_room_trip_article_id  FOREIGN KEY (trip_article_id)  REFERENCES trip_article (id)
+    CONSTRAINT fk_qna_answers_user_id         FOREIGN KEY (user_id)         REFERENCES users         (id),
+    CONSTRAINT fk_qna_answers_qna_question_id FOREIGN KEY (qna_question_id) REFERENCES qna_questions (id)
 );
 -- [알림 관련]
 -- 시스템알림
@@ -233,11 +186,10 @@ CREATE TABLE system_notification (
     user_id      BIGINT        NOT NULL ,                   -- 알림 받는 사용자
     type         VARCHAR(50)   NOT NULL,                    -- 알림 종류 (TRIP_START, REVIEW_RECEIVED, PASSWORD_RESET 등)
     title        VARCHAR(100)  NOT NULL,                    -- 알림 제목
-    message      TEXT          NOT NULL,                    -- 알림 상세 내용
     link         VARCHAR(255),                              -- 관련 페이지 (예: trip_detail?id=123)
     is_read      BOOLEAN       NOT NULL DEFAULT FALSE,      -- 읽음 여부
     created_at   DATETIME      NOT NULL CURRENT_TIMESTAMP,  -- 생성일자
     expired_at   DATETIME,                                  -- 유효기간 (선택)
 
-    CONSTRAINT fk_system_notification_user_id  FOREIGN KEY (user_id)  REFERENCES users (id)
+    CONSTRAINT fk_system_notification_user_id FOREIGN KEY (user_id) REFERENCES users (id)
 );

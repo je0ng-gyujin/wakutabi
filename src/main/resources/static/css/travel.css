@@ -25,6 +25,13 @@
 	transform: translateY(-2px);
 }
 
+.no-hover-effects .tag-item:hover { /* 원본 호버 효과를 초기화합니다. */
+	background: var(--secondary-color); /* 기존 배경색으로 되돌리기 */
+	color: var(--accent-color); /* 기존 글자색으로 되돌리기 */
+	transform: none; /* transform 효과 제거 */
+	cursor: default;
+}
+
 .tag-item.active {
 	background: var(--primary-color);
 	color: white;

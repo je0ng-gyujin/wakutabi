@@ -20,9 +20,6 @@ public class MultipartConfig {
         // 디스크 임시 저장 기준
         factory.setFileSizeThreshold(DataSize.parse("20MB"));
 
-        // Tomcat용 파일 개수 제한 설정 (기본 10개)
-        factory.setMaxRequestSize(DataSize.ofBytes(50)); // 한번에 50개 파일까지 허용
-
         return factory.createMultipartConfig();
     }
 }

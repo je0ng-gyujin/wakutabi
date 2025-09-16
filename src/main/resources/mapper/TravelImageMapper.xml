@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.TravelImageMapper">
+
+	<insert id="insertTravelImage" parameterType="com.wakutabi.domain.TravelImageDto">
+		INSERT INTO trip_article_image
+		(trip_article_id,image_path,image_content,is_main,order_number)
+		VALUES
+		(#{tripArticleId},#{imagePath},#{imageContent},#{isMain},#{orderNumber})		
+	</insert>
+
+</mapper>

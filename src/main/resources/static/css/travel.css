@@ -4,6 +4,12 @@
 	background: var(--glass-bg);
 	backdrop-filter: blur(10px);
 	border: 1px solid var(--glass-border);
+	position: sticky;
+  top: 0; /* 상단에 닿으면 여기부터 고정 */
+  z-index: 1030; /* 다른 요소들보다 위로 */
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
 }
 
 .tag-filter {

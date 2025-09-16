@@ -27,20 +27,21 @@
       </div>
 
       <!-- Search Container -->
-      <div class="row mb-4">
+      <div class="search-container rounded-4 p-2 mb-4 shadow-sm">
+      <div class="row">
         <div class="col-12">
-          <div class="search-container rounded-4 p-4 shadow-sm">
+          
             <!-- Search Input -->
             <div class="row mb-3">
               <div class="col-12">
-              <form action="/travels/search" method="get">
+              <form id="searchForm" action="/travels/search" method="get">
                 <div class="input-group input-group-lg">
                   <span class="input-group-text bg-white border-end-0">
                     <i class="bi bi-search text-primary"></i>
                   </span> <input type="text"
                     class="form-control border-start-0 ps-0"
                     placeholder="여행지, 키워드로 검색해보세요..." id="searchInput"
-                    name="keyward" required>
+                    name="keyward">
                   <button class="btn btn-wakutabi-primary px-4"
                     type="submit">
                     <i class="bi bi-search me-2"></i>검색
@@ -49,8 +50,6 @@
                 </form>
               </div>
             </div>
-
-            
           </div>
         </div>
       </div>
@@ -59,14 +58,14 @@
       <div class="row">
         <!-- Sidebar Filters -->
         <div class="col-lg-3 mb-4">
-        <form action="/travels/search" method="get">
+        <form id="filterForm" action="/travels/search" method="get">
           <div class="filter-section p-3 shadow-sm sticky-top">
           <div class="price-filter">
 			  <h5 class="mb-3">가격</h5>
 			  <div id="slider" style="margin:15px;"></div>
 			  <div class="d-flex mt-2 mb-3">
-			    <input type="number" id="minPrice" class="form-control me-2" placeholder="최소가격">
-			    <input type="number" id="maxPrice" class="form-control" placeholder="최대가격">
+			    <input type="number" id="minPrice" name="minPrice" class="form-control me-2" placeholder="최소가격">
+			    <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="최대가격">
 			  </div>
 			</div>
 			

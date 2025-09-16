@@ -135,6 +135,27 @@ $(document).ready(
 							.addClass(
 								'btn-wakutabi-outline');
 					});
+					
+					// 🔥 검색폼 submit 시, 필터값을 같이 넣어주기
+					  $("#searchForm").on("submit", function (e) {
+					    const filterForm = $("#filterForm"); // 사이드바 필터 form
+					    const searchForm = $(this); // 검색 form
+
+					    // filterForm 안의 input, select, checkbox 값들을 검색 form에 hidden으로 복사
+					    filterForm.find("input, select").each(function () {
+					      if (this.name && this.value) {
+					        // 이미 searchForm에 같은 name이 있으면 추가 안함
+					        if (searchForm.find(`[name='${this.name}']`).length === 0) {
+					          $("<input>").attr({
+					            type: "hidden",
+					            name: this.name,
+					            value: this.value
+					          }).appendTo(searchForm);
+					        }
+					      }
+					    });
+					  });
+					  
 		});
 		
 		document.querySelectorAll('.region-item').forEach(item => {

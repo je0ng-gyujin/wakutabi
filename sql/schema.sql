@@ -1,5 +1,6 @@
 -- [사용자 관련]
 -- 사용자
+use wakutabi;
 CREATE TABLE users (
     id         BIGINT                               AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
     username   VARCHAR(20)                          NOT NULL UNIQUE,                                                -- 사용자ID
@@ -16,6 +17,7 @@ CREATE TABLE users (
     updated_at DATETIME                                      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일자
     deleted_at DATETIME                                                                                             -- 삭제(탈퇴)일자
 );
+select * from users;
 -- 사용자 선호도
 CREATE TABLE user_prefer (
 	id	       BIGINT   AUTO_INCREMENT PRIMARY KEY, -- 선호도 고유ID

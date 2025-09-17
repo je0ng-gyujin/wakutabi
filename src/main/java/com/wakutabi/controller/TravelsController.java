@@ -42,6 +42,7 @@ public class TravelsController {
     }
 
     @PostMapping("travelupload")
+    @ResponseBody
     public String uploadTravel(TravelUploadDto uploadDto, Principal principal) throws IllegalStateException, IOException {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
@@ -85,6 +86,7 @@ public class TravelsController {
         travelEditService.insertTravelEdit(dto);
 
         // 5. 이미지 파일 처리 및 DB 저장
+        log.info("uploadDto.getImages = {}", uploadDto.getImages());
         List<MultipartFile> images = uploadDto.getImages();
         if (images != null && !images.isEmpty()) {
             for (int i = 0; i < images.size(); i++) {
@@ -93,7 +95,7 @@ public class TravelsController {
 
                 if (!file.isEmpty()) {
                     // 업로드 폴더 보장
-                    String uploadDir = "/uploads/";
+                    String uploadDir = "C:/uploads/";
                     File dir = new File(uploadDir);
                     if (!dir.exists()) {
                         dir.mkdirs();
@@ -107,7 +109,7 @@ public class TravelsController {
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
                     imgDto.setImagePath(savePath);
-                    imgDto.setImageContent(file.getOriginalFilename()); // 원본 파일명 저장
+                    imgDto.setImagePathContent(file.getOriginalFilename()); // 원본 파일명 저장
                     imgDto.setIsMain(i == 0); // 첫 번째 이미지를 메인으로 설정
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
@@ -117,5 +119,6 @@ public class TravelsController {
         }
 
         return "등록 완료! 생성된 글 ID: " + dto.getId();
+        
     }
 }

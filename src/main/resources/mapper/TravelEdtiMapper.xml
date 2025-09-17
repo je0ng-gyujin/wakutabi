@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.TravelEditMapper">
 
-    <insert id="insertTravelEdit" parameterType="com.wakutabi.domain.TravelEditDto" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertTravelEdit" parameterType="com.wakutabi.domain.TravelEditDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO trip_article
         (host_user_id, location, start_date, end_date, maxParticipants,
          age_limit, gender_limit, title, content, estimated_cost, status)

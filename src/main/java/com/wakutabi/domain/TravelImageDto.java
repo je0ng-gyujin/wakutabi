@@ -7,7 +7,7 @@ public class TravelImageDto {
 	private Long id;
     private Long tripArticleId;
     private String imagePath;
-    private String imageContent;
+    private String imagePathContent;
     private Boolean isMain;
     private Integer orderNumber;
 }

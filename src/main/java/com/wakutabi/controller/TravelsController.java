@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,7 +59,7 @@ public class TravelsController {
                 objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class)
             );
         } catch (IOException e) {
-            return "Failed to parse orderNumber JSON.";
+        	return "redirect:/errorPage";
         }
 
         // 3. 게시글 DTO 생성 및 값 설정

@@ -79,14 +79,14 @@ CREATE TABLE trip_reviews (
     title              VARCHAR(50)  NOT NULL,                                                 -- 제목
     content            TEXT,                                                                  -- 내용
     is_public          BOOLEAN      NOT NULL,                                                 -- 공개유무
-    created_at         DATETIME     NOT NULL CURRENT_TIMESTAMP,                               -- 생성일자
+    created_at         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,                       -- 생성일자
 
     CONSTRAINT fk_trip_reviews_user_id         FOREIGN KEY (user_id)         REFERENCES users        (id),
     CONSTRAINT fk_trip_reviews_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 ):
 -- 여행 리뷰 이미지
 CREATE TABLE trip_reviews_image (
-    id                  BIGINT          NOT NULL   AUTO_INCREMENT,   -- 여행리뷰 이미지ID
+    id                  BIGINT          AUTO_INCREMENT PRIMARY KEY,  -- 여행리뷰 이미지ID
     trip_reviews_id     BIGINT          NOT NULL,                    -- 여행리뷰ID
     image_path          VARCHAR(255)    NULL,                        -- 이미지
     order_number        INT             NULL,                        -- 이미지 표시 순서
@@ -110,33 +110,33 @@ CREATE TABLE user_by_user_review (
 CREATE TABLE chat_room (
     id                 BIGINT    AUTO_INCREMENT PRIMARY KEY,   -- 채팅방ID
     trip_article_id    BIGINT    NOT NULL,                     -- 여행일정ID
-    created_at         DATETIME  NOT NULL CURRENT_TIMESTAMP,   -- 생성일자
+    created_at         DATETIME  NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- 생성일자
     deleted_at         DATETIME,                               -- 삭제일자
 
     CONSTRAINT  fk_chat_room_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES  trip_article (id)
 );
 -- 채팅참가자
 CREATE TABLE chat_participants (
-    id             BIGINT                              AUTO_INCREMENT PRIMARY KEY,       -- 채팅참가자ID
-    chat_room_id   BIGINT                              NOT NULL,                         -- 채팅방ID
-    user_id        BIGINT                              NOT NULL,                         -- 채팅에 참여한 유저ID
-    role           ENUM('HOST','PARTICIPANT')          NOT NULL DEFAULT 'PARTICIPANT',   -- 역할
-    status         ENUM('ACTIVE','LEFT','COMPLETED')   NOT NULL DEFAULT 'ACTIVE',        -- 참가상태
-    created_at     DATETIME                            NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
-    deleted_at     DATETIME,                                                             -- 삭제일자
+    id             BIGINT                              AUTO_INCREMENT PRIMARY KEY,          -- 채팅참가자ID
+    chat_room_id   BIGINT                              NOT NULL,                            -- 채팅방ID
+    user_id        BIGINT                              NOT NULL,                            -- 채팅에 참여한 유저ID
+    role           ENUM('HOST','PARTICIPANT')          NOT NULL DEFAULT 'PARTICIPANT',      -- 역할
+    status         ENUM('ACTIVE','LEFT','COMPLETED')   NOT NULL DEFAULT 'ACTIVE',           -- 참가상태
+    created_at     DATETIME                            NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+    deleted_at     DATETIME,                                                                -- 삭제일자
 
     CONSTRAINT fk_chat_participants_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id),
     CONSTRAINT fk_chat_participants_user_id      FOREIGN KEY (user_id)      REFERENCES users     (id)
 );
 -- 채팅메세지
 CREATE TABLE chat_message (
-    id             BIGINT        AUTO_INCREMENT PRIMARY KEY,       -- 채팅 메세지ID
-    user_id        BIGINT        NOT NULL,                         -- 발신자
-    chat_room_id   BIGINT        NOT NULL,                         -- 채팅방ID
-    message        TEXT              NULL,                         -- 메세지
-    image_path     VARCHAR(255)      NULL,                         -- 이미지
-    created_at     DATETIME      NOT NULL CURRENT_TIMESTAMP,       -- 생성일자
-    deleted_at     DATETIME,                                       -- 삭제일자
+    id             BIGINT        AUTO_INCREMENT PRIMARY KEY,          -- 채팅 메세지ID
+    user_id        BIGINT        NOT NULL,                            -- 발신자
+    chat_room_id   BIGINT        NOT NULL,                            -- 채팅방ID
+    message        TEXT              NULL,                            -- 메세지
+    image_path     VARCHAR(255)      NULL,                            -- 이미지
+    created_at     DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+    deleted_at     DATETIME,                                          -- 삭제일자
 
     CONSTRAINT fk_chat_message_user_id           FOREIGN KEY (user_id)      REFERENCES users     (id),
     CONSTRAINT fk_chat_participants_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id)
@@ -182,14 +182,14 @@ CREATE TABLE qna_answers (
 -- [알림 관련]
 -- 시스템알림
 CREATE TABLE system_notification (
-    id           BIGINT        AUTO_INCREMENT PRIMARY KEY,  -- 알림ID
-    user_id      BIGINT        NOT NULL ,                   -- 알림 받는 사용자
-    type         VARCHAR(50)   NOT NULL,                    -- 알림 종류 (TRIP_START, REVIEW_RECEIVED, PASSWORD_RESET 등)
-    title        VARCHAR(100)  NOT NULL,                    -- 알림 제목
-    link         VARCHAR(255),                              -- 관련 페이지 (예: trip_detail?id=123)
-    is_read      BOOLEAN       NOT NULL DEFAULT FALSE,      -- 읽음 여부
-    created_at   DATETIME      NOT NULL CURRENT_TIMESTAMP,  -- 생성일자
-    expired_at   DATETIME,                                  -- 유효기간 (선택)
+    id           BIGINT        AUTO_INCREMENT PRIMARY KEY,          -- 알림ID
+    user_id      BIGINT        NOT NULL ,                           -- 알림 받는 사용자
+    type         VARCHAR(50)   NOT NULL,                            -- 알림 종류 (TRIP_START, REVIEW_RECEIVED, PASSWORD_RESET 등)
+    title        VARCHAR(100)  NOT NULL,                            -- 알림 제목
+    link         VARCHAR(255),                                      -- 관련 페이지 (예: trip_detail?id=123)
+    is_read      BOOLEAN       NOT NULL DEFAULT FALSE,              -- 읽음 여부
+    created_at   DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+    expired_at   DATETIME,                                          -- 유효기간 (선택)
 
     CONSTRAINT fk_system_notification_user_id FOREIGN KEY (user_id) REFERENCES users (id)
 );

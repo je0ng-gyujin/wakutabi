@@ -4,9 +4,9 @@
 
 	<insert id="insertTravelImage" parameterType="com.wakutabi.domain.TravelImageDto">
 		INSERT INTO trip_article_image
-		(trip_article_id,image_path,is_main,order_number,image_path_content)
+		(trip_article_id,image_path,order_number)
 		VALUES
-		(#{tripArticleId},#{imagePath},#{isMain},#{orderNumber},#{imagePathContent})		
+		(#{tripArticleId},#{imagePath},#{orderNumber})
 	</insert>
 
 </mapper>

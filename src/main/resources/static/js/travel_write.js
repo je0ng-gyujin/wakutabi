@@ -114,7 +114,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             tagInput.value = Array.from(selectedTags).join(',');
+            });
+           });
+
+    // ✅ submit 이벤트: 이미지 + 데이터 전송
+    document.getElementById("travelRegistrationForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.text())
+        .then(msg => {
+            alert(msg);
+        })
+        .catch(err => {
+            console.error(err);
+            alert("업로드 실패!");
         });
     });
-
 });

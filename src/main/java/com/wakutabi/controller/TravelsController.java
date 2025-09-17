@@ -1,19 +1,5 @@
 package com.wakutabi.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.Principal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.TravelEditDto;
@@ -21,9 +7,21 @@ import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
 import com.wakutabi.service.TravelEditService;
 import com.wakutabi.service.TravelImageService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Controller
 @RequestMapping("/schedule")
@@ -34,8 +32,7 @@ public class TravelsController {
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
 
-    
-    
+
     @GetMapping("create")
     public String travelCreate() {
         return "travels/write";
@@ -48,7 +45,7 @@ public class TravelsController {
         if (principal == null) {
             return "로그인 후 이용 가능합니다.";
         }
-        
+
         log.info("uploadDto: {}", uploadDto);
 
         // 2. JSON 문자열을 객체로 변환 (orderNumber → ImageOrderDto 리스트)
@@ -56,11 +53,11 @@ public class TravelsController {
         List<ImageOrderDto> imageOrders;
         try {
             imageOrders = objectMapper.readValue(
-                uploadDto.getOrderNumber(),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class)
+                    uploadDto.getOrderNumber(),
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class)
             );
         } catch (IOException e) {
-        	return "redirect:/errorPage";
+            return "redirect:/errorPage";
         }
 
         // 3. 게시글 DTO 생성 및 값 설정
@@ -119,6 +116,6 @@ public class TravelsController {
         }
 
         return "등록 완료! 생성된 글 ID: " + dto.getId();
-        
+
     }
 }

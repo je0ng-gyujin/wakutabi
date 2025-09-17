@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>문의 상세</title>
+<th:block layout:fragment="head">
+	<link rel="stylesheet" th:href="@{/css/admin.css}">
+	<script defer src="/js/admin.js"></script>
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+  <div class="container shadow p-4 rounded">
+    <div class="row">
+        <!-- 사이드메뉴 -->
+        <div class="col-md-3 border-end sidebar">
+            <h5 class="fw-bold mb-4">관리자</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><a href="#" class="text-decoration-none">회원 관리</a></li>
+                    <li class="mb-3"><a href="#" class="text-decoration-none">문의 목록</a></li>
+                    <li class="mb-3"><a href="/" class="text-decoration-none">홈으로</a></li>
+                    <li class="mb-3"><a href="#" class="text-decoration-none text-red">로그아웃</a></li>
+                </ul>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="col-md-9">
+            
+                <h2 class="mb-5">문의 상세</h2>
+                <div class="mb-3">
+				    <label for="category" class="form-label">문의 유형</label>
+				    <p class="form-control-plaintext">계정관련</p>
+				</div>
+				<div class="mb-3">
+				    <label for="title" class="form-label">제목</label>
+				    <p class="form-control-plaintext">로그인 오류가 발생합니다.</p>
+				</div>
+				<div class="mb-3">
+				    <label for="content" class="form-label">문의 내용</label>
+				    <div class="border rounded p-3 bg-light">
+                    로그인 시 계속 에러 메시지가 떠서 접속이 안 됩니다.
+                	</div>
+				</div>
+				<div class="mb-3">
+				    <label for="file" class="form-label">첨부파일</label>
+				    <p>
+                    <a target="_blank">
+                        <i class="fas fa-paperclip"></i>
+                    </a>
+                    <span>첨부파일 없음</span>
+                	</p>
+				</div>
+				<div class="mb-3">
+                <label class="form-label">작성일</label>
+	                <p class="form-control-plaintext" >2025-09-10</p>
+	            </div>
+
+				<!-- 답변 작성 폼 -->
+				<div id="answerForm" class="mt-4" style="display: none;">
+				  <h5>답변 작성</h5>
+				  <div class="mb-3">
+				    <label for="answer" class="form-label">답변 내용</label>
+				    <textarea id="answer" class="form-control" rows="5" placeholder="답변을 입력하세요"></textarea>
+				  </div>
+				</div>
+				<!-- 버튼 영역 -->
+				<div id="answerBtns" class="justify-content-end" style="display: none;">
+				  <button class="btn btn-success me-2">등록</button>
+				  <button type="button" class="btn btn-outline-secondary" onclick="toggleAnswerForm()">취소</button>
+				</div>
+               <div class="d-flex justify-content-end" id="defaultBtns">
+				  <a href="javascript:void(0)" class="btn btn-primary me-2" onclick="toggleAnswerForm()">답변하기</a>
+				  <a href="inquiry-list" class="btn btn-secondary me-2">목록으로</a>
+				</div>
+            
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

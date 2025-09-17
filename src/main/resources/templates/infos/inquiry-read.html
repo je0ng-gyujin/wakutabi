@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>문의 상세</title>
+<th:block layout:fragment="head">
+	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+	<script defer src="/js/main.js"></script>
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom2" layout:fragment="content">
+  <div class="container shadow p-4 rounded">
+    <div class="row">
+        <!-- 사이드메뉴 -->
+        <div class="col-md-3 border-end">
+            <h5 class="fw-bold mb-4">My page</h5>
+            <ul class="list-unstyled">
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark fw-bold">내 문의 내역</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
+                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
+            </ul>
+        </div>
+
+        <!-- 메인 컨텐츠 -->
+        <div class="col-md-9">
+            
+                <h2 class="mb-5">문의 상세</h2>
+                <div class="mb-3">
+				    <label for="category" class="form-label">문의 유형</label>
+				    <p class="form-control-plaintext">계정관련</p>
+				</div>
+				<div class="mb-3">
+				    <label for="title" class="form-label">제목</label>
+				    <p class="form-control-plaintext">로그인 오류가 발생합니다.</p>
+				</div>
+				<div class="mb-3">
+				    <label for="content" class="form-label">문의 내용</label>
+				    <div class="border rounded p-3 bg-light">
+                    로그인 시 계속 에러 메시지가 떠서 접속이 안 됩니다.
+                	</div>
+				</div>
+				<div class="mb-3">
+				    <label for="file" class="form-label">첨부파일</label>
+				    <p>
+                    <a target="_blank">
+                        <i class="fas fa-paperclip"></i>
+                    </a>
+                    <span>첨부파일 없음</span>
+                	</p>
+				</div>
+				<div class="mb-3">
+                <label class="form-label">작성일</label>
+	                <p class="form-control-plaintext" >2025-09-10</p>
+	            </div>
+	            <!-- 관리자 답변 -->
+				  <div class="mb-3">
+				    <label class="form-label">관리자 답변</label>
+				
+				    <!-- 답변 없는 경우 -->
+				    <!-- <div class="border rounded p-3 bg-light text-muted">
+				      아직 답변이 등록되지 않았습니다.
+				    </div> -->
+				
+				    <!-- 답변 있는 경우 -->
+				    <div class="border rounded p-3 bg-light">
+				      고객님, 해당 오류는 현재 점검 중입니다. 빠른 시일 내에 수정하겠습니다. <br>
+				      <small class="text-muted">답변일: 2025-09-11</small>
+				    </div>
+				  </div>
+					<div class="d-flex justify-content-end">
+                		<a href="#" class="btn btn-primary me-2">수정하기</a>
+                		<a href="my-inquiries" class="btn btn-secondary me-2">목록으로</a>
+            		</div>
+               
+            
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

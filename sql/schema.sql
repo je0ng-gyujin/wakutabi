@@ -10,16 +10,16 @@ CREATE TABLE users (
     email      VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
     is_public  BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
     role       ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
-    status     ENUM('ACTIVE','SUSPENDED','BANNED','EXIT')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPEND':일시정지, 'BANNED':영구정지)
+    status     ENUM('ACTIVE','SUSPENDED','BANNED','EXIT')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPENDED':일시정지, 'BANNED':영구정지)
     introduce  TEXT,                                                                                                       -- 자기소개글
     created_at DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
-    updated_at DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일자
+    updated_at DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- 수정일자
 );
 -- [태그 관련]
 -- 태그
 CREATE TABLE trip_tag (
 	id	          BIGINT       AUTO_INCREMENT PRIMARY KEY,  -- 트립태그 고유ID
-	tag_name      VARCHAR(50)  NOT NULl UNIQUE              -- 태그 이름
+	tag_name      VARCHAR(50)  NOT NULL UNIQUE              -- 태그 이름
 );
 -- 사용자 태그 중간테이블
 CREATE TABLE trip_tag_mid_users (
@@ -83,7 +83,7 @@ CREATE TABLE trip_reviews (
 
     CONSTRAINT fk_trip_reviews_user_id         FOREIGN KEY (user_id)         REFERENCES users        (id),
     CONSTRAINT fk_trip_reviews_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
-):
+);
 -- 여행 리뷰 이미지
 CREATE TABLE trip_reviews_image (
     id                  BIGINT          AUTO_INCREMENT PRIMARY KEY,  -- 여행리뷰 이미지ID
@@ -91,7 +91,7 @@ CREATE TABLE trip_reviews_image (
     image_path          VARCHAR(255)    NULL,                        -- 이미지
     order_number        INT             NULL,                        -- 이미지 표시 순서
 
-    CONSTRAINT fk_trip_reviews_image_trip_reviews_id FOREIGN (trip_reviews_id) REFERENCES trip_reviews (id)
+    CONSTRAINT fk_trip_reviews_image_trip_reviews_id FOREIGN KEY (trip_reviews_id) REFERENCES trip_reviews (id)
 );
 -- 사용자 간 리뷰
 CREATE TABLE user_by_user_review (
@@ -138,8 +138,8 @@ CREATE TABLE chat_message (
     created_at     DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
     deleted_at     DATETIME,                                          -- 삭제일자
 
-    CONSTRAINT fk_chat_message_user_id           FOREIGN KEY (user_id)      REFERENCES users     (id),
-    CONSTRAINT fk_chat_participants_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id)
+    CONSTRAINT fk_chat_message_user_id       FOREIGN KEY (user_id)      REFERENCES users     (id),
+    CONSTRAINT fk_chat_message_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id)
 );
 -- [고객센터 관련]
 -- Q&A 질문
@@ -150,7 +150,7 @@ CREATE TABLE qna_questions (
     type                ENUM('COMMON','ACCOUNT','PAYMENT','BUG','ETC')  NOT NULL   DEFAULT 'COMMON',                                        -- 질문유형('COMMON':일반,'ACCOUNT':계정,'PAYMENT':결제,'BUG':버그신고,'ETC':기타)
     title               VARCHAR(50)                                     NOT NULL,                                                           -- 제목
     content             TEXT                                            NOT NULL,                                                           -- 내용
-    status              ENUM('PROCESSING','DONE')                       NOT NULL   DEFAULT 'PROCESSING',                                    -- 상태('PENDING':답변대기,'DONE':답변완료)
+    status              ENUM('PROCESSING','DONE')                       NOT NULL   DEFAULT 'PROCESSING',                                    -- 상태('PROCESSING':답변대기,'DONE':답변완료)
     created_at          DATETIME                                        NOT NULL   DEFAULT CURRENT_TIMESTAMP,                               -- 생성일자
     updated_at          DATETIME                                                   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,   -- 수정일자
     deleted_at          DATETIME,                                                                                                           -- 삭제일자

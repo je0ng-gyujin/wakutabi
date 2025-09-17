@@ -6,7 +6,7 @@ CREATE TABLE users (
     nickname   VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
     password   VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
     gender     ENUM('MALE','FEMALE','OTHER','NONE')        NOT NULL DEFAULT 'NONE',                                        -- 성별
-    birth      DATETIME                                    NOT NULL,                                                       -- 생일
+    birth      DATE                                        NOT NULL,                                                       -- 생일
     email      VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
     is_public  BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
     role       ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)

@@ -106,8 +106,6 @@ public class TravelsController {
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
                     imgDto.setImagePath(savePath);
-                    imgDto.setImagePathContent(file.getOriginalFilename()); // 원본 파일명 저장
-                    imgDto.setIsMain(i == 0); // 첫 번째 이미지를 메인으로 설정
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);

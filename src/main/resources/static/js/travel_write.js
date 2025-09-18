@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+
 	// 전역 변수
 	const imageUploadArea = document.getElementById('imageUploadArea');
 	const imageInput = document.getElementById('imageInput');

@@ -181,3 +181,7 @@ button.btn-primary:hover {
     font-size: 1rem;
     outline: none;
 }
+
+label{
+	font-weight:bold;
+}

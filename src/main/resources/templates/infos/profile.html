@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>Profile</title>
     <th:block layout:fragment="head">
         <link rel="stylesheet" th:href="@{/css/admin.css}">
         <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -19,12 +19,10 @@
         <div class="row">
             <!-- 사이드메뉴 -->
             <div class="col-md-3 border-end sidebar">
-                <h5 class="fw-bold mb-4">관리자</h5>
+                <h5 class="fw-bold mb-4">프로필</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-3"><a href="#" class="text-decoration-none">회원 관리</a></li>
-                    <li class="mb-3"><a href="#" class="text-decoration-none">문의 목록</a></li>
+                    <li class="mb-3"><a href="#" class="text-decoration-none">회원 정보</a></li>
                     <li class="mb-3"><a href="/" class="text-decoration-none">홈으로</a></li>
-                    <li class="mb-3"><a href="#" class="text-decoration-none text-red">로그아웃</a></li>
                 </ul>
             </div>
 
@@ -32,7 +30,7 @@
             <div class="col-md-9">
                 <!-- 페이지 제목 -->
                 <div class="mb-4">
-                    <h2 class="admin-title"><i class="fas fa-users-cog me-2"></i>회원 활동 정보</h2>
+                    <h2 class="admin-title"><i class="fas fa-users-cog me-2"></i>회원 정보</h2>
                 </div>
 
 		    <!-- 유저 기본 정보 -->

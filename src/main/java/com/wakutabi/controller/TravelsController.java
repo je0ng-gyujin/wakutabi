@@ -105,7 +105,7 @@ public class TravelsController {
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
-                    imgDto.setImagePath(savePath);
+                    imgDto.setImagePath(savePath.replaceFirst("C:/uploads", "/upload"));
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);

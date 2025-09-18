@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>문의 작성</title>
+<title>문의 상세</title>
 <th:block layout:fragment="head">
 	<link rel="stylesheet" th:href="@{/css/mypage.css}">
 	<script defer src="/js/main.js"></script>
@@ -33,40 +33,53 @@
         <!-- 메인 컨텐츠 -->
         <div class="col-md-9">
             
-                <h2>문의 작성</h2>
+                <h2 class="mb-5">문의 상세</h2>
                 <div class="mb-3">
 				    <label for="category" class="form-label">문의 유형</label>
-				    <select class="form-select" id="category" name="category" required>
-				        <option value="">-- 선택하세요 --</option>
-				        <option value="general">일반 문의</option>
-				        <option value="account">계정 관련</option>
-				        <option value="payment">결제 관련</option>
-				        <option value="payment">여행 관련</option>
-				        <option value="bug">버그 신고</option>
-				        <option value="other">기타</option>
-				    </select>
+				    <p class="form-control-plaintext">계정관련</p>
 				</div>
 				<div class="mb-3">
 				    <label for="title" class="form-label">제목</label>
-				    <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요" required>
+				    <p class="form-control-plaintext">로그인 오류가 발생합니다.</p>
 				</div>
 				<div class="mb-3">
 				    <label for="content" class="form-label">문의 내용</label>
-				    <textarea class="form-control" id="content" name="content" rows="6" placeholder="자세한 문의 내용을 입력해주세요." required></textarea>
+				    <div class="border rounded p-3 bg-light">
+                    로그인 시 계속 에러 메시지가 떠서 접속이 안 됩니다.
+                	</div>
 				</div>
 				<div class="mb-3">
-				    <label for="file" class="form-label">첨부파일 (선택)</label>
-				    <input type="file" class="form-control" id="file" name="file">
+				    <label for="file" class="form-label">첨부파일</label>
+				    <p>
+                    <a target="_blank">
+                        <i class="fas fa-paperclip"></i>
+                    </a>
+                    <span>첨부파일 없음</span>
+                	</p>
 				</div>
-				<div class="form-check mb-3">
-				    <input class="form-check-input" type="checkbox" id="agree" required>
-				    <label class="form-check-label" for="agree">
-				        문의 접수 처리를 위한 개인정보 수집에 동의합니다.
-				    </label>
-				</div>
-					<div class="d-grid">
-				    <button type="submit" class="btn btn-primary">문의 제출</button>
-				</div>
+				<div class="mb-3">
+                <label class="form-label">작성일</label>
+	                <p class="form-control-plaintext" >2025-09-10</p>
+	            </div>
+	            <!-- 관리자 답변 -->
+				  <div class="mb-3">
+				    <label class="form-label">관리자 답변</label>
+				
+				    <!-- 답변 없는 경우 -->
+				    <!-- <div class="border rounded p-3 bg-light text-muted">
+				      아직 답변이 등록되지 않았습니다.
+				    </div> -->
+				
+				    <!-- 답변 있는 경우 -->
+				    <div class="border rounded p-3 bg-light">
+				      고객님, 해당 오류는 현재 점검 중입니다. 빠른 시일 내에 수정하겠습니다. <br>
+				      <small class="text-muted">답변일: 2025-09-11</small>
+				    </div>
+				  </div>
+					<div class="d-flex justify-content-end">
+                		<a href="#" class="btn btn-primary me-2">수정하기</a>
+                		<a href="my-inquiries" class="btn btn-secondary me-2">목록으로</a>
+            		</div>
                
             
         </div>

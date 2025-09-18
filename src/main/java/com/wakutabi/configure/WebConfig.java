@@ -13,9 +13,12 @@ public class WebConfig implements WebMvcConfigurer {
 	@Value("${file.upload.path}")
 	private String uploadPath;
 
+	//NonNull 어노테이션 추가로 NullPointerException 방지
 	@Override
 	public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+
 		registry.addResourceHandler("/upload/**").addResourceLocations("file:C:/upload/");
+
 
 	}
 }

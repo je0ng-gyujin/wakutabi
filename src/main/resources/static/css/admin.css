@@ -290,3 +290,11 @@ button.btn-primary:hover {
 .btn-delete:hover {
     background-color: #bd2130;
 }
+
+label{
+	font-weight:bold;
+}
+
+.justify-content-end{
+	margin-bottom:20px;
+}

@@ -35,6 +35,52 @@ public class UserController {
 			return "error";
 		}
 	}
+
+	@GetMapping("/mypage")
+    public String enterMypage(){
+        return "infos/mypage";
+    }
+
+    @GetMapping("/update")
+    public String userInfoUpdateForm(){
+        return "infos/info";
+    }
+
+    @PostMapping("/update")
+    public String userInfoUpdate(){
+        return "infos/mypage";
+    }
+
+     @GetMapping("/my-inquiries")
+    public String enterMyInquiries(){
+        return "infos/my-inquiries";
+    }
+    
+     @GetMapping("/user-inquiry")
+    public String enterUserInquiry(){
+        return "infos/user-inquiry";
+    }
+
+     @GetMapping("/inquiry-read")
+    public String enterInquiryRead(){
+        return "infos/inquiry-read";
+    }
+    
+     @GetMapping("/change-password")
+    public String enterChangePassword(){
+        return "infos/change-password";
+    }
+
+    @PostMapping("/passwordUpdate")
+    public String passwordUpadte(){
+        return "infos/change-password";
+    }
+
+     @GetMapping("/delete")
+    public String enterDelete(){
+        return "infos/delete";
+    }
+    
 	
 	
 }

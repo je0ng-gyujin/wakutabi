@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.wakutabi.domain.SignUpDto;
+import com.wakutabi.domain.UserUpdateDto;
 import com.wakutabi.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 	
@@ -26,4 +28,14 @@ public class UserService {
 		
 		userMapper.insertUser(user);
 	}
+
+	public UserUpdateDto getUserInfo(String username){
+		UserUpdateDto user = userMapper.getUserInfo(username);
+		return user;
+	}
+
+	public void userInfoUpdate(UserUpdateDto user){
+		userMapper.userInfoUpdate(user);
+	}
 }
+

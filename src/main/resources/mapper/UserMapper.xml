@@ -15,4 +15,31 @@
 	<select id="findByUsername" resultType="com.wakutabi.domain.LoginDto">
 		select * from users where username=#{username}
 	</select>
+
+	<!-- 유저Id 받기 -->
+	<select id="getUserInfo" parameterType="String" resultType="com.wakutabi.domain.UserUpdateDto">
+		SELECT 
+			id,
+			nickname,
+			birth,
+			email,
+			rating,
+			gender,
+			introduce
+		from users 
+		where username = #{username}
+	</select>
+
+	<!-- 유저 정보 수정  -->
+	<update id="userInfoUpdate" parameterType="com.wakutabi.domain.UserUpdateDto">
+		UPDATE users
+		SET
+        	email      = #{email},
+			birth 	   = #{birth},
+			gender	   = #{gender},	
+			is_public  = #{isPublic},
+        	introduce  = #{introduce},
+        	updated_at = NOW()
+	</update>
+
 </mapper>

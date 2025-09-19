@@ -119,6 +119,7 @@ public class TravelsController {
         return "등록 완료! 생성된 글 ID: " + dto.getId();
 
     }
+<<<<<<< HEAD
     @GetMapping("/detail")
     public String travelDetail(@RequestParam("id") Long id, Model model,Principal principal) {
         // ID로 게시글 정보 조회
@@ -151,3 +152,6 @@ public class TravelsController {
         return "travels/detail"; // views/travels/detail.html 경로
     }
 }
+=======
+}
+>>>>>>> 0bb580b41c3cf7015c30b120e649d6b7807a3fa8

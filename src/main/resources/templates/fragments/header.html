@@ -40,10 +40,10 @@
               99+ <span class="visually-hidden">unread messages</span>
             </span>
           </button>
-          <a href="/mypage" 
-             class="btn btn-wakutabi-outline position-relative">
-             <i class="bi bi-person-circle"></i>
+          <a href="/user/mypage" style="margin:0 7px; background:none; border:none; box-shadow:none; padding:0; display:inline-flex; align-items:center; justify-content:center;">
+            <i class="bi bi-person-circle" style="font-size:1.9rem; color:#60b5ff; line-height:1;"></i>
           </a>
+
           <span sec:authorize="isAnonymous()">
           	<a th:href="@{/login}" class="btn btn-wakutabi-outline rounded-pill">로그인</a>
           </span>

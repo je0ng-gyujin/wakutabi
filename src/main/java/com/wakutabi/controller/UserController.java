@@ -1,6 +1,9 @@
 package com.wakutabi.controller;
 
+import java.security.Principal;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wakutabi.domain.SignUpDto;
+import com.wakutabi.domain.UserUpdateDto;
 import com.wakutabi.service.UserService;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,23 +42,30 @@ public class UserController {
 	}
 
 	@GetMapping("/mypage")
-    public String enterMypage(){
+    public String enterMypage(Principal principal, Model model){
+        String username = principal.getName();
+        UserUpdateDto user = userService.getUserInfo(username);
+        model.addAttribute("user", user);
         return "infos/mypage";
     }
 
     @GetMapping("/update")
-    public String userInfoUpdateForm(){
+    public String userInfoUpdateForm(Principal principal, Model model){
+        String username = principal.getName();
+        UserUpdateDto user = userService.getUserInfo(username);
+        model.addAttribute("user", user);
         return "infos/info";
     }
 
     @PostMapping("/update")
-    public String userInfoUpdate(){
-        return "infos/mypage";
+    public String userInfoUpdate(UserUpdateDto user){
+        userService.userInfoUpdate(user);
+        return "redirect:/user/mypage";
     }
 
      @GetMapping("/my-inquiries")
     public String enterMyInquiries(){
-        return "infos/my-inquiries";
+        return "infos/my-Inquiries";
     }
     
      @GetMapping("/user-inquiry")

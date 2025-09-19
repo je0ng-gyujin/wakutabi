@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.wakutabi.domain.LoginDto;
 import com.wakutabi.domain.SignUpDto;
+import com.wakutabi.domain.UserUpdateDto;
 @Mapper
 public interface UserMapper {
 		//username검색
@@ -13,4 +14,9 @@ public interface UserMapper {
 		int insertUser(SignUpDto user);
 		//로그인 처리
 		LoginDto findByUsername(String username);
+		
+		//회원정보 갖고오기
+		UserUpdateDto getUserInfo(String username);
+		//회원정보수정(유저 정보수정)
+		void userInfoUpdate(UserUpdateDto user);
 }

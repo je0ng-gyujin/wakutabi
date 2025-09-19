@@ -45,6 +45,15 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// Author: 김민규
+	// Description: Validation 추가
+	/**
+	 * @author 김민규
+	 * @description Validation(유효성) 라이브러리 의존성 추가
+	 */
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 
 tasks.named('test') {

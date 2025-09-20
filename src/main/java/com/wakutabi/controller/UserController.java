@@ -1,5 +1,6 @@
 package com.wakutabi.controller;
 
+
 import java.security.Principal;
 
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wakutabi.domain.SignUpDto;
+import com.wakutabi.domain.UserPasswordUpdateDto;
 import com.wakutabi.domain.UserUpdateDto;
 import com.wakutabi.service.UserService;
 
@@ -59,7 +61,7 @@ public class UserController {
 
     @PostMapping("/update")
     public String userInfoUpdate(UserUpdateDto user){
-        userService.userInfoUpdate(user);
+       userService.userInfoUpdate(user);
         return "redirect:/user/mypage";
     }
 
@@ -82,9 +84,38 @@ public class UserController {
     public String enterChangePassword(){
         return "infos/change-password";
     }
-
+    
     @PostMapping("/passwordUpdate")
-    public String passwordUpadte(){
+    public String passwordUpadte(Principal principal, 
+                                UserPasswordUpdateDto newPassword,
+                                Model model){
+
+        String username = principal.getName();
+        if (!userService.checkCurrentPassword(username, newPassword.getCurrentPassword())) {
+        model.addAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
+        return "infos/change-password";
+        }
+
+        if(newPassword.getNewPassword() == null || newPassword.getNewPassword().isBlank()){
+            model.addAttribute("error", "비밀번호를 입력하세요.");
+            return "infos/change-password";
+        }
+
+        if(!newPassword.getNewPassword().equals(newPassword.getConfirmNewPassword())){
+            model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "infos/change-password";
+        }
+
+        if(newPassword.getNewPassword().length() < 3){
+            model.addAttribute("error", "비밀번호는 최소 3자 이상이어야 합니다.");
+            return "infos/change-password";
+        }
+
+        
+        newPassword.setUsername(username);
+        userService.userPasswordUpdate(newPassword);
+
+        model.addAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
         return "infos/change-password";
     }
 

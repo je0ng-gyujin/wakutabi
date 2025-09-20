@@ -1,7 +1,6 @@
 package com.wakutabi.domain;
 	
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 	
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -20,6 +20,7 @@
 	<select id="getUserInfo" parameterType="String" resultType="com.wakutabi.domain.UserUpdateDto">
 		SELECT 
 			id,
+			username,
 			nickname,
 			birth,
 			email,
@@ -40,6 +41,20 @@
 			is_public  = #{isPublic},
         	introduce  = #{introduce},
         	updated_at = NOW()
+	</update>
+
+	<!-- 현재 비밀번호 가져오기 -->
+	<select id="findPasswordByUsername" parameterType="String" resultType="String">
+		select password from users where username = #{username}
+	</select>
+	
+	<!-- 회원 비밀번호 변경 -->
+	<update id="userPasswordUpdate" parameterType="com.wakutabi.domain.UserPasswordUpdateDto">
+		UPDATE users
+		SET
+		 password = #{newPassword},
+		 updated_at = NOW()
+		where username = #{username} 
 	</update>
 
 </mapper>

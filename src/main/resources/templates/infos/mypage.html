@@ -30,24 +30,24 @@
 
         <!-- 메인 컨텐츠 -->
         <div class="col-md-9">
-        <div class="mb-4">
-        	<img src="/image/member.png" class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
-            <h2 class="form-control-plaintextname">닉네임</h2>
+        <div class="mb-4" >
+        	<img th:src="@{image/member.png}" class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
+            <h2 class="form-control-plaintextname" th:text="${user.nickname}">닉네임</h2>
             <p class="rating mt-2">3.5</p>
 		</div>
-		<p class="text-muted">자기소개.</p>
+		<p class="text-muted" th:text="${user.introduce}">자기소개.</p>
             <form method="get" th:action="@{/user/update}">
                  <div class="mb-3">
-                    <label class="form-label fw-bold">이메일</label>
-                    <div class="form-control-plaintext">user@example.com</div>
+                    <label class="form-label fw-bold" >이메일</label>
+                    <div class="form-control-plaintext" th:text="${user.email}">user@example.com</div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">생일</label>
-                    <div class="form-control-plaintext">1995-05-20</div>
+                    <label class="form-label fw-bold" >생일</label>
+                    <div class="form-control-plaintext" th:text="${user.birth}">1995-05-20</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">성별</label>
-                    <div class="form-control-plaintext">남자</div>
+                    <div class="form-control-plaintext" th:text="${user.gender}">남자</div>
                 </div>
                 <div class="text-end">
                     <button type="submit" class="btn btn-primary px-4">회원정보 수정</button>

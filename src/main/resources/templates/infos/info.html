@@ -36,7 +36,7 @@
                 <!-- 프로필 이미지 업로드 영역 -->
 				<div class="mb-4 text-center position-relative d-inline-block">
 				    <!-- 이미지 태그 -->
-				    <img src="/image/member.png" 
+				    <img th:src="@{image/member.png}" 
 				         class="img-fluid rounded-circle profile-img mb-3" 
 				         alt="프로필 이미지" >
 				
@@ -50,26 +50,26 @@
 				</div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">이름</label>
-                    <input type="text" class="form-control" name="username" value="유저이름" readonly>
+                    <input type="text" class="form-control" name="username" th:value="${user.username}" readonly>
                 </div>
 				<div class="mb-3">
                     <label class="form-label fw-bold">닉네임</label>
-                    <input type="text" class="form-control" name="nickname" value="유저닉네임" readonly>
+                    <input type="text" class="form-control" name="nickname" th:value="${user.nickname}" readonly>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">이메일</label>
-                    <input type="email" class="form-control" name="email" value="user@example.com">
+                    <input type="email" class="form-control" name="email" th:value="${user.email}" value="user@example.com">
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">생일</label>
-                    <input type="date" class="form-control" name="birth" value="1995-05-20">
+                    <input type="date" class="form-control" name="birth" th:value="${user.birth}" value="1995-05-20">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">성별</label>
                     <select class="form-select" name="gender">
-                        <option value="MALE" selected>남자</option>
-                        <option value="FEMAIL">여자</option>
+                        <option th:value="${user.gender}" selected>남자</option>
+                        <option value="FEMALE">여자</option>
                         <option value="OTHER">기타</option>
                         <option value="NONE">없음</option>
                     </select>
@@ -83,7 +83,7 @@
 		        </div>
 				<div class="mb-3">
 		           <label class="form-label fw-bold">자기소개</label>
-		           <textarea class="form-control" name="introduce" rows="4" placeholder="자기소개를 입력하세요.">안녕하세요, 반갑습니다!</textarea>
+		           <textarea class="form-control" name="introduce" rows="4" placeholder="자기소개를 입력하세요." th:text="${user.introduce}">안녕하세요, 반갑습니다!</textarea>
 		        </div>
 		        
                 <div class="text-end">

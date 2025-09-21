@@ -16,7 +16,7 @@
 		select * from users where username=#{username}
 	</select>
 
-	<!-- 유저Id 받기 -->
+	<!-- 유저정보 받기 -->
 	<select id="getUserInfo" parameterType="String" resultType="com.wakutabi.domain.UserUpdateDto">
 		SELECT 
 			id,
@@ -26,7 +26,8 @@
 			email,
 			rating,
 			gender,
-			introduce
+			introduce,
+			rating
 		from users 
 		where username = #{username}
 	</select>
@@ -52,9 +53,17 @@
 	<update id="userPasswordUpdate" parameterType="com.wakutabi.domain.UserPasswordUpdateDto">
 		UPDATE users
 		SET
-		 password = #{newPassword},
-		 updated_at = NOW()
+			password = #{newPassword},
+		 	updated_at = NOW()
 		where username = #{username} 
+	</update>
+
+	<!-- 회원 탈퇴 -->
+	<update id="userWithdrawal" parameterType="String">
+		UPDATE users
+		SET
+			status = 'EXIT'
+		WHERE username = #{username}
 	</update>
 
 </mapper>

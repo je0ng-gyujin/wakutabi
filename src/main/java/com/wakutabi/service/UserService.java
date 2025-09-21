@@ -1,5 +1,6 @@
 package com.wakutabi.service;
 
+import com.wakutabi.domain.InquiryDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,8 @@ import com.wakutabi.domain.UserUpdateDto;
 import com.wakutabi.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +56,11 @@ public class UserService {
 
 		userMapper.userPasswordUpdate(newPassword);
 	}
+	// 회원 탈퇴(탈퇴이유 생기면 추가 예정)
+	public void userWithdrawal(String username){
+		userMapper.userWithdrawal(username);
+	}
+
 
 }
 

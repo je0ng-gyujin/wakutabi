@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 		public Gender gender;
 		private Boolean isPublic;
 		private String introduce;
+		private double rating;
 
 		public enum Gender{
 			MALE,

@@ -33,7 +33,7 @@
         <div class="mb-4" >
         	<img th:src="@{image/member.png}" class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
             <h2 class="form-control-plaintextname" th:text="${user.nickname}">닉네임</h2>
-            <p class="rating mt-2">3.5</p>
+            <p class="rating mt-2" th:text="${user.rating}">3.5</p>
 		</div>
 		<p class="text-muted" th:text="${user.introduce}">자기소개.</p>
             <form method="get" th:action="@{/user/update}">

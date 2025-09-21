@@ -2,18 +2,16 @@ package com.wakutabi.controller;
 
 
 import java.security.Principal;
+import java.util.List;
 
+import com.wakutabi.domain.*;
+import jakarta.validation.Valid;
+import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import com.wakutabi.domain.SignUpDto;
-import com.wakutabi.domain.UserPasswordUpdateDto;
-import com.wakutabi.domain.UserUpdateDto;
 import com.wakutabi.service.UserService;
 
 
@@ -42,7 +40,7 @@ public class UserController {
 			return "error";
 		}
 	}
-
+    // 회원정보 페이지
 	@GetMapping("/mypage")
     public String enterMypage(Principal principal, Model model){
         String username = principal.getName();
@@ -50,7 +48,15 @@ public class UserController {
         model.addAttribute("user", user);
         return "infos/mypage";
     }
-
+    // (임시)회원프로필 페이지
+    @GetMapping("/profile")
+    public String enterProfile(Principal principal, Model model){
+        String username = principal.getName();
+        UserUpdateDto user = userService.getUserInfo(username);
+        model.addAttribute("user", user);
+        return "infos/profile";
+    }
+    // 회원정보 수정 페이지
     @GetMapping("/update")
     public String userInfoUpdateForm(Principal principal, Model model){
         String username = principal.getName();
@@ -58,47 +64,34 @@ public class UserController {
         model.addAttribute("user", user);
         return "infos/info";
     }
-
+    // 회원정보 수정 처리
     @PostMapping("/update")
     public String userInfoUpdate(UserUpdateDto user){
        userService.userInfoUpdate(user);
         return "redirect:/user/mypage";
     }
+    // 문의 내역
 
-     @GetMapping("/my-inquiries")
-    public String enterMyInquiries(){
-        return "infos/my-Inquiries";
-    }
-    
-     @GetMapping("/user-inquiry")
-    public String enterUserInquiry(){
-        return "infos/user-inquiry";
-    }
-
-     @GetMapping("/inquiry-read")
-    public String enterInquiryRead(){
-        return "infos/inquiry-read";
-    }
-    
-     @GetMapping("/change-password")
+    //패스워드 수정 페이지
+    @GetMapping("/change-password")
     public String enterChangePassword(){
         return "infos/change-password";
     }
-    
+    //패스워드 수정 처리
     @PostMapping("/passwordUpdate")
     public String passwordUpadte(Principal principal, 
-                                UserPasswordUpdateDto newPassword,
+                                @Valid UserPasswordUpdateDto newPassword,
+                                BindingResult result,
                                 Model model){
-
         String username = principal.getName();
+
+        if(result.hasErrors()){
+            model.addAttribute("error", result.getAllErrors().get(0).getDefaultMessage());
+            return "infos/change-password";
+        }
         if (!userService.checkCurrentPassword(username, newPassword.getCurrentPassword())) {
         model.addAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
         return "infos/change-password";
-        }
-
-        if(newPassword.getNewPassword() == null || newPassword.getNewPassword().isBlank()){
-            model.addAttribute("error", "비밀번호를 입력하세요.");
-            return "infos/change-password";
         }
 
         if(!newPassword.getNewPassword().equals(newPassword.getConfirmNewPassword())){
@@ -106,24 +99,33 @@ public class UserController {
             return "infos/change-password";
         }
 
-        if(newPassword.getNewPassword().length() < 3){
-            model.addAttribute("error", "비밀번호는 최소 3자 이상이어야 합니다.");
-            return "infos/change-password";
-        }
-
-        
         newPassword.setUsername(username);
         userService.userPasswordUpdate(newPassword);
 
         model.addAttribute("message", "비밀번호가 성공적으로 변경되었습니다.");
         return "infos/change-password";
     }
-
-     @GetMapping("/delete")
+    //회원 탈퇴 페이지
+    @GetMapping("/delete")
     public String enterDelete(){
         return "infos/delete";
     }
-    
-	
-	
+    //회원 탈퇴 처리
+    @PostMapping("/delete")
+    public String enterDelete(Principal principal,
+                              @RequestParam("currentPassword") String currentPassword,
+                              Model model){
+
+        String username = principal.getName();
+
+        if (!userService.checkCurrentPassword(username, currentPassword)) {
+             model.addAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
+             return "infos/delete";
+        }
+
+        userService.userWithdrawal(username);
+        model.addAttribute("message", "탈퇴되었습니다.");
+        return "infos/delete";
+        }
+
 }

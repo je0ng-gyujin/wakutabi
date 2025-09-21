@@ -33,9 +33,16 @@
 			  <p style="color:red;">※회원 탈퇴 시 모든 정보가 삭제되며 복구가 불가능합니다.</p>
         
             <form method="post" action="/user/delete">
+			<div th:if="${error}" class="alert alert-danger" role="alert">
+				<span th:text="${error}"></span>
+			</div>
+			<div th:if="${message}" class="alert alert-success" role="alert">
+				<span th:text="${message}"></span>
+			</div>
+
 			  <div class="form-row">
-				  <label for="password">비밀번호 확인</label>
-				  <input type="password" id="password" name="password" required>
+				  <label for="currentPassword">비밀번호 확인</label>
+				  <input type="password" id="currentPassword" name="currentPassword" required>
 			  </div>
 			  <div class="form-row">
 				  <label for="reason">탈퇴 사유 (선택)</label>

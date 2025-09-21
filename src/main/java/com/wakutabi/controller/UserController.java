@@ -48,14 +48,6 @@ public class UserController {
         model.addAttribute("user", user);
         return "infos/mypage";
     }
-    // (임시)회원프로필 페이지
-    @GetMapping("/profile")
-    public String enterProfile(Principal principal, Model model){
-        String username = principal.getName();
-        UserUpdateDto user = userService.getUserInfo(username);
-        model.addAttribute("user", user);
-        return "infos/profile";
-    }
     // 회원정보 수정 페이지
     @GetMapping("/update")
     public String userInfoUpdateForm(Principal principal, Model model){

@@ -16,7 +16,7 @@ public class ProfileController {
 
     private final UserService userService;
     // 회원프로필 페이지
-    @GetMapping("/profile")
+    @GetMapping("/user/profile")
     public String enterProfile(Principal principal, Model model){
         String username = principal.getName();
         UserUpdateDto user = userService.getUserInfo(username);

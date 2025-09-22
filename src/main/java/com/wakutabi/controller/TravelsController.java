@@ -31,7 +31,9 @@ public class TravelsController {
 
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
+
     private final TravelUpdateDeleteService travelUpdateDeleteService;
+
 
     // ---------------------------------------------
     // 1. 여행 글 작성 페이지
@@ -87,7 +89,10 @@ public class TravelsController {
         // 게시글 DB 저장
         travelEditService.insertTravelEdit(dto);
 
-        // 이미지 처리
+
+        // 5. 이미지 파일 처리 및 DB 저장
+        log.info("uploadDto.getImages = {}", uploadDto.getImages());
+
         List<MultipartFile> images = uploadDto.getImages();
         if (images != null && !images.isEmpty()) {
             String uploadDir = "C:/uploads/";
@@ -126,19 +131,29 @@ public class TravelsController {
 
         List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
 
-        // 작성자 여부 확인
+
+        // 3. 현재 로그인한 사용자와 게시글 작성자 ID 비교
+
         boolean isOwner = false;
         if (principal != null) {
             Long currentUserId = 1L; // 실제 구현 시 principal 기반으로 조회
             isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
         }
 
+        // 조회한 게시글 정보를 모델에 담아 HTML로 전달
         model.addAttribute("travel", travel);
         model.addAttribute("images", images);
-        model.addAttribute("isOwner", isOwner);
+        model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
+
+        return "travels/detail"; // views/travels/detail.html 경로
+    }
+
+
 
         return "travels/detail";
     }
+
+
 
     // ---------------------------------------------
     // 4. 여행 글 수정
@@ -159,19 +174,35 @@ public class TravelsController {
         boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
 
         return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+
+    }
+}
+
+
+/**
+ * 여행 게시글 삭제
+ * @param dto 삭제할 게시글 ID를 포함한 DTO
+ * @param principal 사용자 정보
+ * @return 삭제 결과 메시지
+ */
+@PostMapping("traveldelete")
+@ResponseBody
+public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) {
+    if (principal == null) {
+        return "로그인 후 이용 가능합니다.";
     }
 
-    // ---------------------------------------------
-    // 5. 여행 글 삭제
-    // ---------------------------------------------
-    @PostMapping("/traveldelete")
-    @ResponseBody
-    public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) {
-        if (principal == null) return "로그인 후 이용 가능합니다.";
+    // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
+    // 현재는 예시로 1L을 사용합니다.
+    Long hostUserId = 1L;
 
-        boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), 1L);
+    boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
 
-        return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+    if (isDeleted) {
+        return "게시글 삭제 완료!";
+    } else {
+        return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+
     }
     
     
@@ -206,4 +237,5 @@ public class TravelsController {
      return "travels/edit";
  }
  // ...
+}
 }

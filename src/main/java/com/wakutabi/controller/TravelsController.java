@@ -2,18 +2,22 @@ package com.wakutabi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.domain.ImageOrderDto;
+import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
+import com.wakutabi.service.NotificationService;
 import com.wakutabi.service.TravelEditService;
 import com.wakutabi.service.TravelImageService;
 import com.wakutabi.service.TravelUpdateDeleteService; // ⬅️ 추가
+import com.wakutabi.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +41,14 @@ public class TravelsController {
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
+    private final UserService userService;
+    private final NotificationService notificationService;
+    
+    @ModelAttribute("userId")
+    public Long addUserId(Principal principal){
+        String username = principal.getName();
+        return userService.getUserInfo(username).getId();
+    }
     
     // ... 기존 코드 (travelCreate, uploadTravel) ...
 
@@ -47,7 +59,7 @@ public class TravelsController {
 
     @PostMapping("travelupload")
     @ResponseBody
-    public String uploadTravel(TravelUploadDto uploadDto, Principal principal) throws IllegalStateException, IOException {
+    public String uploadTravel(@ModelAttribute("userId") Long userId, TravelUploadDto uploadDto, Principal principal) throws IllegalStateException, IOException {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
             return "로그인 후 이용 가능합니다.";
@@ -84,7 +96,7 @@ public class TravelsController {
         dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter).atStartOfDay());
 
         // 로그인한 사용자 ID 설정 (예시: 1L)
-        dto.setHostUserId(1L);
+        dto.setHostUserId(userId);
 
         // 4. 게시글 DB 저장
         travelEditService.insertTravelEdit(dto);
@@ -120,6 +132,15 @@ public class TravelsController {
             }
         }
 
+        // 6. 등록 된 여행에 대한 알림 테이블 저장
+        NotificationDto noticeDto = new NotificationDto();
+        String uploadedTravelUrl = "/schedule/detail?id=" + dto.getId();
+        noticeDto.setUserId(userId);
+        noticeDto.setType("TRAVEL_UPLOADED");
+        noticeDto.setTitle(uploadDto.getTitle());
+        noticeDto.setLink(uploadedTravelUrl);
+
+        notificationService.insertNotification(noticeDto);
 
         return "등록 완료! 생성된 글 ID: " + dto.getId();
 
@@ -127,7 +148,7 @@ public class TravelsController {
 
 
     @GetMapping("/detail")
-    public String travelDetail(@RequestParam("id") Long id, Model model,Principal principal) {
+    public String travelDetail(@RequestParam("id") Long id, Model model, Principal principal) {
         // ID로 게시글 정보 조회
         TravelEditDto travel = travelEditService.findTravelById(id);
 
@@ -157,7 +178,6 @@ public class TravelsController {
         
         return "travels/detail"; // views/travels/detail.html 경로
     }
-}
 
 
 

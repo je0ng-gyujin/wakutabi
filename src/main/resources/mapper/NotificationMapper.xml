@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.NotificationMapper">
+  <insert id="insertNotification" parameterType="com.wakutabi.domain.NotificationDto">
+    insert into system_notification
+    (user_id, type, title, link)
+    VALUES (#{userId}, #{type}, #{title}, #{link})
+  </insert>
+  
+  <select id="findNotificationsById" parameterType="java.lang.Long">
+    select * from system_notification
+    where user_id = #{userId} order by is_read asc, created_at desc
+  </select>
+</mapper>

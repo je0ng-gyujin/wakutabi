@@ -157,7 +157,7 @@ public class TravelsController {
 
         return "travels/detail"; // views/travels/detail.html 경로
     }
-}
+
 
 
 

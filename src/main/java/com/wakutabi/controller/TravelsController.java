@@ -146,12 +146,12 @@ public class TravelsController {
         model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
 
         return "travels/detail"; // views/travels/detail.html 경로
+    
+
+
+
     }
-
-
-
-        return "travels/detail";
-    }
+    
 
 
 
@@ -176,7 +176,7 @@ public class TravelsController {
         return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
 
     }
-}
+
 
 
 /**
@@ -204,7 +204,7 @@ public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) 
         return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
 
     }
-    
+}
     
     
  // TravelsController.java
@@ -237,5 +237,4 @@ public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) 
      return "travels/edit";
  }
  // ...
-}
-}
+    }

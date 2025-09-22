@@ -14,6 +14,8 @@ public interface UserMapper {
 		int insertUser(SignUpDto user);
 		// 로그인 처리
 		LoginDto findByUsername(String username);
+		// 유저id 가져오기
+		Long getUserId(String username);
 		// 회원정보 갖고오기
 		UserUpdateDto getUserInfo(String username);
 		// 회원정보수정(유저 정보수정)

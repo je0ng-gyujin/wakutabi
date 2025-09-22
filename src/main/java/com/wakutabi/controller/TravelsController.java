@@ -7,12 +7,18 @@ import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
 import com.wakutabi.service.TravelEditService;
 import com.wakutabi.service.TravelImageService;
-import com.wakutabi.service.TravelUpdateDeleteService;
+import com.wakutabi.service.TravelUpdateDeleteService; // ⬅️ 추가
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -30,8 +36,8 @@ public class TravelsController {
 
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
-    private final TravelUpdateDeleteService travelUpdateDeleteService;
-    
+    private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
+
     // ... 기존 코드 (travelCreate, uploadTravel) ...
 
     @GetMapping("create")
@@ -83,7 +89,7 @@ public class TravelsController {
         // 4. 게시글 DB 저장
         travelEditService.insertTravelEdit(dto);
 
-     // 5. 이미지 파일 처리 및 DB 저장
+        // 5. 이미지 파일 처리 및 DB 저장
         log.info("uploadDto.getImages = {}", uploadDto.getImages());
         List<MultipartFile> images = uploadDto.getImages();
         if (images != null && !images.isEmpty()) {
@@ -132,7 +138,7 @@ public class TravelsController {
 
         // 2. 게시글 ID로 이미지 목록을 조회하여 images 변수에 할당합니다.
         List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
-        
+
         // 3. 현재 로그인한 사용자와 게시글 작성자 ID 비교
         boolean isOwner = false;
         if (principal != null) {
@@ -143,71 +149,69 @@ public class TravelsController {
                 isOwner = true;
             }
         }
-        
+
         // 조회한 게시글 정보를 모델에 담아 HTML로 전달
         model.addAttribute("travel", travel);
         model.addAttribute("images", images);
         model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
-        
+
         return "travels/detail"; // views/travels/detail.html 경로
-    }
-
-
-
-    /**
-     * 여행 게시글 수정
-     * @param dto 수정할 게시글 데이터
-     * @param principal 사용자 정보
-     * @return 수정 결과 메시지
-     */
-    @PostMapping("travelupdate")
-    @ResponseBody
-    public String updateTravel(@RequestBody TravelEditDto dto, Principal principal) {
-        if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
-        }
-
-        // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
-        // 현재는 예시로 1L을 사용합니다.
-        Long hostUserId = 1L; 
-        dto.setHostUserId(hostUserId);
-
-
-        boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
-
-        if (isUpdated) {
-            return "게시글 수정 완료!";
-        } else {
-            return "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-        }
-    }
-
-    /**
-     * 여행 게시글 삭제
-     * @param dto 삭제할 게시글 ID를 포함한 DTO
-     * @param principal 사용자 정보
-     * @return 삭제 결과 메시지
-     */
-    @PostMapping("traveldelete")
-    @ResponseBody
-    public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) {
-        if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
-        }
-
-        // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
-        // 현재는 예시로 1L을 사용합니다.
-        Long hostUserId = 1L;
-
-        boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
-
-        if (isDeleted) {
-            return "게시글 삭제 완료!";
-        } else {
-            return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-        }
     }
 }
 
-void main() {
+
+
+/**
+ * 여행 게시글 수정
+ * @param dto 수정할 게시글 데이터
+ * @param principal 사용자 정보
+ * @return 수정 결과 메시지
+ */
+@PostMapping("travelupdate")
+@ResponseBody
+public String updateTravel(@RequestBody TravelEditDto dto, Principal principal) {
+    if (principal == null) {
+        return "로그인 후 이용 가능합니다.";
+    }
+
+    // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
+    // 현재는 예시로 1L을 사용합니다.
+    Long hostUserId = 1L;
+    dto.setHostUserId(hostUserId);
+
+
+    boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
+
+    if (isUpdated) {
+        return "게시글 수정 완료!";
+    } else {
+        return "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+    }
+}
+
+/**
+ * 여행 게시글 삭제
+ * @param dto 삭제할 게시글 ID를 포함한 DTO
+ * @param principal 사용자 정보
+ * @return 삭제 결과 메시지
+ */
+@PostMapping("traveldelete")
+@ResponseBody
+public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) {
+    if (principal == null) {
+        return "로그인 후 이용 가능합니다.";
+    }
+
+    // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
+    // 현재는 예시로 1L을 사용합니다.
+    Long hostUserId = 1L;
+
+    boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
+
+    if (isDeleted) {
+        return "게시글 삭제 완료!";
+    } else {
+        return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+    }
+}
 }

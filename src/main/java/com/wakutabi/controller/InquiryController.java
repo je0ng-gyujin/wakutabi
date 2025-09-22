@@ -22,11 +22,6 @@ public class InquiryController {
     private final UserService userService;
     private final InquiryService inquiryService;
 
-    @ModelAttribute("userId")
-    public Long addUserId(Principal principal){
-        String username = principal.getName();
-        return userService.getUserInfo(username).getId();
-    }
     //문의 내역
     @GetMapping("/user/my-inquiries")
     public String enterMyInquiries(@ModelAttribute("userId") Long userId,

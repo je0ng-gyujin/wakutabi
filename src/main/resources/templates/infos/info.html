@@ -44,7 +44,7 @@
 				    <label for="profileImage" 
 				           class="btn btn-sm btn-outline-secondary position-absolute">수정
 				    </label>
-				
+
 				    <!-- 실제 파일 입력 요소 (숨김) -->
 				    <input type="file" name="profileImage" id="profileImage" class="d-none" accept="image/*">
 				</div>
@@ -61,7 +61,7 @@
                     <input type="email" class="form-control" name="email" th:value="${user.email}" value="user@example.com">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">생일</label>
+                    <label class="form-label fw-bold" th:text="${userId}">생일 </label>
                     <input type="date" class="form-control" name="birth" th:value="${user.birth}" value="1995-05-20">
                 </div>
 

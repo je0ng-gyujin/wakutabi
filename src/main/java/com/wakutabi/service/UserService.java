@@ -32,6 +32,12 @@ public class UserService {
 		
 		userMapper.insertUser(user);
 	}
+	// 유저id 가져오기
+	public Long getUserId(String username){
+		Long userId = userMapper.getUserId(username);
+		return userId;
+	}
+
 	// 회원정보가져오기
 	public UserUpdateDto getUserInfo(String username){
 		UserUpdateDto user = userMapper.getUserInfo(username);

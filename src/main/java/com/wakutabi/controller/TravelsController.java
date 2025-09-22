@@ -48,7 +48,9 @@ public class TravelsController {
     // ---------------------------------------------
     @PostMapping("/travelupload")
     @ResponseBody
-    public String uploadTravel(TravelUploadDto uploadDto, Principal principal) throws IOException {
+    public String uploadTravel(TravelUploadDto uploadDto, 
+                               @ModelAttribute("userId") Long userId,
+                                Principal principal) throws IOException {
 
         if (principal == null) return "로그인 후 이용 가능합니다.";
 
@@ -84,7 +86,7 @@ public class TravelsController {
         dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter));
 
         // 로그인 사용자 ID (실제 구현 시 principal.getName() 또는 DB 조회)
-        dto.setHostUserId(1L);
+        dto.setHostUserId(userId);
 
         // 게시글 DB 저장
         travelEditService.insertTravelEdit(dto);
@@ -124,7 +126,9 @@ public class TravelsController {
     // 3. 여행 상세 조회
     // ---------------------------------------------
     @GetMapping("/detail")
-    public String travelDetail(@RequestParam("id") Long id, Model model, Principal principal) {
+    public String travelDetail(@RequestParam("id") Long id,
+                               @ModelAttribute("userId") Long userId,
+                                 Model model, Principal principal) {
 
         TravelEditDto travel = travelEditService.findTravelById(id);
         if (travel == null) return "redirect:/error";
@@ -136,7 +140,7 @@ public class TravelsController {
 
         boolean isOwner = false;
         if (principal != null) {
-            Long currentUserId = 1L; // 실제 구현 시 principal 기반으로 조회
+            Long currentUserId = userId; // 실제 구현 시 principal 기반으로 조회
             isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
         }
 
@@ -161,10 +165,12 @@ public class TravelsController {
  // TravelsController.java
     @PostMapping("/travelupdate")
     @ResponseBody
-    public String updateTravel(@ModelAttribute TravelEditDto dto, Principal principal) {
+    public String updateTravel(@ModelAttribute TravelEditDto dto, 
+                               @ModelAttribute("userId") Long userId,
+                                Principal principal) {
         if (principal == null) return "로그인 후 이용 가능합니다.";
 
-        dto.setHostUserId(1L); // 실제 구현 시 principal 기반으로 설정
+        dto.setHostUserId(userId); // 실제 구현 시 principal 기반으로 설정
 
         // 현재 컨트롤러는 `updateTravelArticle` 메소드에 dto를 직접 전달하고 있는데,
         // 이 메소드에서 어떤 데이터를 필요로 하는지 확인해야 합니다.
@@ -187,14 +193,16 @@ public class TravelsController {
  */
 @PostMapping("traveldelete")
 @ResponseBody
-public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) {
+public String deleteTravel(@RequestBody TravelEditDto dto, 
+                           @ModelAttribute("userId") Long userId,
+                            Principal principal) {
     if (principal == null) {
         return "로그인 후 이용 가능합니다.";
     }
 
     // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
     // 현재는 예시로 1L을 사용합니다.
-    Long hostUserId = 1L;
+    Long hostUserId = userId;
 
     boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
 
@@ -213,7 +221,9 @@ public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) 
  // 6. 여행 글 수정 페이지
  // ---------------------------------------------
  @GetMapping("/edit")
- public String travelEdit(@RequestParam("id") Long id, Model model, Principal principal) {
+ public String travelEdit(@RequestParam("id") Long id, 
+                          @ModelAttribute("userId") Long userId,
+                          Model model, Principal principal) {
      if (principal == null) {
          return "redirect:/login"; // 로그인 페이지로 리다이렉트
      }
@@ -225,7 +235,7 @@ public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) 
      }
 
      // 2. 작성자 본인인지 확인 (실제 사용자 ID와 비교)
-     Long currentUserId = 1L; // TODO: principal.getName()을 사용해 실제 사용자 ID 가져오기
+     Long currentUserId = userId; // TODO: principal.getName()을 사용해 실제 사용자 ID 가져오기
      if (!travel.getHostUserId().equals(currentUserId)) {
          return "redirect:/access-denied"; // 권한 없으면 접근 거부 페이지로
      }

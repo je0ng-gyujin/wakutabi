@@ -12,10 +12,12 @@ import com.wakutabi.service.TravelUpdateDeleteService; // ⬅️ 추가
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,7 +89,7 @@ public class TravelsController {
         // 4. 게시글 DB 저장
         travelEditService.insertTravelEdit(dto);
 
-        // 5. 이미지 파일 처리 및 DB 저장
+     // 5. 이미지 파일 처리 및 DB 저장
         log.info("uploadDto.getImages = {}", uploadDto.getImages());
         List<MultipartFile> images = uploadDto.getImages();
         if (images != null && !images.isEmpty()) {
@@ -118,9 +120,46 @@ public class TravelsController {
             }
         }
 
+
         return "등록 완료! 생성된 글 ID: " + dto.getId();
 
     }
+
+
+    @GetMapping("/detail")
+    public String travelDetail(@RequestParam("id") Long id, Model model,Principal principal) {
+        // ID로 게시글 정보 조회
+        TravelEditDto travel = travelEditService.findTravelById(id);
+
+        if (travel == null) {
+            // 게시글이 없을 경우, 에러 페이지 또는 목록 페이지로 리다이렉션
+            return "redirect:/error";
+        }
+
+        // 2. 게시글 ID로 이미지 목록을 조회하여 images 변수에 할당합니다.
+        List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
+        
+        // 3. 현재 로그인한 사용자와 게시글 작성자 ID 비교
+        boolean isOwner = false;
+        if (principal != null) {
+            // 실제 애플리케이션에서는 principal.getName()을 이용해 사용자 ID를 DB에서 조회해야 합니다.
+            // 현재는 예시로 게시글 등록 시 사용했던 1L을 임시로 사용합니다.
+            Long currentUserId = 1L; // 이 부분은 실제 로그인 로직에 맞게 수정 필요
+            if (travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId)) {
+                isOwner = true;
+            }
+        }
+        
+        // 조회한 게시글 정보를 모델에 담아 HTML로 전달
+        model.addAttribute("travel", travel);
+        model.addAttribute("images", images);
+        model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
+        
+        return "travels/detail"; // views/travels/detail.html 경로
+    }
+}
+
+
 
     /**
      * 여행 게시글 수정

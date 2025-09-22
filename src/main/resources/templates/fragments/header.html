@@ -41,17 +41,22 @@
               99+ <span class="visually-hidden">unread messages</span>
             </span>
           </button>
-          <span sec:authorize="isAnonymous()">
-          	<a th:href="@{/login}" class="btn btn-wakutabi-outline rounded-pill">로그인</a>
+          <span sec:authorize="isAnonymous()"> 
+            <a th:href="@{/login}"
+              class="btn btn-wakutabi-outline rounded-pill">로그인</a>
           </span>
-           <span sec:authorize="isAnonymous()">
-          		<a th:href="@{/signup}"
-            class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">회원가입</a>
-           </span>
-           <span sec:authorize="isAuthenticated()">
-          		<a th:href="@{/logout}"
-            class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">로그아웃</a>
-		   </span>
+          <span sec:authorize="isAnonymous()">
+            <a th:href="@{/signup}"
+              class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">회원가입</a>
+          </span>
+          <span sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}"
+              class="btn btn-wakutabi-outline rounded-pill">로그아웃</a>
+          </span>
+          <span sec:authorize="isAuthenticated()">
+            <a th:href="@{/mypage}"
+              class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">마이페이지</a>
+          </span>
         </div>
       </div>
     </div>

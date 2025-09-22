@@ -7,18 +7,12 @@ import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
 import com.wakutabi.service.TravelEditService;
 import com.wakutabi.service.TravelImageService;
-import com.wakutabi.service.TravelUpdateDeleteService; // ⬅️ 추가
-
+import com.wakutabi.service.TravelUpdateDeleteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -36,7 +30,7 @@ public class TravelsController {
 
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
-    private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
+    private final TravelUpdateDeleteService travelUpdateDeleteService;
     
     // ... 기존 코드 (travelCreate, uploadTravel) ...
 
@@ -178,7 +172,7 @@ public class TravelsController {
         Long hostUserId = 1L; 
         dto.setHostUserId(hostUserId);
 
-        
+
         boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
 
         if (isUpdated) {
@@ -213,4 +207,7 @@ public class TravelsController {
             return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
         }
     }
+}
+
+void main() {
 }

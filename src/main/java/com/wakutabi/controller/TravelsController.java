@@ -7,11 +7,14 @@ import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
 import com.wakutabi.service.TravelEditService;
 import com.wakutabi.service.TravelImageService;
+import com.wakutabi.service.TravelUpdateDeleteService; // ⬅️ 추가
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +34,9 @@ public class TravelsController {
 
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
-
+    private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
+    
+    // ... 기존 코드 (travelCreate, uploadTravel) ...
 
     @GetMapping("create")
     public String travelCreate() {
@@ -115,5 +120,59 @@ public class TravelsController {
 
         return "등록 완료! 생성된 글 ID: " + dto.getId();
 
+    }
+
+    /**
+     * 여행 게시글 수정
+     * @param dto 수정할 게시글 데이터
+     * @param principal 사용자 정보
+     * @return 수정 결과 메시지
+     */
+    @PostMapping("travelupdate")
+    @ResponseBody
+    public String updateTravel(@RequestBody TravelEditDto dto, Principal principal) {
+        if (principal == null) {
+            return "로그인 후 이용 가능합니다.";
+        }
+
+        // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
+        // 현재는 예시로 1L을 사용합니다.
+        Long hostUserId = 1L; 
+        dto.setHostUserId(hostUserId);
+
+        
+        boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
+
+        if (isUpdated) {
+            return "게시글 수정 완료!";
+        } else {
+            return "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+        }
+    }
+
+    /**
+     * 여행 게시글 삭제
+     * @param dto 삭제할 게시글 ID를 포함한 DTO
+     * @param principal 사용자 정보
+     * @return 삭제 결과 메시지
+     */
+    @PostMapping("traveldelete")
+    @ResponseBody
+    public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) {
+        if (principal == null) {
+            return "로그인 후 이용 가능합니다.";
+        }
+
+        // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
+        // 현재는 예시로 1L을 사용합니다.
+        Long hostUserId = 1L;
+
+        boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
+
+        if (isDeleted) {
+            return "게시글 삭제 완료!";
+        } else {
+            return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+        }
     }
 }

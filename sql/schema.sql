@@ -60,6 +60,7 @@ CREATE TABLE trip_article (
 
 	CONSTRAINT fk_trip_article_host_user_id FOREIGN KEY (host_user_id) REFERENCES users (id)
 );
+
 -- 여행등록 이미지
 CREATE TABLE trip_article_image (
 	id	                   BIGINT          AUTO_INCREMENT PRIMARY KEY,   -- 여행등록 이미지 고유ID

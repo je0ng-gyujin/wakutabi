@@ -1,15 +1,24 @@
 package com.wakutabi.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.wakutabi.domain.NotificationDto;
+import com.wakutabi.service.NotificationService;
+
+import lombok.RequiredArgsConstructor;
 
 
-
+@RequiredArgsConstructor
 @Controller
 public class MainController {
 	
 	@GetMapping("/") 
-	public String index() {
+	public String index(Model model) {
 		return "index";
 	}
 	

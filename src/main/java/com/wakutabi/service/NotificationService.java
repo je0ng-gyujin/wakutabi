@@ -1,5 +1,7 @@
 package com.wakutabi.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.wakutabi.domain.NotificationDto;
@@ -16,7 +18,19 @@ public class NotificationService {
 		notificationMapper.insertNotification(noticeDto);
 	}
 	
-	public NotificationDto findNotificationsById (Long userId) {
+	public List<NotificationDto> findNotificationsById (Long userId) {
 		return notificationMapper.findNotificationsById(userId);
+	}
+	
+	public NotificationDto findNotificationById(Long notificationId) {
+		return notificationMapper.findNotificationById(notificationId);
+	}
+	
+	public void markAsRead(Long notificationId) {
+		notificationMapper.updateReadStatus(notificationId);
+	}
+	
+	public Integer countNotificationsByUserId(Long userId) {
+		return notificationMapper.countNotificationsByUserId(userId);
 	}
 }

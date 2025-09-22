@@ -7,8 +7,23 @@
     VALUES (#{userId}, #{type}, #{title}, #{link})
   </insert>
   
-  <select id="findNotificationsById" parameterType="java.lang.Long">
+  <select id="findNotificationsById" parameterType="java.lang.Long" resultType="com.wakutabi.domain.NotificationDto">
     select * from system_notification
     where user_id = #{userId} order by is_read asc, created_at desc
+  </select>
+
+  <select id="findNotificationById" parameterType="java.lang.Long" resultType="com.wakutabi.domain.NotificationDto">
+    select * from system_notification
+    where id = #{notificationId}
+  </select>
+
+  <update id="updateReadStatus" parameterType="java.lang.Long">
+    UPDATE system_notification
+    SET is_read = TRUE
+    WHERE id = #{notificationId}
+  </update>
+
+  <select id="countNotificationsByUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    SELECT count(*) as count FROM system_notification WHERE is_read = 0 and user_id = #{userId}
   </select>
 </mapper>

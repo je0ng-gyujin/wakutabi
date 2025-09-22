@@ -33,12 +33,13 @@
         </ul>
 
         <div class="d-flex gap-2">
-          <button type="button"
+          <button type="button" sec:authorize="isAuthenticated()"
             class="btn btn-wakutabi-outline position-relative"
             onclick="openSidebar()">
-            <i class="bi bi-bell-fill"></i> <span
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
-              99+ <span class="visually-hidden">unread messages</span>
+            <i class="bi bi-bell-fill"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
+              th:text="${noticeCount}">
+              00
             </span>
           </button>
           <span sec:authorize="isAnonymous()"> 
@@ -62,6 +63,6 @@
     </div>
   </nav>
   <!-- Notification Sidebar -->
-  <th:block th:insert="~{fragments/notification :: notification}"></th:block>
+  <th:block sec:authorize="isAuthenticated()" th:insert="~{fragments/notification :: notification}"></th:block>
 </header>
 </html>

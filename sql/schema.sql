@@ -1,19 +1,22 @@
 -- [사용자 관련]
 -- 사용자
 CREATE TABLE users (
-    id         BIGINT                                      AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
-    username   VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 사용자ID
-    nickname   VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
-    password   VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
-    gender     ENUM('MALE','FEMALE','OTHER','NONE')        NOT NULL DEFAULT 'NONE',                                        -- 성별
-    birth      DATE                                        NOT NULL,                                                       -- 생일
-    email      VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
-    is_public  BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
-    role       ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
-    status     ENUM('ACTIVE','SUSPENDED','BANNED','EXIT')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPENDED':일시정지, 'BANNED':영구정지)
-    introduce  TEXT,                                                                                                       -- 자기소개글
-    created_at DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
-    updated_at DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- 수정일자
+    id           BIGINT                                      AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
+    username     VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 사용자ID
+    nickname     VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
+    password     VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
+    gender       ENUM('MALE','FEMALE','OTHER','NONE')        NOT NULL DEFAULT 'NONE',                                        -- 성별
+    birth        DATE                                        NOT NULL,                                                       -- 생일
+    email        VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
+    image_path   VARCHAR(255),                                                                                               -- 프로필사진
+    is_public    BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
+    role         ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
+    status       ENUM('ACTIVE','SUSPENDED','BANNED','EXIT')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPENDED':일시정지, 'BANNED':영구정지)
+    exit_reason  VARCHAR(500),                                                                                               -- 탈퇴이유
+    introduce    TEXT,                                                                                                       -- 자기소개글
+    rating       DOUBLE,                                                                                                     -- 평점
+    created_at   DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
+    updated_at   DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- 수정일자
 );
 -- [태그 관련]
 -- 태그
@@ -60,6 +63,7 @@ CREATE TABLE trip_article (
 
 	CONSTRAINT fk_trip_article_host_user_id FOREIGN KEY (host_user_id) REFERENCES users (id)
 );
+
 -- 여행등록 이미지
 CREATE TABLE trip_article_image (
 	id	                   BIGINT          AUTO_INCREMENT PRIMARY KEY,   -- 여행등록 이미지 고유ID
@@ -146,7 +150,7 @@ CREATE TABLE chat_message (
 CREATE TABLE qna_questions (
     id                  BIGINT                                          AUTO_INCREMENT PRIMARY KEY,                                         -- Q&A 질문 고유ID
     user_id             BIGINT                                          NOT NULL,                                                           -- 사용자ID
-    trip_article_id     BIGINT                                          NOT NULL,                                                           -- 여행일정ID(여행관련 질문인 경우)
+    trip_article_id     BIGINT,                                                                                                             -- 여행일정ID(여행관련 질문인 경우)
     type                ENUM('COMMON','ACCOUNT','PAYMENT','BUG','ETC')  NOT NULL   DEFAULT 'COMMON',                                        -- 질문유형('COMMON':일반,'ACCOUNT':계정,'PAYMENT':결제,'BUG':버그신고,'ETC':기타)
     title               VARCHAR(50)                                     NOT NULL,                                                           -- 제목
     content             TEXT                                            NOT NULL,                                                           -- 내용

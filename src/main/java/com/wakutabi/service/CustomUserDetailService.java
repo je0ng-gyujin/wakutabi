@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.wakutabi.domain.LoginDto;
-import com.wakutabi.domain.SignUpDto;
 import com.wakutabi.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;

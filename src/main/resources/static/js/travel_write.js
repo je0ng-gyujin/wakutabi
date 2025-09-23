@@ -4,17 +4,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageInput = document.getElementById('imageInput');
     const uploadedImages = document.getElementById('uploadedImages');
     const orderNumberInput = document.getElementById('orderNumber');
-    
+
     // 날짜 입력 필드와 에러 메시지 요소
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
     const startDateError = document.getElementById('startDateError');
     const endDateError = document.getElementById('endDateError');
-    
+
+    // 예상 비용 입력 필드
+    const estimatedCostInput = document.getElementById('estimatedCost');
+
     // 태그 입력 필드와 태그 영역
     const tagInput = document.getElementById('tag');
-    const tagSection = document.querySelector('.form-section.p-3.rounded.mb-4:nth-child(4)'); // 태그 섹션 선택
-    // nth-child(4)를 사용하거나, 태그 섹션에 별도의 id를 추가하는 것을 추천합니다. (e.g., id="tagSection")
+    const tagSection = document.querySelector('.form-section.p-3.rounded.mb-4:nth-child(4)');
+
+    // ⭐ 미리보기 섹션 요소 가져오기
+    const previewImage = document.querySelector('.card-img-top');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewRegion = document.getElementById('previewRegion');
+    const previewDates = document.getElementById('previewDates');
+    const previewDescription = document.getElementById('previewDescription');
+    const previewParticipants = document.getElementById('previewParticipants');
+    const previewTags = document.getElementById('previewTags');
+    const previewAgeLimit = document.getElementById('previewAgeLimit');
+    const previewGenderLimit = document.getElementById('previewGenderLimit');
 
     // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
     function getTodayFormatted() {
@@ -81,6 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         onEnd: () => updateImgOrder() // 드래그 종료 후 순서 업데이트
                     });
                 }
+                // ⭐ 이미지 업로드 시 미리보기 업데이트
+                if (uploadedImages.children.length > 0) {
+                    previewImage.src = uploadedImages.children[0].querySelector('img').src;
+                }
             };
             reader.readAsDataURL(file);
         });
@@ -100,6 +117,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         orderNumberInput.value = JSON.stringify(imageOrderData);
         console.log(orderNumberInput.value);
+        // ⭐ 이미지 삭제 시 미리보기 업데이트
+        if (uploadedImages.children.length > 0) {
+            previewImage.src = uploadedImages.children[0].querySelector('img').src;
+        } else {
+            // 이미지가 없으면 기본 이미지로 되돌리기
+            previewImage.src = 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=200&fit=crop';
+        }
     }
 
     // 태그 선택 기능
@@ -107,13 +131,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.tag-item').forEach(tag => {
         tag.addEventListener('click', () => {
             const tagValue = tag.dataset.tag;
+            const tagName = tag.textContent.trim(); // 태그 텍스트 가져오기 (이모지 포함)
             tag.classList.toggle('selected');
             if (tag.classList.contains('selected')) {
-                selectedTags.add(tagValue);
+                selectedTags.add({ value: tagValue, name: tagName });
             } else {
-                selectedTags.delete(tagValue);
+                selectedTags.delete(Array.from(selectedTags).find(t => t.value === tagValue));
             }
-            tagInput.value = Array.from(selectedTags).join(',');
+            tagInput.value = Array.from(selectedTags).map(t => t.value).join(',');
+            updatePreviewTags(); // 태그 미리보기 업데이트
         });
     });
 
@@ -136,12 +162,60 @@ document.addEventListener('DOMContentLoaded', () => {
                 isValid = false;
             }
         }
-        
+
         return isValid;
     }
-    
+
+    // ⭐ 여행 기간 자동 계산 함수
+    function calculateTravelPeriod() {
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
+        const travelPeriodElement = document.getElementById('travelPeriod');
+
+        // 출발일과 귀국일이 모두 입력되었을 때만 계산
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffInTime = end.getTime() - start.getTime();
+
+            // 밀리초를 일수로 변환
+            const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+
+            // 날짜 차이가 0보다 작으면 '날짜를 다시 확인해주세요'
+            if (diffInDays < 0) {
+                travelPeriodElement.textContent = "날짜를 다시 확인해주세요";
+                updatePreviewDates('날짜를 다시 확인해주세요');
+                return;
+            }
+
+            travelPeriodElement.textContent = `${diffInDays}박 ${diffInDays + 1}일`;
+            updatePreviewDates(`${startDate.replace(/-/g, '.')} ~ ${endDate.replace(/-/g, '.')}`);
+        } else {
+            travelPeriodElement.textContent = '자동 계산됩니다'; // 입력이 없으면 기본 문구 표시
+            updatePreviewDates('날짜를 선택하세요');
+        }
+    }
+
     // 출발일과 귀국일 필드에 change 이벤트 리스너 추가
-    endDateInput.addEventListener('change', validateDates);
+    startDateInput.addEventListener('change', () => {
+        validateDates();
+        calculateTravelPeriod();
+    });
+
+    endDateInput.addEventListener('change', () => {
+        validateDates();
+        calculateTravelPeriod();
+    });
+
+    // 페이지 로드 시 초기 계산
+    calculateTravelPeriod();
+
+    // ✅ 예상 비용 입력 필드에 쉼표 포맷팅 기능 추가 (수정된 코드)
+    estimatedCostInput.addEventListener('input', (e) => {
+        const cleanedValue = e.target.value.replace(/[^0-9]/g, '');
+        const formattedValue = cleanedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        e.target.value = formattedValue;
+    });
 
     // ✅ submit 이벤트: 이미지 + 데이터 전송
     document.getElementById("travelRegistrationForm").addEventListener("submit", (e) => {
@@ -156,17 +230,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // ⭐ 태그 선택 여부 유효성 검사 추가
         if (selectedTags.size === 0) {
             alert('여행과 관련된 태그를 하나 이상 선택해주세요.');
-            tagSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); // 태그 섹션으로 스크롤 이동
-            tagSection.style.outline = '2px solid #007bff'; // 시각적 강조
+            tagSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tagSection.style.outline = '2px solid #007bff';
             setTimeout(() => {
-                tagSection.style.outline = ''; // 강조 효과 제거
+                tagSection.style.outline = '';
             }, 2000);
             return;
         }
 
         // 유효성 검사를 모두 통과하면 폼 제출
         const form = e.target;
+        
+        // ⭐ 예상 비용 필드의 값에서 쉼표 제거 후 전송
+        const estimatedCostValue = estimatedCostInput.value.replace(/,/g, '');
+        
         const formData = new FormData(form);
+        formData.set('estimatedCost', estimatedCostValue); // 쉼표가 제거된 값으로 덮어쓰기
 
         fetch(form.action, {
             method: "POST",
@@ -181,4 +260,65 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("업로드 실패!");
         });
     });
+
+    // ----------------------------------------------------
+    // ⭐⭐ 미리보기 업데이트 함수들 ⭐⭐
+    // ----------------------------------------------------
+    
+    // 여행 제목 및 설명 미리보기 업데이트
+    function updatePreviewText(e) {
+        const targetId = e.target.id;
+        const value = e.target.value;
+        if (targetId === 'title') {
+            previewTitle.textContent = value || '여행 제목을 입력하세요';
+        } else if (targetId === 'content') {
+            previewDescription.textContent = value || '여행 설명을 입력하세요';
+        }
+    }
+    document.getElementById('title').addEventListener('input', updatePreviewText);
+    document.getElementById('content').addEventListener('input', updatePreviewText);
+
+    // 지역 미리보기 업데이트
+    function updatePreviewRegion() {
+        const locationSelect = document.getElementById('location');
+        const selectedOption = locationSelect.options[locationSelect.selectedIndex];
+        previewRegion.textContent = selectedOption.textContent;
+    }
+    document.getElementById('location').addEventListener('change', updatePreviewRegion);
+
+    // 날짜 미리보기 업데이트 함수
+    function updatePreviewDates(text) {
+        previewDates.textContent = text;
+    }
+
+    // 참가자 미리보기 업데이트
+    function updatePreviewParticipants() {
+        const maxParticipants = document.getElementById('maxParticipants').value;
+        if (maxParticipants) {
+            previewParticipants.textContent = `0/${maxParticipants}명`;
+        } else {
+            previewParticipants.textContent = '0/0명';
+        }
+    }
+    document.getElementById('maxParticipants').addEventListener('change', updatePreviewParticipants);
+
+    // 태그 미리보기 업데이트
+    function updatePreviewTags() {
+        previewTags.innerHTML = ''; // 기존 태그 제거
+        if (selectedTags.size === 0) {
+            previewTags.innerHTML = '<span class="badge bg-secondary me-1">태그</span>';
+        } else {
+            selectedTags.forEach(tag => {
+                const tagSpan = document.createElement('span');
+                tagSpan.className = 'badge bg-primary me-1';
+                tagSpan.textContent = tag.name;
+                previewTags.appendChild(tagSpan);
+            });
+        }
+    }
+    updatePreviewTags(); // 초기 로드 시 한 번 실행
+
+    // 페이지 로드 시 초기 미리보기 상태 설정
+    updatePreviewRegion();
+    updatePreviewParticipants();
 });

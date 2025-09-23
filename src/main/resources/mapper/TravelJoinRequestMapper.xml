@@ -9,15 +9,17 @@
         (#{tripArticleId},#{hostUserId},#{applicantId})
     </insert>
     <!-- 여행참가 수락 -->
- 	<update id="changeStatusToAccepted" parameterType="Long">
+ 	<update id="changeStatusToAccepted">
         UPDATE trip_join_request 
         SET status = 'ACCEPTED' 
         WHERE id = #{id}
+        AND host_user_id = #{hostUserId}
     </update>
     <!-- 여행참가 거절 -->
-    <update id="changeStatusToRejected" parameterType="Long">
+    <update id="changeStatusToRejected">
         UPDATE trip_join_request 
         SET status = 'REJECTED' 
         WHERE id = #{id}
+        AND host_user_id = #{hostUserId}
     </update>
 </mapper>

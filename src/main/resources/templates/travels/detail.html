@@ -104,7 +104,11 @@
                     </div>
                 </div>
 
+
                 <div class="col-lg-4">
+                        <form id="joinForm" th:action="@{/join-request}" method="post">
+                            <input type="hidden" name="tripArticleId" th:value="${travel.id}">
+                            <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
                     <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
                         <div class="text-center mb-3">
                             <img src="/image/testuser.jpg" alt="프로필 이미지" class="rounded-circle mb-2"
@@ -113,7 +117,8 @@
                             <small class="text-muted">@김민지</small>
                         </div>
                         <div class="d-grid mb-3">
-                            <button class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
+                            
+                            <button class="btn btn-wakutabi-primary btn-lg" onclick="confirmJoin()">참가 신청하기</button>
                         </div>
                         <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
                         <hr />
@@ -150,6 +155,11 @@
               alert(msg);
               location.href = '/schedule/list';
           });
+    }
+    function confirmJoin(){
+        if(confirm("이 여행에 참가하시겠습니까?")){
+            document.getElementById("joinFirm").submit();
+        }
     }
 </script>
 </body>

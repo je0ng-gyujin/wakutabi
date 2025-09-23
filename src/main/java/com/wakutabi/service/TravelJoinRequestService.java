@@ -10,7 +10,7 @@ import com.wakutabi.mapper.TravelImageMapper;
 import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
-public class TravelImageService {
+public class TravelJoinRequestService {
 	private final TravelImageMapper travelImageMapper;
 	
 	public void insertTravelImage(TravelImageDto dto) {

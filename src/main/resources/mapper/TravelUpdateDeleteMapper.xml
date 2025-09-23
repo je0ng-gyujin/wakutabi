@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.TravelUpdateDeleteMapper">
+	<update id="updateTravelArticle">
+		UPDATE trip_article
+        SET
+            title = #{title},
+            location = #{location},
+            content = #{content},
+            maxParticipants = #{maxParticipants},
+            age_limit = #{ageLimit},
+            gender_limit = #{genderLimit},
+            estimated_cost = #{estimatedCost},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+          AND host_user_id = #{hostUserId}
+	</update>		
+	
+	<delete id="deleteTravelArticle">
+		 <!-- 먼저 이미지 삭제 -->
+        DELETE FROM trip_article_image
+        WHERE trip_article_id = #{id};
+
+        <!-- 본문 삭제 -->
+        DELETE FROM trip_article
+        WHERE id = #{id}
+          AND host_user_id = #{hostUserId};
+	</delete>
+</mapper>

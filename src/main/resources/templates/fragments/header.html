@@ -1,4 +1,5 @@
-
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <!-- Header -->
 <header>
   <nav class="navbar navbar-expand-lg navbar-glass">
@@ -32,43 +33,36 @@
         </ul>
 
         <div class="d-flex gap-2">
-          <button type="button"
+          <button type="button" sec:authorize="isAuthenticated()"
             class="btn btn-wakutabi-outline position-relative"
             onclick="openSidebar()">
-            <i class="bi bi-bell-fill"></i> <span
-              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
-              99+ <span class="visually-hidden">unread messages</span>
+            <i class="bi bi-bell-fill"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning"
+              th:text="${noticeCount}">
+              00
             </span>
           </button>
-          <span sec:authorize="isAnonymous()">
-          	<a th:href="@{/login}" class="btn btn-wakutabi-outline rounded-pill">로그인</a>
+          <span sec:authorize="isAnonymous()"> 
+            <a th:href="@{/login}"
+              class="btn btn-wakutabi-outline rounded-pill">로그인</a>
           </span>
-           <span sec:authorize="isAnonymous()">
-          		<a th:href="@{/signup}"
-            class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">회원가입</a>
-           </span>
-           <span sec:authorize="isAuthenticated()">
-          		<a th:href="@{/logout}"
-            class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">로그아웃</a>
-		   </span>
+          <span sec:authorize="isAnonymous()">
+            <a th:href="@{/signup}"
+              class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">회원가입</a>
+          </span>
+          <span sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}"
+              class="btn btn-wakutabi-outline rounded-pill">로그아웃</a>
+          </span>
+          <span sec:authorize="isAuthenticated()">
+            <a th:href="@{/user/mypage}"
+              class="btn btn-wakutabi-primary rounded-pill btn-hover-effect">마이페이지</a>
+          </span>
         </div>
       </div>
     </div>
   </nav>
   <!-- Notification Sidebar -->
-	<div id="notificationSidebar" class="notification-sidebar">
-	  <div class="sidebar-header d-flex justify-content-between align-items-center px-3 py-2">
-	    <h5 class="mb-0" style="color:#1E73BE">알림</h5>
-	    <button class="btn-close" onclick="closeSidebar()" aria-label="Close"></button>
-	  </div>
-	  <div class="sidebar-body px-3">
-	    <p>여기에 알림 내용을 표시할 수 있어요.</p>
-	    <!-- 예: 반복적으로 알림 아이템들 넣기 -->
-	    <div class="alert alert-info">새로운 메시지가 도착했습니다.</div>
-	    <div class="alert alert-warning">여행 일정이 곧 시작됩니다.</div>
-	  </div>
-	</div>
-	
-	<!-- Sidebar Overlay -->
-	<div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+  <th:block sec:authorize="isAuthenticated()" th:insert="~{fragments/notification :: notification}"></th:block>
 </header>
+</html>

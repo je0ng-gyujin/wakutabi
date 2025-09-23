@@ -1,0 +1,23 @@
+package com.wakutabi.domain;
+
+import lombok.Data;
+import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class TravelJoinRequestDto{
+
+    private final Long id;
+    private final Long tripArticleId;
+    private final Long hostUserId;
+    private final Long applicantId;
+    private final enum status;
+    private final LocalDateTime createdAt;
+
+    public enum status{
+        PENDING,
+        ACCEPTED,
+        REJECTED   
+    }
+}

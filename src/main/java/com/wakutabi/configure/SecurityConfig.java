@@ -7,7 +7,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,8 @@ public class SecurityConfig {
 
 				// HTTP 요청에 대한 접근 규칙을 설정합니다.
 				.authorizeHttpRequests(auth -> auth
+						// "/schedule/create" 경로에 대한 요청은 인증된 사용자만 접근할 수 있습니다.
+						.requestMatchers("/schedule/create").authenticated()
 						// "/adm/"으로 시작하는 모든 요청은 "ADMIN" 역할을 가진 사용자만 접근할 수 있습니다.
 						.requestMatchers("/adm/**").hasRole("ADMIN")
 						// 그 외 모든 요청은 허용합니다. (인증 없이 접근 가능)
@@ -68,7 +72,7 @@ public class SecurityConfig {
 								response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 							} else {
 								// 일반적인 웹 요청이라면, 로그인 페이지로 리다이렉트합니다.
-								response.sendRedirect("/user/login");
+								response.sendRedirect("/user/login?required=true");
 							}
 						}))
 
@@ -85,8 +89,9 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationSuccessHandler successHandler() {
 		// 람다식을 사용해 AuthenticationSuccessHandler 인터페이스를 구현합니다.
-		return (request, response, authentication) -> {
-
+		return (request, response, authentication) -> { // 로그인 성공 후 실행되는 코드 블록
+			// 사용자가 로그인하기 전에 접근하려고 했던 URL 정보를 세션에서 가져옵니다.
+			SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
 			// 현재 로그인한 사용자의 권한(Authorities) 목록을 가져옵니다.
 			// stream()을 사용해 각 권한을 확인합니다.
 			boolean isAdmin = authentication.getAuthorities().stream()
@@ -99,7 +104,14 @@ public class SecurityConfig {
 				response.sendRedirect("adm/admin_index");
 			}
 			// 관리자가 아니라면
-			else {
+			else { // 일반 사용자 가 로그인하기 전에 접근하려고 했던 URL이 있는지 확인합니다
+				if (savedRequest != null) { // 저장된 요청이 있다면 그 요청의 URL을 가져옵니다.
+					String targetUrl = savedRequest.getRedirectUrl();
+					// 저장된 요청이 있다면, 그 URL로 리다이렉트(redirect) 시킵니다.
+					response.sendRedirect(targetUrl);
+					return;
+					
+				}
 				// 메인 페이지("/")로 리다이렉트(redirect) 시킵니다.
 				response.sendRedirect("/");
 			}

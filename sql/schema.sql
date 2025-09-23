@@ -72,6 +72,20 @@ CREATE TABLE trip_article_image (
 
 	CONSTRAINT fk_trip_article_image_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 );
+-- [여행 참가]
+-- 여행 참가 신청
+CREATE TABLE trip_join_request (
+    id                BIGINT                                  AUTO_INCREMENT PRIMARY KEY,          -- 여행참가신청ID
+    trip_article_id   BIGINT                                  NOT NULL,                            -- 여행ID
+    host_id           BIGINT                                  NOT NULL,                            -- 호스트ID
+    applicant_id      BIGINT                                  NOT NULL,                            -- 참가신청자ID
+    status            ENUM('PENDING','ACCEPTED','REJECTED')   NOT NULL DEFAULT 'PENDING',          -- 참가신청상태
+    created_at        DATETIME                                NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+
+    CONSTRAINT fk_join_request_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id),
+    CONSTRAINT fk_chat_participants_user_id    FOREIGN KEY (user_id)         REFERENCES users        (id),
+    CONSTRAINT fk_chat_participants_user_id    FOREIGN KEY (user_id)         REFERENCES users        (id)
+);
 -- [여행후기 관련]
 -- 여행 리뷰
 CREATE TABLE trip_reviews (

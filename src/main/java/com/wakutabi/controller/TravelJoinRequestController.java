@@ -18,17 +18,20 @@ public class TravelJoinRequestController {
 
     private final TravelJoinRequestService travelJoinRequestService;
 
+    // 여행참가신청
     @PostMapping("/join-request")
     public String insertTravelJoinRequest(TravelJoinRequestDto travelJoinRequest){
         travelJoinRequestService.insertTravelJoinRequest(travelJoinRequest);
 
         return "redirect:/detail";
     }
+    // 참가수락
     @PostMapping("/request-accepted")
     public String changeStatusToAccepted(@ModelAttribute("userId") Long userId){
         travelJoinRequestService.changeStatusToAccepted(userId);
         return "redirect:detail";
     }
+    // 참가거절
     @PostMapping("/request-rejected")
     public String changeStatusTorejected(@ModelAttribute("userId") Long userId){
         travelJoinRequestService.changeStatusToRejected(userId);

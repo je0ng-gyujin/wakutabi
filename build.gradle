@@ -35,6 +35,12 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+	/**
+	 * @author 정규진
+	 * @description 웹소켓 기능 구현을 위한 웹소켓 스타터 의존성 추가
+	 */
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	// Author: 탁영복
 	// Description: Lombok 추가

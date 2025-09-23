@@ -2,6 +2,13 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="chat">
 <script defer src="/js/chat.js"></script>
+<script th:inline="javascript">
+	// 서버의 userId 모델 값을 자바스크립트 변수로 초기화
+	const userId = '[[${userId}]]'; // Thymeleaf 문법
+
+	// 이제 이 값을 sessionStorage에 저장할 수 있습니다.
+	sessionStorage.setItem('userId', userId);
+</script>
 <button class="btn btn-wakutabi-primary btn-lg rounded-circle position-fixed bottom-0 start-0 m-3" type="button" style="width:50px; height:50px;" data-bs-toggle="offcanvas" data-bs-target="#chatOffcanvas" aria-controls="offcanvasScrolling">
   <i class="bi bi-chat-dots-fill"></i>
 </button>
@@ -88,14 +95,13 @@
           </div>
           <div class="ms-2 small text-secondary">10:06 AM</div>
         </div>
-      </div>
+      </div><!-- messageList end -->
 
       <div class="p-2 border-top">
         <div class="input-group">
-          <textarea class="form-control rounded-pill me-2"
+          <textarea id="chatSendText" class="form-control rounded-pill me-2"
             placeholder="메시지를 입력하세요..." rows="1" style="resize: none;"></textarea>
-          <button class="btn btn-wakutabi-primary rounded-circle"
-            type="button">
+          <button id="chatSendBtn" class="btn btn-wakutabi-primary rounded-circle" type="button">
             <i class="bi bi-send-fill"></i>
           </button>
         </div>

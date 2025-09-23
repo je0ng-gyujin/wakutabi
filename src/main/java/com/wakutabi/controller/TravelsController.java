@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -163,56 +164,39 @@ public class TravelsController {
     // 4. 여행 글 수정
     // ---------------------------------------------
  // TravelsController.java
-    @PostMapping("/travelupdate")
-    @ResponseBody
-    public String updateTravel(@ModelAttribute TravelEditDto dto, 
-                               @ModelAttribute("userId") Long userId,
-                                Principal principal) {
-        if (principal == null) return "로그인 후 이용 가능합니다.";
-
-        dto.setHostUserId(userId); // 실제 구현 시 principal 기반으로 설정
-
-        // 현재 컨트롤러는 `updateTravelArticle` 메소드에 dto를 직접 전달하고 있는데,
-        // 이 메소드에서 어떤 데이터를 필요로 하는지 확인해야 합니다.
-        // 예를 들어, 이미지 정보도 함께 업데이트해야 한다면,
-        // DTO에 MultipartFile 필드가 추가되어야 합니다.
-
-        boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
-
-        return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-
-    }
-
-
-
-/**
- * 여행 게시글 삭제
- * @param dto 삭제할 게시글 ID를 포함한 DTO
- * @param principal 사용자 정보
- * @return 삭제 결과 메시지
- */
-@PostMapping("traveldelete")
-@ResponseBody
-public String deleteTravel(@RequestBody TravelEditDto dto, 
-                           @ModelAttribute("userId") Long userId,
+ // TravelsController.java
+ // ...
+ @PostMapping("/travelupdate")
+ @ResponseBody
+ public String updateTravel(@ModelAttribute TravelEditDto dto,
+                            @ModelAttribute("userId") Long userId,
                             Principal principal) {
-    if (principal == null) {
-        return "로그인 후 이용 가능합니다.";
-    }
+     if (principal == null) {
+         return "로그인 후 이용 가능합니다.";
+     }
 
-    // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
-    // 현재는 예시로 1L을 사용합니다.
-    Long hostUserId = userId;
+     dto.setHostUserId(userId); // Set the hostUserId from the authenticated user
+     boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
 
-    boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
+     return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+ }
 
-    if (isDeleted) {
-        return "게시글 삭제 완료!";
-    } else {
-        return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+ @DeleteMapping("/traveldelete")
+ @ResponseBody
+ public String deleteTravel(@RequestBody TravelEditDto dto,
+                            @ModelAttribute("userId") Long userId,
+                            Principal principal) {
+     if (principal == null) {
+         return "로그인 후 이용 가능합니다.";
+     }
 
-    }
-}
+     Long hostUserId = userId; // Get the hostUserId from the authenticated user
+     boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
+
+     return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+ }
+ // ...
+
     
     
  // TravelsController.java

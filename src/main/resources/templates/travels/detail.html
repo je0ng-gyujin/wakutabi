@@ -7,17 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/travel_review.css}" />
     <title>여행 상세</title>
-    <script defer th:src="@{/js/travel_review.js}"></script>
+    <script defer th:src="@{/js/travel_detail.js}"></script>
+    <meta name="_csrf">
+    <meta name="_csrf_header">
 </head>
 <body>
 <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
     <div class="container py-4">
 
+        <!-- 여행 정보 없음 -->
         <div th:if="${travel == null}" class="text-center py-5">
             <h2>해당 여행 정보를 찾을 수 없습니다.</h2>
             <a th:href="@{/schedule/list}" class="btn btn-primary mt-3">목록으로 돌아가기</a>
         </div>
 
+        <!-- 여행 정보 있음 -->
         <div th:if="${travel != null}">
             <div class="row mb-4">
                 <div class="col-12 text-center">
@@ -30,6 +34,7 @@
             </div>
 
             <div class="row">
+                <!-- 여행 정보 카드 -->
                 <div class="col-lg-8">
                     <div class="card shadow-sm rounded-4 mb-4">
                         <div class="card-body p-4">
@@ -37,63 +42,70 @@
                             <div class="d-flex justify-content-between">
                                 <h4 class="card-title fw-bold mb-3">여행 정보</h4>
                                 <div th:if="${isOwner}">
-                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}" class="btn btn-sm btn-outline-secondary">수정</a>
-                                    <button class="btn btn-sm btn-outline-danger" 
-                                            th:onclick="'deleteTravel(' + ${travel.id} + ')'">삭제</button>
+                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}"
+                                       class="btn btn-sm btn-outline-secondary">수정</a>
+                                    <button id="deleteBtn" 
+       										class="btn btn-sm btn-outline-danger" 
+        										th:data-id="${travel.id}">
+    												삭제
+									</button>
                                 </div>
                             </div>
 
                             <p class="card-text text-muted" th:text="${travel.content}">여행 내용</p>
                             <hr />
 
+                            <!-- 여행 세부 정보 -->
                             <div class="row text-center mb-3">
                                 <div class="col-6 col-md-3 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-calendar me-1"></i> <strong>일정</strong>
                                     </span>
-                                    <p class="mb-0 mt-1 fs-6" 
-                                       th:text="${#temporals.format(travel.startDate, 'yyyy. MM. dd')} + ' 부터'">시작일</p>
-                                    <p class="mb-0 mt-1" 
-                                       th:text="${#temporals.format(travel.endDate, 'yyyy. MM. dd')} + ' 까지'">종료일</p>
+                                    <p class="mb-0 mt-1 fs-6"
+                                       th:text="${#temporals.format(travel.startDate, 'yyyy. MM. dd')} + ' 부터'"></p>
+                                    <p class="mb-0 mt-1"
+                                       th:text="${#temporals.format(travel.endDate, 'yyyy. MM. dd')} + ' 까지'"></p>
                                 </div>
 
                                 <div class="col-6 col-md-3 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-currency-dollar me-1"></i> <strong>예상 요금</strong>
                                     </span>
-                                    <p class="mb-0 mt-1" 
-                                       th:text="${#numbers.formatInteger(travel.estimatedCost, 3, 'COMMA')} + '원'">0원</p>
+                                    <p class="mb-0 mt-1"
+                                       th:text="${#numbers.formatInteger(travel.estimatedCost, 3, 'COMMA')} + '원'"></p>
                                 </div>
 
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-person-circle me-1"></i> <strong>선호 연령</strong>
                                     </span>
-                                    <p class="mb-0 mt-1" th:text="${travel.ageLimit}">NO</p>
+                                    <p class="mb-0 mt-1" th:text="${travel.ageLimit}"></p>
                                 </div>
 
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-people me-1"></i> <strong>인원</strong>
                                     </span>
-                                    <p class="mb-0 mt-1" th:text="'3/' + ${travel.maxParticipants} + '명'">3/10명</p>
+                                    <p class="mb-0 mt-1" th:text="'3/' + ${travel.maxParticipants} + '명'"></p>
                                 </div>
 
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-success-subtle text-dark">
                                         <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
                                     </span>
-                                    <p class="mb-0 mt-1" 
-                                       th:text="${travel.status == 'OPEN' ? '모집 중' : travel.status}">OPEN</p>
+                                    <p class="mb-0 mt-1"
+                                       th:text="${travel.status == 'OPEN' ? '모집 중' : travel.status}"></p>
                                 </div>
                             </div>
 
+                            <!-- 태그 -->
                             <div class="mb-3 no-hover-effects">
-                                <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="식도락">🍜 식도락</span>
-                                <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="온천">♨️ 온천</span>
-                                <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="문화">🏛️ 문화</span>
+                                <span class="badge tag-item px-3 py-2 rounded-pill">🍜 식도락</span>
+                                <span class="badge tag-item px-3 py-2 rounded-pill">♨️ 온천</span>
+                                <span class="badge tag-item px-3 py-2 rounded-pill">🏛️ 문화</span>
                             </div>
 
+                            <!-- 이미지 -->
                             <div class="row g-2" th:if="${images != null and !#lists.isEmpty(images)}">
                                 <div class="col-4" th:each="image : ${images}">
                                     <img th:src="${image.imagePath}" class="img-fluid rounded-3" alt="여행 이미지" />
@@ -104,6 +116,7 @@
                     </div>
                 </div>
 
+                <!-- 작성자 정보 -->
                 <div class="col-lg-4">
                     <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
                         <div class="text-center mb-3">
@@ -120,11 +133,7 @@
                         <h6 class="fw-bold mb-3">참여자 목록</h6>
                         <ul class="list-unstyled">
                             <li class="d-flex align-items-center mb-2">
-                                <img src="/image/testuser.jpg" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" /> 
-                                <span class="ms-2">박지훈</span>
-                            </li>
-                            <li class="d-flex align-items-center mb-2">
-                                <img src="/image/testuser.jpg" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" /> 
+                                <img src="/image/testuser.jpg" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" />
                                 <span class="ms-2">박지훈</span>
                             </li>
                         </ul>
@@ -135,22 +144,5 @@
         </div>
     </div>
 </div>
-
-<script th:inline="javascript">
-    /* 삭제 버튼 클릭 시 AJAX 요청 예시 */
-    function deleteTravel(tripId) {
-        if (!confirm('정말 삭제하시겠습니까?')) return;
-
-        fetch('/schedule/traveldelete', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({id: tripId})
-        }).then(res => res.text())
-          .then(msg => {
-              alert(msg);
-              location.href = '/schedule/list';
-          });
-    }
-</script>
 </body>
 </html>

@@ -22,6 +22,7 @@ public class TravelEditDto {
     private String content;
     private Integer estimatedCost;
     private String status;        // OPEN, MATCHED, CLOSED, CANCELED
+    private String imagePath;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;

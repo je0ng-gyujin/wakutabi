@@ -82,9 +82,9 @@ CREATE TABLE trip_join_request (
     status             ENUM('PENDING','ACCEPTED','REJECTED')   NOT NULL DEFAULT 'PENDING',          -- 참가신청상태
     created_at         DATETIME                                NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
 
-    CONSTRAINT fk_join_request_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id),
-    CONSTRAINT fk_join_request_host_user_id    FOREIGN KEY (host_user_id)         REFERENCES users        (id),
-    CONSTRAINT fk_join_request_applicant_user_id    FOREIGN KEY (appicant_user_id)         REFERENCES users        (id)
+    CONSTRAINT fk_trip_join_request_trip_article_id   FOREIGN KEY (trip_article_id)   REFERENCES trip_article (id),
+    CONSTRAINT fk_trip_join_request_host_user_id      FOREIGN KEY (host_user_id)      REFERENCES users        (id),
+    CONSTRAINT fk_trip_join_request_applicant_user_id FOREIGN KEY (applicant_user_id) REFERENCES users        (id)
 );
 -- [여행후기 관련]
 -- 여행 리뷰

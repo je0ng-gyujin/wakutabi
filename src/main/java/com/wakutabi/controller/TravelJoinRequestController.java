@@ -21,7 +21,7 @@ public class TravelJoinRequestController {
     @PostMapping("/join-request")
     public String insertTravelJoinRequest(TravelJoinRequestDto travelJoinRequest,
                                           @ModelAttribute("userId") Long userId){
-        travelJoinRequest.setApplicantId(userId);                                         
+        travelJoinRequest.setApplicantUserId(userId);                                         
         travelJoinRequestService.insertTravelJoinRequest(travelJoinRequest);
         
         // NotificationService.sendJoinRequest(
@@ -30,7 +30,7 @@ public class TravelJoinRequestController {
         //     userId
         // );
 
-        return "redirect:/travel/detail?id="+travelJoinRequest.getTripArticleId();
+        return "redirect:/schedule/detail?id="+travelJoinRequest.getTripArticleId();
     }
     // 참가수락
     @PostMapping("/request-accepted/accept/{id}")

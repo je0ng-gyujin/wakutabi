@@ -4,9 +4,9 @@
     <!-- 여행참가 신청 -->
     <insert id="insertTravelJoinRequest" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
         INSERT INTO trip_join_request
-        (trip_article_id, host_user_id, applicant_id)
+        (trip_article_id, host_user_id, applicant_user_id)
         VALUES
-        (#{tripArticleId},#{hostUserId},#{applicantId})
+        (#{tripArticleId},#{hostUserId},#{applicantUserId})
     </insert>
     <!-- 여행참가 수락 -->
  	<update id="changeStatusToAccepted">

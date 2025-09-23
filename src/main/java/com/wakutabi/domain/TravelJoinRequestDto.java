@@ -9,7 +9,7 @@ public class TravelJoinRequestDto{
     private Long id;
     private Long tripArticleId;
     private Long hostUserId;
-    private Long applicantId;
+    private Long applicantUserId;
     private Status  status;
 
     public enum Status{

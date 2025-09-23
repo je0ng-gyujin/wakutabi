@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/travel_review.css}" />
     <title>여행 상세</title>
-    <script defer th:src="@{/js/travel_review.js}"></script>
+    <!-- <script defer th:src="@{/js/travel_review.js}"></script> -->
+    <script defer src="/js/detail.js"></script>
 </head>
 <body>
 <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
@@ -109,8 +110,8 @@
                         <form id="joinForm" th:action="@{/join-request}" method="post">
                             <input type="hidden" name="tripArticleId" th:value="${travel.id}">
                             <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
-                    <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
-                        <div class="text-center mb-3">
+                                 <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
+                                  <div class="text-center mb-3">
                             <img src="/image/testuser.jpg" alt="프로필 이미지" class="rounded-circle mb-2"
                                  style="width: 80px; height: 80px; object-fit: cover" />
                             <h5 class="mb-0">여행 작성자</h5>
@@ -118,7 +119,7 @@
                         </div>
                         <div class="d-grid mb-3">
                             
-                            <button class="btn btn-wakutabi-primary btn-lg" onclick="confirmJoin()">참가 신청하기</button>
+                            <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
                         </div>
                         <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
                         <hr />
@@ -134,6 +135,7 @@
                             </li>
                         </ul>
                     </div>
+                    </form>
                 </div>
 
             </div>
@@ -141,7 +143,25 @@
     </div>
 </div>
 
+
 <script th:inline="javascript">
+     document.addEventListener("DOMContentLoaded", function () {
+    const btn  = document.getElementById("joinBtn");
+    const form = document.getElementById("joinForm");
+
+    if (!btn || !form) {
+        console.error("폼이나 버튼을 찾지 못했습니다.");
+        return;
+    }
+
+    btn.addEventListener("click", function () {
+        console.log("버튼 클릭됨"); 
+        if (confirm("이 여행에 참가하시겠습니까?")) {
+            alert("참가 신청되었습니다.");
+            form.submit();
+        }
+    });
+});
     /* 삭제 버튼 클릭 시 AJAX 요청 예시 */
     function deleteTravel(tripId) {
         if (!confirm('정말 삭제하시겠습니까?')) return;
@@ -155,11 +175,6 @@
               alert(msg);
               location.href = '/schedule/list';
           });
-    }
-    function confirmJoin(){
-        if(confirm("이 여행에 참가하시겠습니까?")){
-            document.getElementById("joinFirm").submit();
-        }
     }
 </script>
 </body>

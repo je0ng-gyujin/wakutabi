@@ -92,7 +92,7 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label fw-bold">여행 기간</label>
-                                        <span class="form-control">자동 계산됩니다</span>
+                                        <span class="form-control" id="travelPeriod">자동 계산됩니다</span>
                                     </div>
                                 </div>
                             </div>
@@ -175,11 +175,13 @@
                                 </h5>
 
                                 <div class="mb-3">
-                                    <p class="form-label fw-bold">이번 여행의 예상 비용을 설정해주세요</p>
+                                    <p class="form-label fw-bold">이번 여행의 예상 비용을 입력해주세요</p>
                                     <div class="mb-3">
                                         <label for="estimatedCost" class="form-label fw-bold">예상 비용 *</label>
-                                        <input type="number" id="estimatedCost" name="estimatedCost"
-                                                class="form-control" required>
+                                        <div class="input-group">
+                                                <input type="text" id="estimatedCost" name="estimatedCost" class="form-control" required>
+                                            <span class="input-group-text">¥</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

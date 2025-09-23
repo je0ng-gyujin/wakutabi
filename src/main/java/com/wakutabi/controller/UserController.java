@@ -18,23 +18,29 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
-	
+
 	@PostMapping("/signup")
 	public String signRegister(SignUpDto user) {
 		userService.register(user);
 		return "redirect:/";
-	}	
+	}
+
+	// ⭐️ 로그인 폼을 렌더링하는 메서드 추가
+	@GetMapping("/login")
+	public String loginForm() {
+		return "users/login";
+	}
+
 	@GetMapping("/check-username")
 	@ResponseBody
 	public String checkUsername(@RequestParam("username") String username) {
 		try {
 			int count = userService.countByUsername(username);
 			return count > 0 ? "exist" : "ok";
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}
 	}
-	
-	
+
 }

@@ -24,11 +24,26 @@
       <div class="list-group list-group-flush border-top">
 
         <a href="#"
+          th:each="chatRoom : ${chatRooms}"
+          class="rounded list-group-item list-group-item-action list-group-item-unread"
+          aria-current="true">
+          
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1 text-truncate" th:text="${chatRoom.title} + ' 채팅방'"></h6>
+          </div>
+          
+          <p class="mb-1 text-truncate" 
+            th:text="${chatRoom.nickname} + ': ' + ${chatRoom.latestMessage}"></p> 
+            
+          <small class="text-secondary" 
+            th:text="${#temporals.format(chatRoom.latestMessageTime, 'MM/dd HH:mm')}"></small>
+        </a>
+
+        <a href="#"
           class="rounded list-group-item list-group-item-action list-group-item-unread"
           aria-current="true">
           <div class="d-flex w-100 justify-content-between">
             <h6 class="mb-1 text-truncate">일본 벚꽃 여행: 메시지가 도착했습니다.</h6>
-            <span class="badge rounded-pill bg-warning">2</span>
           </div>
           <p class="mb-1 text-truncate">유타: 안녕하세요, 여행 일정에 대해 이야기 나누고
             싶습니다.</p> <small class="text-secondary">5분 전</small>
@@ -37,7 +52,6 @@
         <a href="#" class="rounded list-group-item list-group-item-action list-group-item-unread" aria-current="true">
         <div class="d-flex w-100 justify-content-between">
           <h6 class="mb-1 text-truncate">제주도 드라이브: 새로운 동행자가 합류했습니다.</h6>
-          <span class="badge rounded-pill bg-warning">1</span>
         </div>
         <p class="mb-1 text-truncate">운영자: 새로운 동행자를 환영해주세요!</p>
         <small class="text-secondary">10분 전</small>
@@ -63,6 +77,7 @@
       <div class="d-flex flex-column p-3 overflow-auto flex-grow-1"
         id="messageList">
 
+<!--/* 유지보수용 채팅 하드 코딩 예시 (렌더링 안되니까 남겨놔주세요!)
         <div class="d-flex mb-3 align-items-end">
           <img src="/image/testuser.jpg"
             style="width: 40px; height: 40px;"
@@ -95,6 +110,7 @@
           </div>
           <div class="ms-2 small text-secondary">10:06 AM</div>
         </div>
+*/-->
       </div><!-- messageList end -->
 
       <div class="p-2 border-top">

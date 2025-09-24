@@ -24,7 +24,7 @@ const socket = new WebSocket("ws://192.168.0.55:8088/ws/chat");
 
 // 웹소켓 연결이 성공하면 호출되는 이벤트
 socket.onopen = function(e) {
-	console.log('연결 성공!');
+	console.log('웹소켓 채팅 연결 성공!');
 };
 
 const chatReceiveList = document.getElementById('messageList');

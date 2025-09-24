@@ -1,6 +1,8 @@
 package com.wakutabi.controller;
 
+import com.wakutabi.domain.ChatRoomDto;
 import com.wakutabi.domain.NotificationDto;
+import com.wakutabi.service.ChatService;
 import com.wakutabi.service.NotificationService;
 import com.wakutabi.service.UserService;
 
@@ -19,6 +21,7 @@ public class GlobalControllerAdvice {
 
     private final UserService userService;
     private final NotificationService notificationService;
+    private final ChatService chatService;
 
 
     @ModelAttribute("userId")
@@ -57,5 +60,19 @@ public class GlobalControllerAdvice {
         
         // 로그인하지 않았거나 사용자 ID가 없으면 0을 반환
         return 0; 
+    }
+    
+    // 참가한 채팅방을 채팅방 목록에 추가하는 메서드
+    @ModelAttribute("chatRooms")
+    public List<ChatRoomDto> addChatRooms(Principal principal) {
+        if (principal != null) {
+            String username = principal.getName();
+            Long userId = userService.getUserId(username);
+            
+            if (userId != null) {
+                return chatService.findChatRoomsByUserId(userId);
+            }
+        }
+        return Collections.emptyList();
     }
 }

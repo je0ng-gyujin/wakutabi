@@ -1,0 +1,21 @@
+package com.wakutabi.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.wakutabi.domain.ChatRoomDto;
+import com.wakutabi.mapper.ChatMapper;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ChatService {
+	
+	private final ChatMapper chatMapper;
+	
+	public List<ChatRoomDto> findChatRoomsByUserId(Long userId){
+		return chatMapper.findChatRoomsByUserId(userId);
+	}
+}

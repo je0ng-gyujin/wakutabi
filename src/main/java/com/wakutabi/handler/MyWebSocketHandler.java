@@ -3,6 +3,7 @@ package com.wakutabi.handler;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -22,7 +23,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
 		sessions.add(session);
-		System.out.println("새로운 클라이언트 접속: " + session.getId());
+		System.out.println("(웹소켓) 새로운 클라이언트 접속: " + session.getId());
 	}
 	
 	// 클라이언트가 메시지를 보낼 때마다 호출
@@ -41,14 +42,23 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 					s.sendMessage(new TextMessage(jsonMessage));
 				} catch (Exception e) {
 					// 특정 세션 전송 실패는 무시하고 계속 진행
-					System.err.println("메시지 전송 중 오류 발생: " + e.getMessage());
+					System.err.println("(웹소켓) 메시지 전송 중 오류 발생: " + e.getMessage());
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("메시지 처리 중 오류 발생: " + e.getMessage());
+			System.err.println("(웹소켓) 메시지 처리 중 오류 발생: " + e.getMessage());
 			// 예외 발생 시 연결 종료
 			session.close();
 		}
 		
 	}
+	
+	// 클라이언트 연결이 종료되었을 때 호출
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		// sessions 목록에서 연결이 끊긴 세션을 제거
+		sessions.remove(session);
+		System.out.println("(웹소켓) 클라이언트 연결 종료: " + session.getId());
+	}
+
 }

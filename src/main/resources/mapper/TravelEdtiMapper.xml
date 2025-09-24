@@ -11,7 +11,4 @@
          #{ageLimit}, #{genderLimit}, #{title}, #{content}, #{estimatedCost}, #{status})
     </insert>
 
- 	<select id="findById" resultType="com.wakutabi.domain.TravelEditDto">
-        SELECT * FROM trip_article WHERE id = #{id}
-    </select>
 </mapper>

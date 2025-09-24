@@ -40,24 +40,6 @@ h3.fw-bold {
     margin-bottom: 10px;
 }
 
-.rating {
-  position: absolute;
-  margin-left: 150px;
-  width: 50px;                /* 원 크기 */
-  height: 50px;
-  font-size: 20px;            /* 글자 크기 */
-  font-weight: bold;          /* 글자 두껍게 */
-  color: #333;                /* 글자 색상 (가독성) */
-  background: linear-gradient(135deg, #FFECDB, #87CEFA); 
-  /* 좌상단 연한 주황 → 우하단 하늘색 */
-  border-radius: 50%;         /* 원형 */
-  display: flex;              
-  align-items: center;        /* 세로 중앙 */
-  justify-content: center;    /* 가로 중앙 */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* 그림자 효과 */
-}
-
-
 .text-muted {
     margin-bottom: 30px;
 }

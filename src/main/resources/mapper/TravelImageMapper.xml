@@ -9,10 +9,4 @@
 		(#{tripArticleId},#{imagePath},#{orderNumber})
 	</insert>
 
-    <select id="findByTripArticleId" resultType="com.wakutabi.domain.TravelImageDto">
-        SELECT * FROM trip_article_image
-        WHERE trip_article_id = #{tripArticleId}
-        ORDER BY order_number ASC
-    </select>
-
 </mapper>

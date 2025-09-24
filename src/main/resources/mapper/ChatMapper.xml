@@ -2,36 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.ChatMapper">
   <select id="findChatRoomsByUserId" parameterType="java.lang.Long" resultType="com.wakutabi.domain.ChatRoomDto">
-    SELECT
-        r.id AS id,
-        u.nickname AS nickname,  -- users 테이블의 닉네임 컬럼 추가
-        p.role,
-        ta.title,
-        latest_message.user_id AS latest_user_id,
-        latest_message.message AS latest_message,
-        latest_message.created_at AS latest_message_time
-    FROM
-        chat_participants p
-    INNER JOIN
-        users u ON p.user_id = u.id  -- users 테이블 조인
-    INNER JOIN
-        chat_room r ON p.chat_room_id = r.id
-    INNER JOIN
-        trip_article ta ON r.trip_article_id = ta.id
-    LEFT JOIN
-        (
-            SELECT
-                user_id,
-                chat_room_id,
-                message,
-                created_at,
-                ROW_NUMBER() OVER(PARTITION BY chat_room_id ORDER BY created_at DESC) as rn
-            FROM
-                chat_message
-        ) AS latest_message ON p.chat_room_id = latest_message.chat_room_id AND latest_message.rn = 1
-    WHERE
-        p.user_id = 5 AND p.status = 'ACTIVE'
-    ORDER BY
-        p.created_at;
+SELECT
+    r.id AS id,
+    r.trip_article_id,
+    p.role,
+    ta.title,
+    latest_sender.nickname AS latest_nickname,
+    latest_message.message AS latest_message,
+    latest_message.created_at AS latest_message_time
+FROM
+    chat_participants p
+INNER JOIN
+    chat_room r ON p.chat_room_id = r.id
+INNER JOIN
+    trip_article ta ON r.trip_article_id = ta.id
+LEFT JOIN
+    (
+        SELECT
+            user_id,
+            chat_room_id,
+            message,
+            created_at,
+            ROW_NUMBER() OVER(PARTITION BY chat_room_id ORDER BY created_at DESC) as rn
+        FROM
+            chat_message
+    ) AS latest_message ON p.chat_room_id = latest_message.chat_room_id AND latest_message.rn = 1
+LEFT JOIN
+    users AS latest_sender ON latest_message.user_id = latest_sender.id
+WHERE
+    p.user_id = #{userId} AND p.status = 'ACTIVE'
+ORDER BY
+    p.created_at
   </select>
+  
+  
+  <select id="findChatMsgByRoomId" parameterType="java.lang.Long" resultType="com.wakutabi.domain.ChatMsgDto">
+SELECT
+    cm.user_id,
+    u.image_path as user_image_path,
+    u.nickname,
+    cm.message,
+    cm.image_path as message_image_path,
+    cm.created_at
+FROM
+    chat_message cm
+INNER JOIN
+    users u ON cm.user_id = u.id
+WHERE
+    cm.chat_room_id = #{roomId}
+ORDER BY
+    cm.created_at DESC
+LIMIT 50
+  </select>
+  
 </mapper>

@@ -6,10 +6,10 @@ import lombok.Data;
 
 @Data
 public class ChatMsgDto {
-	private Long id;
 	private Long userId;
-	private Long chatRoomId;
+	private String userImagePath; // users.image_path (발신자 프로필 이미지)
+	private String nickname;
 	private String message;
-	private String image_path;
-	private LocalDateTime created_at;
+	private String messageImagePath; // chat_message.image_path (채팅 메시지 이미지)
+	private LocalDateTime createdAt;
 }

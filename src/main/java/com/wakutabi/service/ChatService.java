@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.wakutabi.domain.ChatMsgDto;
 import com.wakutabi.domain.ChatRoomDto;
 import com.wakutabi.mapper.ChatMapper;
 
@@ -18,4 +19,9 @@ public class ChatService {
 	public List<ChatRoomDto> findChatRoomsByUserId(Long userId){
 		return chatMapper.findChatRoomsByUserId(userId);
 	}
+	
+	public List<ChatMsgDto> findChatMsgByRoomId(Long roomId) {
+		return chatMapper.findChatMsgByRoomId(roomId);
+	}
+	
 }

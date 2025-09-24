@@ -12,6 +12,7 @@ import com.wakutabi.domain.ChatRoomDto;
 public interface ChatMapper {
 	
 	List<ChatRoomDto> findChatRoomsByUserId(@Param("userId") Long userId);
+	List<ChatMsgDto> findChatMsgByRoomId(@Param("roomId") Long roomId);
 	
 	void insertChatMsg(ChatMsgDto chatMsgDto);
 }

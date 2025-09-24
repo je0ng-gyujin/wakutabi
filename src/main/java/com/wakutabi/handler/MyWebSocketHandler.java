@@ -1,7 +1,8 @@
 package com.wakutabi.handler;
 
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -16,39 +17,68 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MyWebSocketHandler extends TextWebSocketHandler{
 	
-	private static final Set<WebSocketSession> sessions = new HashSet<>();
+	private static final Map<Long, Set<WebSocketSession>> chatRooms = new ConcurrentHashMap<>();
+	private static final Map<String, Long> sessionToRoomId = new ConcurrentHashMap<>();
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 	
 	// 클라이언트가 서버에 접속을 성공했을 때 호출
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
-		sessions.add(session);
-		System.out.println("(웹소켓) 새로운 클라이언트 접속: " + session.getId());
+		Long roomId = getRoomIdFromSession(session);
+		
+		if (roomId != null) {
+			// chatRooms 맵에 해당 roomId가 없으면 새로운 Set을 생성
+			Set<WebSocketSession> sessionsToRoom = chatRooms.computeIfAbsent(roomId, k -> ConcurrentHashMap.newKeySet());
+			sessionsToRoom.add(session);
+			
+			// 세션 ID와 roomId를 매핑하여 저장
+			sessionToRoomId.put(session.getId(), roomId);
+			
+			System.out.println("(웹소켓) 새로운 클라이언트 접속: " + session.getId() + " (Room ID: " + roomId + ")");
+		} else {
+			System.err.println("(웹소켓) Room ID가 없어 연결을 종료합니다.");
+			try {
+				session.close();
+			} catch (Exception e) {
+				
+			}
+		}
+		
 	}
 	
 	// 클라이언트가 메시지를 보낼 때마다 호출
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
 		String payload = message.getPayload();
+		
 		System.out.println("수신 JSON 메시지: " + payload);
 		
 		try {
+			Long roomId = sessionToRoomId.get(session.getId());
+			if (roomId == null) {
+				System.err.println("(웹소켓) 유효하지 않은 세션입니다. 메시지를 무시합니다.");
+				return;
+			}
+			
 			ChatMsgDto chatMsgDto = objectMapper.readValue(payload, ChatMsgDto.class);
 			String jsonMessage = objectMapper.writeValueAsString(chatMsgDto);
 			
-			for (WebSocketSession s : sessions) {
-				try {
-					// 특정 세션으로 메시지 전송
-					s.sendMessage(new TextMessage(jsonMessage));
-				} catch (Exception e) {
-					// 특정 세션 전송 실패는 무시하고 계속 진행
-					System.err.println("(웹소켓) 메시지 전송 중 오류 발생: " + e.getMessage());
+			Set<WebSocketSession> sessionsInRoom = chatRooms.get(roomId);
+			if (sessionsInRoom != null) {
+				for (WebSocketSession s : sessionsInRoom) {
+					try {
+						s.sendMessage(new TextMessage(jsonMessage));
+					} catch (Exception e) {
+						System.err.println("(웹소켓) 메시지 전송 중 오류 발생: " + e.getMessage());
+						// 전송 실패 세션은 제거
+						sessionsInRoom.remove(s);
+					}
 				}
 			}
+			
 		} catch (Exception e) {
 			System.err.println("(웹소켓) 메시지 처리 중 오류 발생: " + e.getMessage());
 			// 예외 발생 시 연결 종료
-			session.close();
 		}
 		
 	}
@@ -56,9 +86,32 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	// 클라이언트 연결이 종료되었을 때 호출
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		// sessions 목록에서 연결이 끊긴 세션을 제거
-		sessions.remove(session);
+		Long roomId = sessionToRoomId.remove(session.getId());
+		
+		if (roomId != null) {
+			Set<WebSocketSession> sessionsInRoom = chatRooms.get(roomId);
+			if (sessionsInRoom != null) {
+				sessionsInRoom.remove(session);
+				if (sessionsInRoom.isEmpty()) {
+					chatRooms.remove(roomId);
+				}
+			}
+		}
 		System.out.println("(웹소켓) 클라이언트 연결 종료: " + session.getId());
+	}
+	
+	// URL에서 roomId를 추출하는 헬퍼 메서드
+	private Long getRoomIdFromSession(WebSocketSession session) {
+		try {
+			String query = session.getUri().getQuery();
+			if (query != null && query.startsWith("roomId=")) {
+				String roomIdStr = query.substring("roomId=".length());
+				return Long.parseLong(roomIdStr);
+			}
+		} catch (Exception e) {
+			System.err.println("(웹소켓) roomId 파싱 중 오류 발생: " + e.getMessage());
+		}
+		return null;
 	}
 
 }

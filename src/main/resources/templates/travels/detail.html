@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/travel_review.css}" />
+    <link rel="stylesheet" th:href="@{/css/travel_detail.css}" />
     <title>여행 상세</title>
     <script defer th:src="@{/js/travel_detail.js}"></script>
     <meta name="_csrf">
@@ -45,9 +45,9 @@
                                     <a th:href="@{'/schedule/edit?id=' + ${travel.id}}"
                                        class="btn btn-sm btn-outline-secondary">수정</a>
                                     <button id="deleteBtn" 
-       										class="btn btn-sm btn-outline-danger" 
-        										th:data-id="${travel.id}">
-    												삭제
+                                            class="btn btn-sm btn-outline-danger" 
+                                            th:data-id="${travel.id}">
+                                            삭제
 									</button>
                                 </div>
                             </div>
@@ -69,15 +69,15 @@
 
                                 <div class="col-6 col-md-3 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
-                                        <i class="bi bi-currency-dollar me-1"></i> <strong>예상 요금</strong>
+                                        <i class="bi bi-currency-yen me-1"></i> <strong>예상 요금</strong>
                                     </span>
                                     <p class="mb-0 mt-1"
-                                       th:text="${#numbers.formatInteger(travel.estimatedCost, 3, 'COMMA')} + '원'"></p>
+                                       th:text="${#numbers.formatInteger(travel.estimatedCost, 3, 'COMMA')} + '엔'"></p>
                                 </div>
 
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
-                                        <i class="bi bi-person-circle me-1"></i> <strong>선호 연령</strong>
+                                        <i class="bi bi-person-circle me-1"></i> <strong>연령 제한</strong>
                                     </span>
                                     <p class="mb-0 mt-1" th:text="${travel.ageLimit}"></p>
                                 </div>
@@ -106,7 +106,7 @@
                             </div>
 
                             <!-- 이미지 -->
-                            <div class="row g-2" th:if="${images != null and !#lists.isEmpty(images)}">
+                            <div class="row g-2 image-grid" th:if="${images != null and !#lists.isEmpty(images)}">
                                 <div class="col-4" th:each="image : ${images}">
                                     <img th:src="${image.imagePath}" class="img-fluid rounded-3" alt="여행 이미지" />
                                 </div>

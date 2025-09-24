@@ -20,6 +20,10 @@
 	<select id="getUserId" parameterType="String" resultType="Long">
 		select id from users where username = #{username}
 	</select>
+	<!--유저name 가져오기-->
+	<select id="getUsernameById" parameterType="Long" resultType="String">
+		select username from users where id = #{Id}
+	</select>
 
 	<!-- 유저정보 받기 -->
 	<select id="getUserInfo" parameterType="String" resultType="com.wakutabi.domain.UserUpdateDto">

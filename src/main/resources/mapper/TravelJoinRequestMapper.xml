@@ -9,18 +9,18 @@
         (#{tripArticleId},#{hostUserId},#{applicantUserId})
     </insert>
     <!-- 여행참가 수락 -->
- 	<update id="changeStatusToAccepted">
+ 	<update id="changeStatusToAccepted" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
         UPDATE trip_join_request 
-        SET status = 'ACCEPTED' 
-        WHERE trip_article_id = #{travelArticleId}
+        SET status = #{status}
+        WHERE trip_article_id = #{tripArticleId}
         AND host_user_id = #{hostUserId}
         AND applicant_user_id = #{applicantUserId}
     </update>
     <!-- 여행참가 거절 -->
-    <update id="changeStatusToRejected">
+    <update id="changeStatusToRejected" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
         UPDATE trip_join_request 
-        SET status = 'REJECTED'
-        WHERE trip_article_id = #{travelArticleId}
+        SET status = #{status}
+        WHERE trip_article_id = #{tripArticleId}
         AND host_user_id = #{hostUserId}
         AND applicant_user_id = #{applicantUserId}
     </update>

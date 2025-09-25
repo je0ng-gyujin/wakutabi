@@ -10,8 +10,8 @@ public interface TravelJoinRequestMapper{
     // 여행참가신청
     void insertTravelJoinRequest(TravelJoinRequestDto TravelJoinRequest);
     // 참가수락 
-    void changeStatusToAccepted(@Param("travelArticleId") Long TravelArticleId, @Param("hostUserId") Long hostUserId, @Param("applicantUserId") Long applicantUserId);
+    void changeStatusToAccepted(TravelJoinRequestDto statusToAccepted);
     // 참가거절
-    void changeStatusToRejected(@Param("travelArticleId") Long TravelArticleId, @Param("hostUserId") Long hostUserId, @Param("applicantUserId") Long applicantUserId);
+    void changeStatusToRejected(TravelJoinRequestDto statusToRejected);
 
 }

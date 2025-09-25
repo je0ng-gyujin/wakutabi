@@ -4,14 +4,14 @@
   <insert id="insertNotification" parameterType="com.wakutabi.domain.NotificationDto">
     insert into system_notification
     (user_id, type, title, link
-    <if test="travelArticleId != null">
-    , travel_article_id
+    <if test="tripArticleId != null">
+    , trip_article_id
     </if>
     )
     VALUES
     (#{userId}, #{type}, #{title}, #{link}
-    <if test="travelArticleId != null">
-    , #{travelArticleId}
+    <if test="tripArticleId != null">
+    , #{tripArticleId}
     </if>
     )
   </insert>

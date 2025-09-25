@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.TravelTagMapper">
+
+	<select id="findTagsByTripArticleId" resultType="string">
+	    SELECT t.tag_name
+	    FROM trip_tag t
+	    JOIN trip_tag_mid_trip_article m ON t.id = m.trip_tag_id
+	    WHERE m.trip_article_id = #{tripArticleId}
+	</select>
+	
+	<insert id="insertTripTag" parameterType="map">
+	    INSERT INTO trip_tag_mid_trip_article (trip_tag_id, trip_article_id)
+	    VALUES (#{tagId}, #{tripArticleId})
+	</insert>
+	
+	<insert id="insertTag" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO trip_tag (tag_name)
+        VALUES (#{tagName})
+    </insert>
+	
+</mapper>

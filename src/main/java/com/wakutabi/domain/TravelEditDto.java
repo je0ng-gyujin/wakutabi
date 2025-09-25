@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -25,6 +26,11 @@ public class TravelEditDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    private String mainImagePath;
+ // TravelEditDto.java 에 List<String> tags 추가
+    private List<String> tags;
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags; }
     private String tag; 
     private List<MultipartFile> images;
 }

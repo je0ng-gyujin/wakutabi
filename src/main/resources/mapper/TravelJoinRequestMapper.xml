@@ -12,14 +12,16 @@
  	<update id="changeStatusToAccepted">
         UPDATE trip_join_request 
         SET status = 'ACCEPTED' 
-        WHERE id = #{id}
+        WHERE trip_article_id = #{travelArticleId}
         AND host_user_id = #{hostUserId}
+        AND applicant_user_id = #{applicantUserId}
     </update>
     <!-- 여행참가 거절 -->
     <update id="changeStatusToRejected">
         UPDATE trip_join_request 
-        SET status = 'REJECTED' 
-        WHERE id = #{id}
+        SET status = 'REJECTED'
+        WHERE trip_article_id = #{travelArticleId}
         AND host_user_id = #{hostUserId}
+        AND applicant_user_id = #{applicantUserId}
     </update>
 </mapper>

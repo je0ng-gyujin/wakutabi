@@ -8,6 +8,7 @@ import lombok.Data;
 public class NotificationDto {
 	private Long id;
 	private Long userId;
+	private Long TravelArticleId;
 	private String type;
 	private String title;
 	private String link;

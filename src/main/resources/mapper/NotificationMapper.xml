@@ -3,8 +3,17 @@
 <mapper namespace="com.wakutabi.mapper.NotificationMapper">
   <insert id="insertNotification" parameterType="com.wakutabi.domain.NotificationDto">
     insert into system_notification
-    (user_id, type, title, link)
-    VALUES (#{userId}, #{type}, #{title}, #{link})
+    (user_id, type, title, link
+    <if test="travelArticleId != null">
+    , travel_article_id
+    </if>
+    )
+    VALUES
+    (#{userId}, #{type}, #{title}, #{link}
+    <if test="travelArticleId != null">
+    , #{travelArticleId}
+    </if>
+    )
   </insert>
   
   <select id="findNotificationsById" parameterType="java.lang.Long" resultType="com.wakutabi.domain.NotificationDto">

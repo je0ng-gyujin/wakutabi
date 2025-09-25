@@ -2,8 +2,9 @@ $(document).ready(
 		function () {
 			// 태그 클릭 이벤트
 			$('.tag-item').click(function() {
+				// 클릭 시 태그의 활성화/비활성화 상태만 변경
 				$(this).toggleClass('active');
-				updateSearch();
+				//updateSearch();
 			});
 
 			/*// 검색 기능
@@ -29,6 +30,8 @@ $(document).ready(
 				$('.tag-item.active').each(function() {
 					selectedTags.push($(this).data('tag'));
 				});
+				
+				
 
 				// 검색어
 				var searchQuery = $('#searchInput').val();

@@ -5,6 +5,7 @@
 	--accent-color: #1E73BE;
 	--warning-color: #FF9149;
 	--warning-color-rgb:rgba(255, 145, 73);
+	--accent-color-warning: #C76E27;
 	--glass-bg: rgba(255, 255, 255, 0.9);
 	--glass-border: rgba(255, 255, 255, 0.3);
 	--gray-color: #606060;
@@ -30,6 +31,29 @@
 	--bs-btn-active-bg: var(--primary-color);
 	--bs-btn-active-border-color: var(--primary-color);
 	--bs-btn-active-color: #fff;
+}
+
+.btn-wakutabi-warning {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--warning-color);
+    --bs-btn-border-color: var(--warning-color);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--accent-color-warning);
+    --bs-btn-hover-border-color: var(--accent-color-warning);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--accent-color-warning);
+    --bs-btn-active-border-color: var(--accent-color-warning);
+}
+
+.btn-wakutabi-outline-warning {
+    --bs-btn-color: var(--warning-color);
+    --bs-btn-border-color: var(--warning-color);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--warning-color);
+    --bs-btn-hover-border-color: var(--warning-color);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--warning-color);
+    --bs-btn-active-border-color: var(--warning-color);
 }
 
 .bg-gradient-custom {
@@ -195,3 +219,40 @@ to {
 	padding-top:80px;
 }
 
+/* 채팅 관련 스타일링 */
+/* offcanvas 헤더 배경색 */
+.bg-wakutabi-primary {
+    background-color: var(--primary-color);
+}
+
+.bg-wakutabi-secondary {
+    background-color: var(--secondary-color);
+}
+
+.bg-wakutabi-accent {
+    background-color: var(--accent-color);
+}
+
+.bg-wakutabi-warning {
+    background-color: var(--warning-color);
+}
+
+/* 읽지 않은 알림 항목 스타일 */
+.list-group-item-unread {
+  background-color: var(--secondary-color);
+}
+
+.list-group-item-unread:hover {
+  background-color: var(--accent-color);
+}
+
+/* .wakutabi-offcanvas-chat {
+    border-radius: 0.5rem;
+    width: 350px;
+    height: 65vh;
+} */
+
+/* 닫기 버튼 색상을 흰색으로 반전 */
+.btn-close.text-reset {
+    filter: invert(1);
+}

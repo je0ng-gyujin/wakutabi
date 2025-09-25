@@ -11,6 +11,8 @@ import com.wakutabi.service.TravelUpdateDeleteService; // ⬅️ 추가
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -38,7 +41,69 @@ public class TravelsController {
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
     
-    // ... 기존 코드 (travelCreate, uploadTravel) ...
+    //검색
+    @GetMapping("/search")
+    public String searchTravels(
+    		@RequestParam(value = "keyward", required = false) String query,
+            @RequestParam(value = "minPrice", required = false) Integer minPrice,
+            @RequestParam(value = "maxPrice", required = false) Integer maxPrice,
+            @RequestParam(value = "region", required = false) String region,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "tags", required = false) List<String> tags,
+            @RequestParam(value = "groupSize", required = false) List<String> groupSize,
+            @RequestParam(value = "status", required = false) String status,
+            Model model) {
+            
+	    	LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
+	    	LocalDateTime endDateTime   = endDate != null ? endDate.atTime(23, 59, 59) : null;
+
+	    	log.info("Received search request. Query: {}, minPrice: {}, maxPrice: {}, region: {}, startDate: {}, endDate: {}, tags: {}, groupSize: {}, status: {}", 
+	                query, minPrice, maxPrice, region, startDate, endDate, tags, groupSize, status); // ⬅️ 로그 추가
+
+	       List<TravelEditDto> travels = travelEditService.findFilteredTravels(query, minPrice, maxPrice, region, startDateTime, endDateTime, tags, groupSize, status); // ⬅️ status 파라미터 추가
+
+        
+            log.info("검색 날짜 파라미터 - startDateTime: {}, endDateTime: {}", startDateTime, endDateTime);
+            
+        // 2. 각 여행 게시글에 대한 대표 이미지를 조회합니다.
+        if (travels != null) {
+            for (TravelEditDto travel : travels) {
+                if (travel != null && travel.getId() != null) {
+                    List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(travel.getId());
+                    if (images != null && !images.isEmpty()) {
+                        TravelImageDto mainImage = images.get(0);
+                        if (mainImage != null && mainImage.getImagePath() != null) {
+                            travel.setMainImagePath(mainImage.getImagePath());
+                        } else {
+                            travel.setMainImagePath("/images/default.jpg");
+                        }
+                    } else {
+                        travel.setMainImagePath("/images/default.jpg");
+                    }
+                } else {
+                    log.warn("Null travel object found in the search result list.");
+                }
+            }
+        }
+        
+        
+        //3. 모델에 검색 결과와 필터 파라미터들을 다시 담아서 뷰로 전달합니다.
+        model.addAttribute("travels", travels);
+        model.addAttribute("query", query);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("region", region);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("tags", tags);
+        model.addAttribute("groupSize", groupSize);
+        model.addAttribute("status", status);
+        
+        return "travels/search";
+    }
+
+        
 
     @GetMapping("create")
     public String travelCreate() {
@@ -47,7 +112,7 @@ public class TravelsController {
 
     @PostMapping("travelupload")
     @ResponseBody
-    public String uploadTravel(TravelUploadDto uploadDto, Principal principal) throws IllegalStateException, IOException {
+    public String uploadTravel(@RequestParam(name = "tags", required = false) String tags,TravelUploadDto uploadDto, Principal principal) throws IllegalStateException, IOException {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
             return "로그인 후 이용 가능합니다.";
@@ -83,12 +148,20 @@ public class TravelsController {
         dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter).atStartOfDay());
         dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter).atStartOfDay());
 
+        // ⭐ ⭐ ⭐ 추가: 태그 정보를 DTO에 설정 ⭐ ⭐ ⭐
+        // ⭐⭐⭐ 변경: TravelEditDto에 태그 설정 ⭐⭐⭐
+        if (tags != null && !tags.isEmpty()) {
+        	// 문자열 리스트로 변환하여 설정
+        	dto.setTags(List.of(tags.split(",")));
+        }
+        
         // 로그인한 사용자 ID 설정 (예시: 1L)
         dto.setHostUserId(1L);
 
         // 4. 게시글 DB 저장
-        travelEditService.insertTravelEdit(dto);
-
+        // ⭐⭐⭐ 변경: travelEditService.insertTravelEdit(dto) 대신, 태그 저장 로직이 포함된 메소드 호출 ⭐⭐⭐
+        travelEditService.saveTravelWithTags(dto);
+        
      // 5. 이미지 파일 처리 및 DB 저장
         log.info("uploadDto.getImages = {}", uploadDto.getImages());
         List<MultipartFile> images = uploadDto.getImages();
@@ -157,7 +230,7 @@ public class TravelsController {
         
         return "travels/detail"; // views/travels/detail.html 경로
     }
-}
+
 
 
 

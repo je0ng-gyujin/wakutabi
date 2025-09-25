@@ -38,6 +38,12 @@
 	cursor: default;
 }
 
+.card:hover .btn-wakutabi-outline-warning {
+    color: #fff;
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
 .tag-item.active {
 	background: var(--primary-color);
 	color: white;
@@ -84,9 +90,20 @@
 	border: 1px solid var(--primary-color);
 }
 
+.region-badge-closed{
+	background:  var(--background-color);
+	color: var(--accent-color-warning);
+	border: 1px solid var(--warning-color);
+}
+
 .participants-info {
 	background: rgba(96, 181, 255, 0.1);
 	border-left: 4px solid var(--primary-color);
+}
+
+.participants-info.participants-info-closed {
+	background: var(--background-color);
+	border-left: 4px solid var(--warning-color);
 }
 
 .search-result-count {

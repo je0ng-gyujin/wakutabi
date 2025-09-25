@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<script defer src="/js/notification.js"></script>
 <th:block th:fragment="notification">
 <div id="notificationSidebar" class="notification-sidebar">
   <div class="sidebar-header d-flex justify-content-between align-items-center px-3 py-2">
@@ -18,11 +19,22 @@
       th:classappend="${alertClass}">
       <a class="text-decoration-none" th:href="@{/notifications/read(id=${notice.id})}">
         <p class="text-truncate mb-1" th:text="${notice.title}">알 수 없는 알림입니다.</p>
-        <p th:switch="${notice.type}" class="text-secondary-emphasis text-truncate mb-1">
+        <div th:switch="${notice.type}" class="text-secondary-emphasis text-truncate mb-1">
           <th:block th:case="'TRAVEL_UPLOADED'">여행 등록이 완료되었습니다.</th:block>
-          <th:block th:case="'TRAVEL_REQUEST'">여행 참가 신청이 왔습니다.</th:block>
-          <th:block th:case="'TRAVEL_ACCEPT'">여행 참가가 수락되었습니다.</th:block>
-        </p>
+          <th:block th:case="'TRAVEL_REQUEST'">
+            여행 참가 신청이 왔습니다.
+            <div style="text-align:center; margin-top:8px;">
+              <form th:action="@{/notifications/accept}" method="post" style="display:inline;" onsubmit="hideButtons(this)">>
+                <input type="hidden" name="noticeId" th:value="${notice.id}">
+                <button class="btn btn-success btn-sm">수락</button>
+              </form>
+              <form th:action="@{/notifications/reject}" method="post" style="display:inline;">
+                <input type="hidden" name="noticeId" th:value="${notice.id}">
+                <button class="btn btn-danger btn-sm">거절</button>
+              </form>
+            </div>
+          </th:block>
+        </div>
       </a>
     </div>
     <!-- <div class="alert alert-info"><a class="text-decoration-none" href="/schedule/detail?id=3">

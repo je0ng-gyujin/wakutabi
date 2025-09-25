@@ -55,20 +55,4 @@ public class TravelJoinRequestController {
 
         return result;
     }
-
-    // 참가수락
-    @PostMapping("/request-accepted/accept/{id}")
-    public String changeStatusToAccepted(@PathVariable Long id,
-                                         @ModelAttribute("userId") Long hostUserId){
-        travelJoinRequestService.changeStatusToAccepted(id,hostUserId);
-        return "redirect:/host/join-requests";
-    }
-    // 참가거절
-    @PostMapping("/request-rejected/reject/{id}")
-    public String changeStatusTorejected(@PathVariable Long id,
-                                         @ModelAttribute("userId") Long hostUserId){
-        travelJoinRequestService.changeStatusToRejected(id, hostUserId);
-        return "redirect:/host/join-requests";
-    }
-    
 }   

@@ -39,19 +39,29 @@ public class NotificationService {
 	public Integer countNotificationsByUserId(Long userId) {
 		return notificationMapper.countNotificationsByUserId(userId);
 	}
-	// 여행 참가신청 시스템알림db로 보내기
 
+	// 여행 참가신청 호스트에게 시스템알림db로 보내기
 	public void sendJoinRequest(Long travelArticleId, Long hostUserId, Long applicantUserId){
-		log.info("sendJoinRequest 실행됨: articleId={}, hostUserId={}, applicantUserId={}",
-				travelArticleId, hostUserId, applicantUserId);
 		NotificationDto noticeDto = new NotificationDto();
 		noticeDto.setUserId(hostUserId);
+		noticeDto.setTravelArticleId(travelArticleId);
 		String sendJoinRequestUrl = "/schedule/detail?id=" + travelArticleId;
 		noticeDto.setLink(sendJoinRequestUrl);
 		String applicantUserName = userMapper.getUsernameById(applicantUserId);
 		noticeDto.setTitle(applicantUserName);
 		noticeDto.setType("TRAVEL_REQUEST");
 		notificationMapper.insertNotification(noticeDto);
-
 	}
+	// 여행 참가신청 수락 거절 답변 참가자에게 시스템알림db로 보내기
+	public void sendRequestAnswer(Long applicantUserId, Long travelArticleId, String title,String type){
+		NotificationDto notificationDto = new NotificationDto();
+
+		notificationDto.setUserId(applicantUserId);
+		String url = "/schedule/detail?id="+travelArticleId;
+		notificationDto.setLink(url);
+		notificationDto.setType(type);
+		notificationDto.setTitle(title);
+		notificationMapper.insertNotification(notificationDto);
+	}
+
 }

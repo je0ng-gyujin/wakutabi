@@ -1,7 +1,11 @@
 package com.wakutabi.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
 
@@ -10,8 +14,8 @@ public class TravelEditDto {
     private Long id;
     private Long hostUserId;
     private String location;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Integer maxParticipants;
     private String ageLimit;
     private String genderLimit;
@@ -27,4 +31,6 @@ public class TravelEditDto {
     private List<String> tags;
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
+    private String tag; 
+    private List<MultipartFile> images;
 }

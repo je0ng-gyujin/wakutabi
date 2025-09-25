@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.TravelJoinRequestMapper">
+    <!-- 여행참가 신청 -->
+    <insert id="insertTravelJoinRequest" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
+        INSERT INTO trip_join_request
+        (trip_article_id, host_user_id, applicant_user_id)
+        VALUES
+        (#{tripArticleId},#{hostUserId},#{applicantUserId})
+    </insert>
+    <!-- 여행참가 수락 -->
+ 	<update id="changeStatusToAccepted">
+        UPDATE trip_join_request 
+        SET status = 'ACCEPTED' 
+        WHERE id = #{id}
+        AND host_user_id = #{hostUserId}
+    </update>
+    <!-- 여행참가 거절 -->
+    <update id="changeStatusToRejected">
+        UPDATE trip_join_request 
+        SET status = 'REJECTED' 
+        WHERE id = #{id}
+        AND host_user_id = #{hostUserId}
+    </update>
+</mapper>

@@ -129,7 +129,7 @@ document.querySelectorAll("#chatListPanel a").forEach(link => {
 					socket.close();
 				}
 
-				socket = new WebSocket("ws://192.168.0.55:8088/ws/chat?roomId=" + roomId);
+				socket = new WebSocket("ws://localhost:8088/ws/chat?roomId=" + roomId);
 
 				// 웹소켓 연결이 성공하면 호출되는 이벤트
 				socket.onopen = function (e) {

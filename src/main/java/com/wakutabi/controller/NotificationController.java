@@ -1,11 +1,13 @@
 package com.wakutabi.controller;
 
+import com.wakutabi.domain.TravelJoinRequestDto;
 import com.wakutabi.service.NotificationService;
 import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.service.TravelJoinRequestService;
 import com.wakutabi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -45,21 +47,36 @@ public class NotificationController {
 
     // 호스트가 참가수락 눌렀을 때
     @PostMapping("/accept")
-    public RedirectView acceptRequest(@RequestParam Long noticeId,
-                                      Principal principal){
+    public RedirectView acceptRequest(@RequestParam Long noticeId, @ModelAttribute("userId") Long userId){
+        // 알림조회
         NotificationDto notice = notificationService.findNotificationById(noticeId);
+        // 알림에 저장된 hostId와 현재 로그인 유저가 같은지 검증
         Long hostUserId = notice.getUserId();
+        if(!hostUserId.equals(userId)){
+            throw new AccessDeniedException("여행 작성자만 참가 수락 가능합니다");
+        }
+        // 참가자ID (알림 title에 username이 들어있음)
         Long applicantUserId = userService.getUserId(notice.getTitle());
-        Long travelArticleId = notice.getTravelArticleId();
-        travelJoinRequestService.changeStatusToAccepted(travelArticleId,hostUserId,applicantUserId);
+        Long tripArticleId = notice.getTripArticleId();
+        // 여행참가수락DTO
+        TravelJoinRequestDto statusToAccepted =TravelJoinRequestDto.builder()
+                .tripArticleId(tripArticleId)
+                .hostUserId(hostUserId)
+                .applicantUserId(applicantUserId)
+                .status(TravelJoinRequestDto.Status.ACCEPTED)
+                .build();
+        travelJoinRequestService.changeStatusToAccepted(statusToAccepted);
         // 채팅 참가자로 넣기
         //chatService.addUserToCharRoom(notificationDto.getTravelArticleId(), notificationDto.getTitle)())
-        notificationService.sendRequestAnswer(
-                applicantUserId,
-                travelArticleId,
-                "여행신청이 수락되었습니다.",
-                "TRAVEL_ACCEPTED"
-        );
+        // 여행참가수락알림DTO 생성
+        NotificationDto sendRequestAnswer = NotificationDto.builder()
+                .userId(applicantUserId)
+                .tripArticleId(tripArticleId)
+                .title("여행신청이 수락되었습니다.")
+                .type("TRAVEL_ACCEPTED")
+                .link("/schedule/detail?id=" + tripArticleId)
+                .build();
+        notificationService.sendRequestAnswer(sendRequestAnswer);
 
         notificationService.markAsRead(noticeId);
 
@@ -68,23 +85,39 @@ public class NotificationController {
 
     // 호스트가 참가 거절 눌렀을 때
     @PostMapping("/reject")
-    public RedirectView rejectRequest(@RequestParam Long noticeId,
-                                      Principal principal){
+    public RedirectView rejectRequest(@RequestParam Long noticeId,@ModelAttribute("userId") Long userId){
+        // 알림조회
         NotificationDto notice = notificationService.findNotificationById(noticeId);
+        // 알림에 저장된 hostId와 현재 로그인 유저가 같은지 검증
         Long hostUserId = notice.getUserId();
+        if(!hostUserId.equals(userId)){
+            throw new AccessDeniedException("여행 작성자만 참가 수락 가능합니다");
+        }
+        // 참가자ID (알림 title에 username이 들어있음)
         Long applicantUserId = userService.getUserId(notice.getTitle());
-        Long travelArticleId = notice.getTravelArticleId();
-        travelJoinRequestService.changeStatusToRejected(travelArticleId,hostUserId,applicantUserId);
-
-        notificationService.sendRequestAnswer(
-                applicantUserId,
-                travelArticleId,
-                "참가신청이 거절되었습니다.",
-                "TRAVEL_REJECT"
-        );
+        Long tripArticleId = notice.getTripArticleId();
+        // 여행참가거절DTO 생성
+        TravelJoinRequestDto statusToRejected =TravelJoinRequestDto.builder()
+                .tripArticleId(tripArticleId)
+                .hostUserId(hostUserId)
+                .applicantUserId(applicantUserId)
+                .status(TravelJoinRequestDto.Status.ACCEPTED)
+                .build();
+        travelJoinRequestService.changeStatusToRejected(statusToRejected);
+        // 여행참가거절알림DTO 생성
+        NotificationDto sendRequestAnswer = NotificationDto.builder()
+                .userId(applicantUserId)
+                .tripArticleId(tripArticleId)
+                .title("여행신청이 거절되었습니다.")
+                .type("TRAVEL_ACCEPTED")
+                .link("/schedule/detail?id=" + tripArticleId)
+                .build();
+        notificationService.sendRequestAnswer(sendRequestAnswer);
 
         notificationService.markAsRead(noticeId);
 
         return new RedirectView(notice.getLink());
     }
+
 }
+

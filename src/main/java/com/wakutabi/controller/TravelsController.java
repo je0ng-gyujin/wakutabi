@@ -119,7 +119,7 @@ public class TravelsController {
 	// ---------------------------------------------
   @PostMapping("travelupload")
     @ResponseBody
-    public String uploadTravel(@RequestParam(name = "tags", required = false) String tags,TravelUploadDto uploadDto, Principal principal) throws IllegalStateException, IOException {
+    public String uploadTravel(@RequestParam(name = "tags", required = false) String tags,TravelUploadDto uploadDto, Principal principal,@ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
             return "로그인 후 이용 가능합니다.";
@@ -136,7 +136,7 @@ public class TravelsController {
                     objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class)
             );
         } catch (IOException e) {
-            og.error("이미지 순서 변환 실패", e);
+            log.error("이미지 순서 변환 실패", e);
 			      return "이미지 순서 처리 실패";
         }
 
@@ -153,8 +153,8 @@ public class TravelsController {
 
         // 날짜 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter).atStartOfDay());
-        dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter).atStartOfDay());
+        dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter));
+        dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter));
 
         
         // TravelEditDto에 태그 설정

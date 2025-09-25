@@ -55,4 +55,36 @@ ORDER BY
 LIMIT 50
   </select>
   
+  <insert id="insertChatMsgWhenText" parameterType="com.wakutabi.domain.ChatMsgDto" useGeneratedKeys="true" keyProperty="id">
+INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{roomId},#{message});
+  </insert>
+  
+  <select id="findChatMsgByMsgId" parameterType="java.lang.Long" resultMap="chatMsgResultMap">
+      SELECT
+          m.id,
+          m.chat_room_id,
+          m.user_id,
+          m.message,
+          m.image_path,
+          m.created_at,
+          u.nickname,
+          u.image_path AS user_image_path
+      FROM
+          chat_message m
+      INNER JOIN
+          users u ON m.user_id = u.id
+      WHERE
+          m.id = #{id}
+  </select>
+  
+  <resultMap id="chatMsgResultMap" type="com.wakutabi.domain.ChatMsgDto">
+    <id column="id" property="id"/>
+    <result column="chat_room_id" property="roomId"/>
+    <result column="user_id" property="userId"/>
+    <result column="message" property="message"/>
+    <result column="image_path" property="imagePath"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="nickname" property="nickname"/>
+    <result column="user_image_path" property="userImagePath"/>
+  </resultMap>
 </mapper>

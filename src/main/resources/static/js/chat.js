@@ -96,7 +96,9 @@ function renderMessages(messages) {
 	});
 
 	// 스크롤을 맨 아래로 이동
-	chatReceiveList.scrollTop = chatReceiveList.scrollHeight;
+	setTimeout(() => {
+		chatReceiveList.scrollTop = chatReceiveList.scrollHeight;
+	}, 0);
 }
 
 // 채팅방 클릭 시 이벤트
@@ -127,7 +129,7 @@ document.querySelectorAll("#chatListPanel a").forEach(link => {
 					socket.close();
 				}
 
-				socket = new WebSocket("ws://localhost:8088/ws/chat?roomId=" + roomId);
+				socket = new WebSocket("ws://192.168.0.55:8088/ws/chat?roomId=" + roomId);
 
 				// 웹소켓 연결이 성공하면 호출되는 이벤트
 				socket.onopen = function (e) {
@@ -139,15 +141,11 @@ document.querySelectorAll("#chatListPanel a").forEach(link => {
 				// 웹소켓 서버로부터 메시지를 수신하면 호출되는 이벤트
 				socket.onmessage = function (e) {
 					const receivedObject = JSON.parse(e.data); // <-- JSON 데이터 파싱
-
-					// 새로운 메시지 요소를 생성
-					const newMessageElement = createMessageElement(receivedObject, myUserId);
-
+					const newMessageElement = createMessageElement(receivedObject, myUserId); // 새로운 메시지 요소를 생성
+					const isAtBottom = (chatReceiveList.scrollHeight - chatReceiveList.scrollTop <= chatReceiveList.clientHeight + 1); // 채팅방 스크롤이 최하단인지 확인
 					// 채팅 목록에 추가
 					chatReceiveList.appendChild(newMessageElement);
 
-					// 스크롤을 맨 아래로 이동
-					const isAtBottom = (chatReceiveList.scrollHeight - chatReceiveList.scrollTop <= chatReceiveList.clientHeight + 1);
 					if (isAtBottom) {
 						chatReceiveList.scrollTop = chatReceiveList.scrollHeight;
 					}
@@ -191,8 +189,10 @@ chatSendBtn.addEventListener('click', (e) => {
 	if (socket && socket.readyState === WebSocket.OPEN) {
 		if (chatSendText.value.trim() !== '') {
 			const messageObject = {
-				userId: myUserId,
-				message: chatSendText.value
+				"type": "TEXT",
+				"roomId": roomId,
+				"userId": myUserId,
+				"message": chatSendText.value
 			};
 			socket.send(JSON.stringify(messageObject));
 			chatSendText.value = '';
@@ -207,8 +207,9 @@ chatSendText.addEventListener('keydown', (e) => {
 		if (socket && socket.readyState === WebSocket.OPEN) {
 			if (chatSendText.value.trim() !== '') {
 				const messageObject = {
-					userId: myUserId,
-					message: chatSendText.value
+					"type": "TEXT",
+					"userId": myUserId,
+					"message": chatSendText.value
 				};
 				socket.send(JSON.stringify(messageObject));
 				chatSendText.value = '';

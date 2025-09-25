@@ -24,4 +24,13 @@ public class ChatService {
 		return chatMapper.findChatMsgByRoomId(roomId);
 	}
 	
+	public ChatMsgDto saveChatMsg(ChatMsgDto chatMsgDto) {
+		if (chatMsgDto.getType().equals("TEXT")) {
+			chatMapper.insertChatMsgWhenText(chatMsgDto);
+			Long msgId = chatMsgDto.getId(); 
+			return chatMapper.findChatMsgByMsgId(msgId);
+		}
+		return null;
+	}
+	
 }

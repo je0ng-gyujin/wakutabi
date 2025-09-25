@@ -14,5 +14,6 @@ public interface ChatMapper {
 	List<ChatRoomDto> findChatRoomsByUserId(@Param("userId") Long userId);
 	List<ChatMsgDto> findChatMsgByRoomId(@Param("roomId") Long roomId);
 	
-	void insertChatMsg(ChatMsgDto chatMsgDto);
+	void insertChatMsgWhenText(ChatMsgDto chatMsgDto);
+	ChatMsgDto findChatMsgByMsgId(@Param("id") Long msgId);
 }

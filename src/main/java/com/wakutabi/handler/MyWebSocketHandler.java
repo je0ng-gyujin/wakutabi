@@ -11,6 +11,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.domain.ChatMsgDto;
+import com.wakutabi.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +20,8 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	
 	private static final Map<Long, Set<WebSocketSession>> chatRooms = new ConcurrentHashMap<>();
 	private static final Map<String, Long> sessionToRoomId = new ConcurrentHashMap<>();
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper;
+	private final ChatService chatService;
 	
 	// 클라이언트가 서버에 접속을 성공했을 때 호출
 	@Override
@@ -51,17 +53,29 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
 		String payload = message.getPayload();
 		
-		System.out.println("수신 JSON 메시지: " + payload);
+		Long roomId = sessionToRoomId.get(session.getId());
+		System.out.println("(웹소켓) 수신 JSON 메시지: " + payload + " // 방 번호 : " + roomId);
 		
 		try {
-			Long roomId = sessionToRoomId.get(session.getId());
 			if (roomId == null) {
 				System.err.println("(웹소켓) 유효하지 않은 세션입니다. 메시지를 무시합니다.");
 				return;
 			}
 			
-			ChatMsgDto chatMsgDto = objectMapper.readValue(payload, ChatMsgDto.class);
-			String jsonMessage = objectMapper.writeValueAsString(chatMsgDto);
+			ChatMsgDto chatMsgDtoReceived = objectMapper.readValue(payload, ChatMsgDto.class);
+			chatMsgDtoReceived.setRoomId(roomId);
+			ChatMsgDto chatMsgDtoSending = chatService.saveChatMsg(chatMsgDtoReceived);
+			
+			// 서비스에서 반환된 DTO에 type 정보가 없으므로, 원본 DTO에서 다시 설정
+			if (chatMsgDtoSending != null) {
+				chatMsgDtoSending.setType(chatMsgDtoReceived.getType());
+			} else {
+				// 서비스에서 null이 반환된 경우 (예: TEXT 타입이 아닐 때)
+				System.err.println("(웹소켓) 서비스가 DTO를 반환하지 않았습니다. 메시지 전송을 중단합니다.");
+				return;
+			}
+			
+			String jsonMessage = objectMapper.writeValueAsString(chatMsgDtoSending);
 			
 			Set<WebSocketSession> sessionsInRoom = chatRooms.get(roomId);
 			if (sessionsInRoom != null) {

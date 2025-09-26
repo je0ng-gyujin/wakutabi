@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html
+	lang="ko"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/clean}">
+
+<head>
+    <th:block layout:fragment="head">
+        <meta charset="UTF-8">
+        <title>인증 성공</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" th:href="@{/css/member.css}">
+    </th:block>
+</head>
+
+<body class="bg-gradient-custom min-vh-100">
+    <th:block layout:fragment="content">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card shadow-sm p-4 text-center">
+                        <h3 class="mb-4 text-success">🎉 이메일 인증 완료!</h3>
+                        <p th:text="${message}"></p>
+                        <div class="d-grid mt-4">
+                            <a href="/login" class="btn btn-warning btn-lg">로그인 페이지로 이동</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</body>
+</html>

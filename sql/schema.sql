@@ -51,6 +51,7 @@ CREATE TABLE trip_article (
 	host_user_id	     BIGINT                                         NOT NULL,	                                                            -- 주최자 고유ID
 	location             VARCHAR(10)   	                                NOT NULL,	                                                            -- 지역
 	start_date	         DATETIME	                                    NOT NULL,                                                               -- 여행시작날짜
+	recruit_end_date     DATETIME                                       NOT NULL,                                                               -- 모집날짜
 	end_date	         DATETIME	                                    NOT NULL,                                                               -- 여행종료날짜
 	maxParticipants      INT                                            NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명  
     currentParticipants  INT                                            NOT NULL DEFAULT 1,                                                     -- 현재인원수:1명 

@@ -32,5 +32,13 @@ public class ChatService {
 		}
 		return null;
 	}
-	
+	// tripArticleId로 chatParticipantsId구하기
+	public Long chatRoomFindByTripArticleId(Long tripArticleId){
+		return chatMapper.chatRoomFindByTripArticleId(tripArticleId);	}
+	// 참가신청 수락된 사람 채팅참가자로 등록
+	public void addUserToChatParticipants(Long chatRoomId, Long applicantUserId){
+		chatMapper.addUserToChatParticipants(chatRoomId, applicantUserId);
+	}
+
+
 }

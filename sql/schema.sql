@@ -9,7 +9,7 @@ CREATE TABLE users (
     birth               DATE                                        NOT NULL,                                                       -- 생일
     email               VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
     verification_token  VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일 인증 토큰
-    is_verified         BOOLEAN                                     NOT NULL DEFAULT FALSE                                          -- 인증 완료
+    is_verified         BOOLEAN                                     NOT NULL DEFAULT FALSE,                                          -- 인증 완료
     image_path          VARCHAR(255),                                                                                               -- 프로필사진
     is_public           BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
     role                ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)

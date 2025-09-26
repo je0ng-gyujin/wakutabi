@@ -1,7 +1,7 @@
 -- [사용자 관련]
 -- 사용자
 CREATE TABLE users (
-    id           BIGINT                                             AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
+    id                  BIGINT                                             AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
     username            VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 사용자ID
     nickname            VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
     password            VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
@@ -9,7 +9,7 @@ CREATE TABLE users (
     birth               DATE                                        NOT NULL,                                                       -- 생일
     email               VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
     verification_token  VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일 인증 토큰
-    is_verified         BOOLEAN                                     NOT NULL DEFAULT FALSE,                                          -- 인증 완료
+    is_verified         BOOLEAN                                     NOT NULL DEFAULT FALSE,                                         -- 인증 완료
     image_path          VARCHAR(255),                                                                                               -- 프로필사진
     is_public           BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
     role                ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
@@ -54,7 +54,6 @@ CREATE TABLE trip_article (
 	recruit_end_date     DATETIME                                       NOT NULL,                                                               -- 모집날짜
 	end_date	         DATETIME	                                    NOT NULL,                                                               -- 여행종료날짜
 	maxParticipants      INT                                            NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명  
-    currentParticipants  INT                                            NOT NULL DEFAULT 1,                                                     -- 현재인원수:1명 
 	age_limit	         CHAR(2)                                        NOT NULL CHECK(AGE_LIMIT IN('NO','20','30','40','MX')),                 -- 나이제한('NO':상관없음,'20':20대,'30':30대,'40':40대,'MX':혼합)
 	gender_limit	     CHAR(1)                                        NOT NULL CHECK(GENDER_LIMIT IN('N','M','F')),                           -- 성별제한('N':상관없음,'M':남자,'F':여자)
 	title	             VARCHAR(50)                                    NOT NULL,                                                               -- 제목

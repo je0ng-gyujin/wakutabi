@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="chat">
+<script defer src="/js/chat.js"></script>
+<script th:inline="javascript">
+	// 서버의 userId 모델 값을 자바스크립트 변수로 초기화
+	const userId = '[[${userId}]]'; // Thymeleaf 문법
+
+	// 이제 이 값을 sessionStorage에 저장할 수 있습니다.
+	sessionStorage.setItem('userId', userId);
+</script>
+<button class="btn btn-wakutabi-primary btn-lg rounded-circle position-fixed bottom-0 start-0 m-3" type="button" style="width:50px; height:50px;" data-bs-toggle="offcanvas" data-bs-target="#chatOffcanvas" aria-controls="offcanvasScrolling">
+  <i class="bi bi-chat-dots-fill"></i>
+</button>
+<div class="offcanvas offcanvas-bottom wakutabi-offcanvas-chat m-3 rounded"
+  style="width: 350px; height: 65vh;"
+  data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chatOffcanvas" aria-labelledby="offcanvasScrollingLabel">
+  <div class="offcanvas-header bg-wakutabi-primary text-white rounded py-2">
+    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Tabi Chat</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"aria-label="Close" ></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <div id="chatListPanel">
+      <div class="list-group list-group-flush border-top">
+
+        <a href="#"
+          th:each="chatRoom : ${chatRooms}"
+          th:data-room-id="${chatRoom.id}"
+          th:data-trip-id="${chatRoom.tripArticleId}"
+          th:data-title="${chatRoom.title}"
+          class="rounded list-group-item list-group-item-action list-group-item-unread"
+          aria-current="true">
+          
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1 text-truncate" th:text="${chatRoom.title} + ' 채팅방'"></h6>
+          </div>
+          
+          <p class="mb-1 text-truncate" 
+            th:text="${chatRoom.latestNickname} + ': ' + ${chatRoom.latestMessage}"></p> 
+            
+          <small class="text-secondary" 
+            th:text="${#temporals.format(chatRoom.latestMessageTime, 'MM/dd HH:mm')}"></small>
+        </a>
+
+<!--/* 유지보수용 채팅 하드 코딩 예시 (렌더링 안되니까 남겨놔주세요!)
+        <a href="#"
+          class="rounded list-group-item list-group-item-action list-group-item-unread"
+          aria-current="true">
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1 text-truncate">일본 벚꽃 여행: 메시지가 도착했습니다.</h6>
+          </div>
+          <p class="mb-1 text-truncate">유타: 안녕하세요, 여행 일정에 대해 이야기 나누고
+            싶습니다.</p> <small class="text-secondary">5분 전</small>
+        </a>
+
+        <a href="#" class="rounded list-group-item list-group-item-action list-group-item-unread" aria-current="true">
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1 text-truncate">제주도 드라이브: 새로운 동행자가 합류했습니다.</h6>
+          </div>
+          <p class="mb-1 text-truncate">운영자: 새로운 동행자를 환영해주세요!</p>
+          <small class="text-secondary">10분 전</small>
+        </a>
+
+      <a href="#" class="rounded list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h6 class="mb-1 text-truncate">싱가포르 야경 투어: 여행 참가가 수락되었습니다.</h6>
+        </div>
+        <p class="mb-1 text-truncate text-secondary">운영자: 여행 참가 신청이 승인되었습니다.</p>
+        <small class="text-secondary">1일 전</small>
+      </a>
+*/-->
+
+      </div><!-- list-group end -->
+    </div><!-- chatListPanel end -->
+    <div id="chatRoomPanel" class="d-none d-flex flex-column h-100">
+      <div class="offcanvas-header border-bottom p-0 ">
+        <button class="btn btn-wakutabi-back">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <a id="chatRoomTitle" class="offcanvas-title text-truncate text-decoration-none">로딩중입니다...</a>
+      </div>
+      <div class="d-flex flex-column p-3 overflow-auto flex-grow-1"
+        id="messageList">
+
+<!--/* 유지보수용 채팅 하드 코딩 예시 (렌더링 안되니까 남겨놔주세요!)
+        <div class="d-flex mb-3 align-items-end">
+          <img src="/image/testuser.jpg"
+            style="width: 40px; height: 40px;"
+            class="rounded-circle align-self-start m-1" alt="프로필">
+          <div>
+            <div class="small fw-bold text-secondary">유타</div>
+            <div class="p-2 bg-light rounded-3">
+              <p class="mb-0">안녕하세요, 일정에 대해 이야기 나누고 싶습니다!</p>
+            </div>
+          </div>
+          <div class="ms-2 small text-secondary">10:00 AM</div>
+        </div>
+
+        <div class="d-flex justify-content-end mb-3 align-items-end">
+          <div class="me-2 small text-secondary order-1">10:05 AM</div>
+          <div class="p-2 bg-wakutabi-primary text-white rounded-3">
+            <p class="mb-0">네 안녕하세요! 혹시 어떤 일정이 궁금하신가요?</p>
+          </div>
+        </div>
+
+        <div class="d-flex mb-3 align-items-end">
+          <img src="/image/testuser.jpg"
+            style="width: 40px; height: 40px;"
+            class="rounded-circle align-self-start m-1" alt="프로필">
+          <div>
+            <div class="small fw-bold text-secondary">유타</div>
+            <div class="p-2 bg-light rounded-3">
+              <p class="mb-0">3일차 오전에 혹시 변경 가능한 부분이 있나요?</p>
+            </div>
+          </div>
+          <div class="ms-2 small text-secondary">10:06 AM</div>
+        </div>
+*/-->
+      </div><!-- messageList end -->
+
+      <div class="p-2 border-top">
+        <div class="input-group">
+          <textarea id="chatSendText" class="form-control rounded-pill me-2"
+            placeholder="메시지를 입력하세요..." rows="1" style="resize: none;"></textarea>
+          <button id="chatSendBtn" class="btn btn-wakutabi-primary rounded-circle" type="button">
+            <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+      </div>
+    </div><!-- chatRoomPanel end -->
+  </div><!-- offcanvas-body end -->
+</div><!-- wakutabi-offcanvas-chat end -->
+</th:block>
+</html>

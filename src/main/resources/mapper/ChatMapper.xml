@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.ChatMapper">
+  <select id="findChatRoomsByUserId" parameterType="java.lang.Long" resultType="com.wakutabi.domain.ChatRoomDto">
+SELECT
+    r.id AS id,
+    r.trip_article_id,
+    p.role,
+    ta.title,
+    latest_sender.nickname AS latest_nickname,
+    latest_message.message AS latest_message,
+    latest_message.created_at AS latest_message_time
+FROM
+    chat_participants p
+INNER JOIN
+    chat_room r ON p.chat_room_id = r.id
+INNER JOIN
+    trip_article ta ON r.trip_article_id = ta.id
+LEFT JOIN
+    (
+        SELECT
+            user_id,
+            chat_room_id,
+            message,
+            created_at,
+            ROW_NUMBER() OVER(PARTITION BY chat_room_id ORDER BY created_at DESC) as rn
+        FROM
+            chat_message
+    ) AS latest_message ON p.chat_room_id = latest_message.chat_room_id AND latest_message.rn = 1
+LEFT JOIN
+    users AS latest_sender ON latest_message.user_id = latest_sender.id
+WHERE
+    p.user_id = #{userId} AND p.status = 'ACTIVE'
+ORDER BY
+    p.created_at
+  </select>
+  
+  
+  <select id="findChatMsgByRoomId" parameterType="java.lang.Long" resultType="com.wakutabi.domain.ChatMsgDto">
+SELECT
+    cm.user_id,
+    u.image_path as user_image_path,
+    u.nickname,
+    cm.message,
+    cm.image_path as message_image_path,
+    cm.created_at
+FROM
+    chat_message cm
+INNER JOIN
+    users u ON cm.user_id = u.id
+WHERE
+    cm.chat_room_id = #{roomId}
+ORDER BY
+    cm.created_at DESC
+LIMIT 50
+  </select>
+  
+  <insert id="insertChatMsgWhenText" parameterType="com.wakutabi.domain.ChatMsgDto" useGeneratedKeys="true" keyProperty="id">
+INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{roomId},#{message});
+  </insert>
+  
+  <select id="findChatMsgByMsgId" parameterType="java.lang.Long" resultMap="chatMsgResultMap">
+      SELECT
+          m.id,
+          m.chat_room_id,
+          m.user_id,
+          m.message,
+          m.image_path,
+          m.created_at,
+          u.nickname,
+          u.image_path AS user_image_path
+      FROM
+          chat_message m
+      INNER JOIN
+          users u ON m.user_id = u.id
+      WHERE
+          m.id = #{id}
+  </select>
+  
+  <resultMap id="chatMsgResultMap" type="com.wakutabi.domain.ChatMsgDto">
+    <id column="id" property="id"/>
+    <result column="chat_room_id" property="roomId"/>
+    <result column="user_id" property="userId"/>
+    <result column="message" property="message"/>
+    <result column="image_path" property="imagePath"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="nickname" property="nickname"/>
+    <result column="user_image_path" property="userImagePath"/>
+  </resultMap>
+  <!--    -->
+  <select id="chatRoomFindByTripArticleId" parameterType="Long" resultType="Long">
+      SELECT id FROM chat_room WHERE trip_article_id = #{tripArticleId}
+  </select>
+  <!--    -->
+  <insert id="addUserToChatParticipants" parameterType="map">
+      INSERT INTO chat_participants (chat_room_id, user_id)
+      VALUES (#{chatRoomId}, #{applicantUserId})
+  </insert>
+</mapper>

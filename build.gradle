@@ -35,8 +35,19 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 	// 이메일 발송을 위한 Spring Boot Starter Mail 의존성
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+	/**
+	 * @author 정규진
+	 * @description 웹소켓 기능 구현을 위한 웹소켓 스타터 의존성 추가
+	 */
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	/**
+	 * @author 정규진
+	 * @description Jackson 라이브러리가 Java 8의 날짜/시간 타입을 인식하고 처리할 수 있도록 jackson-datatype-jsr310 모듈을 프로젝트에 추가
+	 */
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // Lombok을 사용하고 있다면, 이메일 관련 클래스에도 적용 가능
     compileOnly 'org.projectlombok:lombok'
@@ -61,5 +72,6 @@ tasks.named('test') {
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+	options.encoding = 'UTF-8'
+	options.compilerArgs << "-parameters"
 }

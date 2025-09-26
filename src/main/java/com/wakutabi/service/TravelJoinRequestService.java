@@ -15,13 +15,11 @@ public class TravelJoinRequestService {
 		travelJoinRequestMapper.insertTravelJoinRequest(TravelJoinRequest);
 	}
 	// 참가수락
-	public boolean changeStatusToAccepted(Long id, Long hostUserId){
-		int updated = travelJoinRequestMapper.changeStatusToAccepted(id, hostUserId);
-		return updated > 0;
+	public void changeStatusToAccepted(TravelJoinRequestDto statusToAccepted){
+		travelJoinRequestMapper.changeStatusToAccepted(statusToAccepted);
 	}
 	// 참가거절
-	public boolean changeStatusToRejected(Long id, Long hostUserId){
-		int updated = travelJoinRequestMapper.changeStatusToRejected(id, hostUserId);
-		return updated > 0;
+	public void changeStatusToRejected(TravelJoinRequestDto statusToRejected){
+		travelJoinRequestMapper.changeStatusToRejected(statusToRejected);
 	}
 }

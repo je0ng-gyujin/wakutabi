@@ -116,17 +116,20 @@
                     </div>
                 </div>
 
-                <!-- 작성자 정보 -->
                 <div class="col-lg-4">
-                    <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
-                        <div class="text-center mb-3">
+                        <form id="joinForm" th:action="@{/join-request}" method="post">
+                            <input type="hidden" name="tripArticleId" th:value="${travel.id}">
+                            <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
+                                 <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
+                                  <div class="text-center mb-3">
                             <img src="/image/testuser.jpg" alt="프로필 이미지" class="rounded-circle mb-2"
                                  style="width: 80px; height: 80px; object-fit: cover" />
                             <h5 class="mb-0">여행 작성자</h5>
                             <small class="text-muted">@김민지</small>
                         </div>
                         <div class="d-grid mb-3">
-                            <button class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
+                            
+                            <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
                         </div>
                         <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
                         <hr />
@@ -138,6 +141,7 @@
                             </li>
                         </ul>
                     </div>
+                    </form>
                 </div>
 
             </div>

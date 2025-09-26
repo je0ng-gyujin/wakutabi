@@ -46,21 +46,22 @@ CREATE TABLE trip_tag_mid_trip_article (
 -- [여행등록 관련]
 -- 여행일정 등록
 CREATE TABLE trip_article (
-	id	               BIGINT                                         AUTO_INCREMENT PRIMARY KEY,                                             -- 여행일정게시 고유ID
-	host_user_id	   BIGINT                                         NOT NULL,	                                                              -- 주최자 고유ID
-	location           VARCHAR(10)   	                              NOT NULL,	                                                              -- 지역
-	start_date	       DATETIME	                                      NOT NULL,                                                               -- 여행시작날짜
-	end_date	       DATETIME	                                      NOT NULL,                                                               -- 여행종료날짜
-	maxParticipants    INT                                            NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명
-	age_limit	       CHAR(2)                                        NOT NULL CHECK(AGE_LIMIT IN('NO','20','30','40','MX')),                 -- 나이제한('NO':상관없음,'20':20대,'30':30대,'40':40대,'MX':혼합)
-	gender_limit	   CHAR(1)                                        NOT NULL CHECK(GENDER_LIMIT IN('N','M','F')),                           -- 성별제한('N':상관없음,'M':남자,'F':여자)
-	title	           VARCHAR(50)                                    NOT NULL,                                                               -- 제목
-	content            TEXT                                           NOT NULL,                                                               -- 내용
-	estimated_cost     INT                                            NOT NULL DEFAULT 0,                                                     -- 예상비용
-	status	           ENUM('OPEN','MATCHED','CLOSED','CANCELED')     NOT NULL DEFAULT 'OPEN',                                                -- 진행상태('OPEN':진행중,'MATCHED':매치완료,'CLOSED':매치종료,'CANCELED':매치취소)
-    created_at         DATETIME                                       NOT NULL DEFAULT CURRENT_TIMESTAMP,                                     -- 생성일자
-    updated_at         DATETIME                                                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,         -- 수정일자
-    deleted_at         DATETIME,                                                                                                              -- 삭제일자
+	id	                 BIGINT                                         AUTO_INCREMENT PRIMARY KEY,                                             -- 여행일정게시 고유ID
+	host_user_id	     BIGINT                                         NOT NULL,	                                                            -- 주최자 고유ID
+	location             VARCHAR(10)   	                                NOT NULL,	                                                            -- 지역
+	start_date	         DATETIME	                                    NOT NULL,                                                               -- 여행시작날짜
+	end_date	         DATETIME	                                    NOT NULL,                                                               -- 여행종료날짜
+	maxParticipants      INT                                            NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명  
+    currentParticipants  INT                                            NOT NULL DEFAULT 1,                                                     -- 현재인원수:1명 
+	age_limit	         CHAR(2)                                        NOT NULL CHECK(AGE_LIMIT IN('NO','20','30','40','MX')),                 -- 나이제한('NO':상관없음,'20':20대,'30':30대,'40':40대,'MX':혼합)
+	gender_limit	     CHAR(1)                                        NOT NULL CHECK(GENDER_LIMIT IN('N','M','F')),                           -- 성별제한('N':상관없음,'M':남자,'F':여자)
+	title	             VARCHAR(50)                                    NOT NULL,                                                               -- 제목
+	content              TEXT                                           NOT NULL,                                                               -- 내용
+	estimated_cost       INT                                            NOT NULL DEFAULT 0,                                                     -- 예상비용
+	status	             ENUM('OPEN','MATCHED','CLOSED','CANCELED')     NOT NULL DEFAULT 'OPEN',                                                -- 진행상태('OPEN':진행중,'MATCHED':매치완료,'CLOSED':매치종료,'CANCELED':매치취소)
+    created_at           DATETIME                                       NOT NULL DEFAULT CURRENT_TIMESTAMP,                                     -- 생성일자
+    updated_at           DATETIME                                                DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,         -- 수정일자
+    deleted_at           DATETIME,                                                                                                              -- 삭제일자
 
 	CONSTRAINT fk_trip_article_host_user_id FOREIGN KEY (host_user_id) REFERENCES users (id)
 );
@@ -73,6 +74,21 @@ CREATE TABLE trip_article_image (
 	order_number           INT,                                          -- 이미지 표시 순서
 
 	CONSTRAINT fk_trip_article_image_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
+);
+-- [여행 참가]
+-- 여행 참가 신청
+CREATE TABLE trip_join_request (
+    id                 BIGINT                                  AUTO_INCREMENT PRIMARY KEY,          -- 여행참가신청ID
+    trip_article_id    BIGINT                                  NOT NULL,                            -- 여행ID
+    host_user_id       BIGINT                                  NOT NULL,                            -- 호스트ID
+    applicant_user_id  BIGINT                                  NOT NULL,                            -- 참가신청자ID
+    status             ENUM('PENDING','ACCEPTED','REJECTED')   NOT NULL DEFAULT 'PENDING',          -- 참가신청상태
+    created_at         DATETIME                                NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+
+    CONSTRAINT fk_trip_join_request_trip_article_id   FOREIGN KEY (trip_article_id)   REFERENCES trip_article (id),
+    CONSTRAINT fk_trip_join_request_host_user_id      FOREIGN KEY (host_user_id)      REFERENCES users        (id),
+    CONSTRAINT fk_trip_join_request_applicant_user_id FOREIGN KEY (applicant_user_id) REFERENCES users        (id)
+
 );
 -- [여행후기 관련]
 -- 여행 리뷰

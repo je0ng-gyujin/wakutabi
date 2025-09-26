@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
 	private final UserService userService;
-	
+
 	@PostMapping("/signup")
 	public String signRegister(SignUpDto user) {
 		userService.register(user);
@@ -58,7 +58,7 @@ public class UserController {
 		try {
 			int count = userService.countByUsername(username);
 			return count > 0 ? "exist" : "ok";
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";
 		}

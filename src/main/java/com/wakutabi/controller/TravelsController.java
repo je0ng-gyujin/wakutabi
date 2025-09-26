@@ -114,10 +114,10 @@ public class TravelsController {
 		return "travels/write";
 	}
 
-	// ---------------------------------------------
+    // ---------------------------------------------
 	// 2. 여행 글 업로드 (POST, AJAX/JSON)
 	// ---------------------------------------------
-  @PostMapping("travelupload")
+    @PostMapping("/travelupload")
     @ResponseBody
     public String uploadTravel(@RequestParam(name = "tags", required = false) String tags,TravelUploadDto uploadDto, Principal principal,@ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
@@ -164,7 +164,7 @@ public class TravelsController {
         }
         
         // 로그인한 사용자 ID 설정 (예시: 1L)
-        dto.setHostUserId(1L);
+        dto.setHostUserId(userId);
 
         // 4. 게시글 DB 저장
         travelEditService.saveTravelWithTags(dto);
@@ -214,11 +214,13 @@ public class TravelsController {
 
     }
 
-	// ---------------------------------------------
-	// 3. 여행 상세 조회
-	// ---------------------------------------------
-	@GetMapping("/detail")
-	public String travelDetail(@RequestParam("id") Long id, Model model, Principal principal) {
+    // ---------------------------------------------
+    // 3. 여행 상세 조회
+    // ---------------------------------------------
+    @GetMapping("/detail")
+    public String travelDetail(@RequestParam("id") Long id,
+                               @ModelAttribute("userId") Long userId,
+                                 Model model, Principal principal) {
 
 		TravelEditDto travel = travelEditService.findTravelById(id);
 		if (travel == null)
@@ -228,81 +230,78 @@ public class TravelsController {
 
 		// 3. 현재 로그인한 사용자와 게시글 작성자 ID 비교
 
-		boolean isOwner = false;
-		if (principal != null) {
-			Long currentUserId = 1L; // 실제 구현 시 principal 기반으로 조회
-			isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
-		}
+        boolean isOwner = false;
+        if (principal != null) {
+            Long currentUserId = userId; // 실제 구현 시 principal 기반으로 조회
+            isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
+        }
 
 		// 조회한 게시글 정보를 모델에 담아 HTML로 전달
 		model.addAttribute("travel", travel);
 		model.addAttribute("images", images);
 		model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
 
-		return "travels/detail"; // views/travels/detail.html 경로
-	}
-
-	// ---------------------------------------------
-	// 4. 여행 글 수정
-	// ---------------------------------------------
-	// TravelsController.java
-	@PostMapping("/travelupdate")
-	@ResponseBody
-	public String updateTravel(@ModelAttribute TravelEditDto dto, Principal principal) {
-		if (principal == null)
-			return "로그인 후 이용 가능합니다.";
-
-		dto.setHostUserId(1L); // 실제 구현 시 principal 기반으로 설정
-
-		// 현재 컨트롤러는 `updateTravelArticle` 메소드에 dto를 직접 전달하고 있는데,
-		// 이 메소드에서 어떤 데이터를 필요로 하는지 확인해야 합니다.
-		// 예를 들어, 이미지 정보도 함께 업데이트해야 한다면,
-		// DTO에 MultipartFile 필드가 추가되어야 합니다.
-
-		boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
-
-		return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-
-	}
+        return "travels/detail"; // views/travels/detail.html 경로
+    
 
 
 
-/**
- * 여행 게시글 삭제
- * @param dto 삭제할 게시글 ID를 포함한 DTO
- * @param principal 사용자 정보
- * @return 삭제 결과 메시지
- */
-@PostMapping("traveldelete")
-@ResponseBody
-public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) {
-	    if (principal == null) {
-	        return "로그인 후 이용 가능합니다.";
-	    }
-	
-	    // ⚠️ 실제 사용자 ID를 principal에서 가져오는 로직으로 변경해야 합니다.
-	    // 현재는 예시로 1L을 사용합니다.
-	    Long hostUserId = 1L;
-	
-	    boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
-	
-	    if (isDeleted) {
-	        return "게시글 삭제 완료!";
-	    } else {
-	        return "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-	
-	    }
-	}
-	// TravelsController.java
-	// ...
-	// ---------------------------------------------
-	// 6. 여행 글 수정 페이지
-	// ---------------------------------------------
-	@GetMapping("/edit")
-	public String travelEdit(@RequestParam("id") Long id, Model model, Principal principal) {
-		if (principal == null) {
-			return "redirect:/login"; // 로그인 페이지로 리다이렉트
-		}
+    }
+    
+
+
+
+    // ---------------------------------------------
+    // 4. 여행 글 수정
+    // ---------------------------------------------
+ // TravelsController.java
+ // TravelsController.java
+ // ...
+ @PostMapping("/travelupdate")
+ @ResponseBody
+ public String updateTravel(@ModelAttribute TravelEditDto dto,
+                            @ModelAttribute("userId") Long userId,
+                            Principal principal) {
+     if (principal == null) {
+         return "로그인 후 이용 가능합니다.";
+     }
+
+     dto.setHostUserId(userId); // Set the hostUserId from the authenticated user
+     boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
+
+     return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+ }
+
+ @DeleteMapping("/traveldelete")
+ @ResponseBody
+ public String deleteTravel(@RequestBody TravelEditDto dto,
+                            @ModelAttribute("userId") Long userId,
+                            Principal principal) {
+     if (principal == null) {
+         return "로그인 후 이용 가능합니다.";
+     }
+
+     Long hostUserId = userId; // Get the hostUserId from the authenticated user
+     boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
+
+     return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+ }
+ // ...
+
+    
+    
+ // TravelsController.java
+ // ...
+ // ---------------------------------------------
+ // 6. 여행 글 수정 페이지
+ // ---------------------------------------------
+ @GetMapping("/edit")
+ public String travelEdit(@RequestParam("id") Long id, 
+                          @ModelAttribute("userId") Long userId,
+                          Model model, Principal principal) {
+     if (principal == null) {
+         return "redirect:/login"; // 로그인 페이지로 리다이렉트
+     }
 
 		// 1. 게시글 ID로 기존 데이터 조회
 		TravelEditDto travel = travelEditService.findTravelById(id);
@@ -310,14 +309,15 @@ public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) 
 			return "redirect:/error"; // 게시글이 없으면 에러 페이지로
 		}
 
-		// 2. 작성자 본인인지 확인 (실제 사용자 ID와 비교)
-		Long currentUserId = 1L; // TODO: principal.getName()을 사용해 실제 사용자 ID 가져오기
-		if (!travel.getHostUserId().equals(currentUserId)) {
-			return "redirect:/access-denied"; // 권한 없으면 접근 거부 페이지로
-		}
+     // 2. 작성자 본인인지 확인 (실제 사용자 ID와 비교)
+     Long currentUserId = userId; // TODO: principal.getName()을 사용해 실제 사용자 ID 가져오기
+     if (!travel.getHostUserId().equals(currentUserId)) {
+         return "redirect:/access-denied"; // 권한 없으면 접근 거부 페이지로
+     }
 
 		// 3. 데이터를 Model에 담아 Thymeleaf로 전달
 		model.addAttribute("travel", travel);
+
 
 		// 4. 새로운 수정 폼 HTML 페이지 반환
 		return "travels/edit";

@@ -20,6 +20,7 @@ CREATE TABLE users (
     created_at          DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
     updated_at          DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- 수정일자
 );
+select * from users;
 -- [태그 관련]
 -- 태그
 CREATE TABLE trip_tag (

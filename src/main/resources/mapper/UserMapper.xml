@@ -9,8 +9,8 @@
 	
 	
 	<insert id="insertUser" parameterType="com.wakutabi.domain.SignUpDto">
-		insert into users (username,password,nickname,birth,email) values 
-		(#{username},#{password},#{nickname},#{birth},#{email})
+		insert into users (username,password,nickname,birth,email,verification_token, is_verified) values 
+		(#{username},#{password},#{nickname},#{birth},#{email},#{verificationToken}, #{isVerified})
 	</insert>
 	<select id="findByUsername" resultType="com.wakutabi.domain.LoginDto">
 		select * from users where username=#{username}
@@ -74,5 +74,22 @@
 			status = 'EXIT'
 		WHERE username = #{username}
 	</update>
+	
+	
+	
+	<update id="updateUserVerificationStatus">
+    UPDATE users
+    SET is_verified = <choose>
+        <when test="isVerified == true">1</when>
+        <otherwise>0</otherwise>
+    </choose>
+    WHERE username = #{username}
+</update>
+
+
+	<select id="findVerificationTokenByUsername" resultType="String">
+    select verification_token from users where username = #{username}
+	</select>
+	
 
 </mapper>

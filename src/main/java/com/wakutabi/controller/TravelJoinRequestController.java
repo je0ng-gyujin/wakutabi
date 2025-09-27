@@ -10,6 +10,7 @@ import com.wakutabi.service.TravelJoinRequestService;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,6 +33,11 @@ public class TravelJoinRequestController {
             if (userId == null) {
                 result.put("status", "fail");
                 result.put("message", "로그인이 필요합니다.");
+                return result;
+            }
+            if (Objects.equals(userId, travelJoinRequest.getHostUserId())) {
+                result.put("status", "fail");
+                result.put("message", "호스트는 참가신청 할 수 없습니다.");
                 return result;
             }
 

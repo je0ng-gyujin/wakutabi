@@ -16,20 +16,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                // 서버의 응답 상태를 확인합니다.
-                if (response.ok) {
-                    // 성공적으로 처리되었을 때 알림을 띄웁니다.
-                    alert("참가 신청되었습니다.");
-                    // 필요하다면 페이지를 새로고침하거나 다른 동작을 수행할 수 있습니다.
+            .then(response => response.json()) // JSON 파싱
+            .then(data => {
+                if (data.status === "success") {
+                    alert(data.message); // "참가 신청이 완료되었습니다."
                     // location.reload();
                 } else {
-                    // 오류가 발생했을 때 사용자에게 알립니다.
-                    alert("참가 신청에 실패했습니다.");
+                    alert(data.message); // "호스트는 참가신청 할 수 없습니다."
                 }
             })
             .catch(error => {
-                // 네트워크 오류 등 예외 발생 시 알립니다.
                 console.error('Error:', error);
                 alert("네트워크 오류가 발생했습니다.");
             });

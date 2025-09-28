@@ -117,32 +117,51 @@
                 </div>
 
                 <div class="col-lg-4">
-                        <form id="joinForm" th:action="@{/join-request}" method="post">
-                            <input type="hidden" name="tripArticleId" th:value="${travel.id}">
-                            <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
-                                 <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
-                                  <div class="text-center mb-3">
-                            <img src="/image/testuser.jpg" alt="프로필 이미지" class="rounded-circle mb-2"
-                                 style="width: 80px; height: 80px; object-fit: cover" />
-                            <h5 class="mb-0">여행 작성자</h5>
-                            <small class="text-muted">@김민지</small>
-                        </div>
-                        <div class="d-grid mb-3">
-                            
-                            <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
-                        </div>
-                        <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
-                        <hr />
-                        <h6 class="fw-bold mb-3">참여자 목록</h6>
-                        <ul class="list-unstyled">
-                            <li class="d-flex align-items-center mb-2">
-                                <img src="/image/testuser.jpg" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" />
-                                <span class="ms-2">박지훈</span>
-                            </li>
-                        </ul>
-                    </div>
-                    </form>
+    <form id="joinForm" th:action="@{/join-request}" method="post">
+        <input type="hidden" name="tripArticleId" th:value="${travel.id}">
+        <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
+        
+        <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
+            <!-- 여행 작성자 -->
+            <div class="text-center mb-3" th:if="${participants}">
+                <div th:each="p : ${participants}" th:if="${p.role == 'HOST'}">
+                    <img th:src="${p.imagePath != null ? p.imagePath : '/images/default-profile.jpg'}"
+                         alt="프로필 이미지" class="rounded-circle mb-2"
+                         style="width: 80px; height: 80px; object-fit: cover" />
+                    <h5 class="mb-0">여행 작성자</h5>
+                    <small class="text-muted" th:text="'@' + ${p.nickname}"></small>
                 </div>
+            </div>
+
+            <!-- 참가 신청 버튼 -->
+            <div class="d-grid mb-3">
+                <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">
+                    참가 신청하기
+                </button>
+            </div>
+            <p class="text-muted text-center small">
+                여행 참가 신청 시, 작성자에게 알림이 전송됩니다.
+            </p>
+            <hr />
+
+            <!-- 참여자 목록 -->
+            <h6 class="fw-bold mb-3">참여자 목록</h6>
+            <ul class="list-unstyled">
+                <li class="d-flex align-items-center mb-2"
+                    th:each="p : ${participants}" th:if="${p.role != 'HOST'}">
+                    <img th:src="${p.imagePath != null ? p.imagePath : '/images/default-profile.jpg'}"
+                         style="width:55px; height:55px; object-fit: cover"
+                         alt="참여자" class="participant-avatar rounded-circle" />
+                    <span class="ms-2" th:text="${p.nickname}"></span>
+                </li>
+                <li th:if="${#lists.isEmpty(participants)}" class="text-muted small">
+                    아직 참여자가 없습니다.
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
 
             </div>
         </div>

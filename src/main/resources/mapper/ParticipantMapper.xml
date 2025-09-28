@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wakutabi.mapper.ParticipantMapper">
+
+    <!-- 여행 작성자 + 참여자 목록 조회 -->
+    <select id="findParticipantsWithHost" 
+            parameterType="long" 
+            resultType="com.wakutabi.domain.ParticipantDto">
+        
+        (
+            select 
+                u.id as userId, 
+                u.nickname, 
+                u.image_path as imagePath, 
+                'HOST' as role
+            from trip_article t
+            join users u 
+                on u.id = t.host_user_id
+            where t.id = #{id}
+        )
+
+        union all
+
+        (
+            select 
+                u.id as userId, 
+                u.nickname, 
+                u.image_path as imagePath, 
+                p.role
+            from chat_participants p
+            join users u 
+                on u.id = p.user_id
+            join chat_room r 
+                on r.id = p.chat_room_id
+            where r.trip_article_id = #{id}
+        )
+
+        order by role desc, userId
+    </select>
+
+</mapper>

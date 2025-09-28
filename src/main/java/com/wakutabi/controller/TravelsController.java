@@ -3,10 +3,13 @@ package com.wakutabi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.NotificationDto;
+import com.wakutabi.domain.ParticipantDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
+import com.wakutabi.mapper.ParticipantMapper;
 import com.wakutabi.service.NotificationService;
+import com.wakutabi.service.ParticipantService;
 import com.wakutabi.service.TravelEditService;
 import com.wakutabi.service.TravelImageService;
 import com.wakutabi.service.TravelUpdateDeleteService;
@@ -38,7 +41,7 @@ public class TravelsController {
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
-    
+    private final ParticipantService participantservice; 
     //검색
     @GetMapping("/search")
     public String searchTravels(
@@ -220,33 +223,23 @@ public class TravelsController {
     @GetMapping("/detail")
     public String travelDetail(@RequestParam("id") Long id,
                                @ModelAttribute("userId") Long userId,
-                                 Model model, Principal principal) {
+                               Model model, Principal principal) {
 
-		TravelEditDto travel = travelEditService.findTravelById(id);
-		if (travel == null)
-			return "redirect:/error";
+        TravelEditDto travel = travelEditService.findTravelById(id);
+        if (travel == null) return "redirect:/error";
 
-		List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
+        List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
 
-		// 3. 현재 로그인한 사용자와 게시글 작성자 ID 비교
+        // 참가자 + 작성자 조회
+        List<ParticipantDto> participants = participantservice.participant(id);
 
-        boolean isOwner = false;
-        if (principal != null) {
-            Long currentUserId = userId; // 실제 구현 시 principal 기반으로 조회
-            isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
-        }
+        model.addAttribute("travel", travel);
+        model.addAttribute("images", images);
+        model.addAttribute("participants", participants);
 
-		// 조회한 게시글 정보를 모델에 담아 HTML로 전달
-		model.addAttribute("travel", travel);
-		model.addAttribute("images", images);
-		model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
-
-        return "travels/detail"; // views/travels/detail.html 경로
-    
-
-
-
+        return "travels/detail";
     }
+
     
 
 

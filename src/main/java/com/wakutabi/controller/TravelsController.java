@@ -32,7 +32,6 @@ public class TravelsController {
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
 
-
     @GetMapping("create")
     public String travelCreate() {
         return "travels/write";
@@ -40,7 +39,8 @@ public class TravelsController {
 
     @PostMapping("travelupload")
     @ResponseBody
-    public String uploadTravel(TravelUploadDto uploadDto, Principal principal) throws IllegalStateException, IOException {
+    public String uploadTravel(TravelUploadDto uploadDto, Principal principal)
+            throws IllegalStateException, IOException {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
             return "로그인 후 이용 가능합니다.";
@@ -54,8 +54,7 @@ public class TravelsController {
         try {
             imageOrders = objectMapper.readValue(
                     uploadDto.getOrderNumber(),
-                    objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class)
-            );
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class));
         } catch (IOException e) {
             return "redirect:/errorPage";
         }
@@ -70,6 +69,9 @@ public class TravelsController {
         dto.setGenderLimit(uploadDto.getGenderLimit() != null ? uploadDto.getGenderLimit().toUpperCase() : "N");
         dto.setEstimatedCost(uploadDto.getEstimatedCost() != null ? uploadDto.getEstimatedCost() : 0);
         dto.setStatus("OPEN");
+
+        dto.setTagString(uploadDto.getTag());
+        log.info("설정된 태그: {}", uploadDto.getTag());
 
         // 날짜 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

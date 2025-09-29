@@ -33,7 +33,7 @@ public class TravelJoinFacadeService {
 		Map<String,Object> params = new HashMap<>();
 		params.put("travelArticleId", travelJoinRequest.getTripArticleId());
 		params.put("chatRoomId", chatRoomId);
-
+		travelDeadlineService.travelDeadline(params);
 		return travelDeadlineService.travelDeadline(params);
 	}
 }

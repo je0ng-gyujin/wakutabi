@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wakutabi.mapper.TravelJoinRequestMapper">
-    <!-- 여행참가 신청 -->
-    <insert id="insertTravelJoinRequest" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
-        INSERT INTO trip_join_request
-        (trip_article_id, host_user_id, applicant_user_id)
-        VALUES
-        (#{tripArticleId},#{hostUserId},#{applicantUserId})
-    </insert>
-    <!-- 여행참가 수락 -->
- 	<update id="changeStatusToAccepted" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
-        UPDATE trip_join_request
-        SET status = #{status}
-        WHERE trip_article_id = #{tripArticleId}
-        AND host_user_id = #{hostUserId}
-        AND applicant_user_id = #{applicantUserId}
+<mapper namespace="com.wakutabi.mapper.TravelDeadlineMapper">
+    <!-- 인원 다 찼을 때 마감처리 -->
+    <update id="travelDeadlineMaxparticipants" parameterType="MAP">
+        UPDATE travel_article ta
+        JOIN chat_room cr
+        ON ta.id = cr.trip_article_id
+        JOIN (
+            SELECT chat_room_id, COUNT(id) AS cnt
+            FROM chat_participants
+            WHERE status = 'ACTIVE'
+            GROUP BY chat_room_id
+        ) cp
+            ON cr.id = cp.chat_room_id
+        SET ta.status = 'CLOSED'
+        WHERE ta.maxParticipants = cp.cnt
+        AND ta.id = #{travelArticleId}
+        AND cr.id = #{chatRoomId}
     </update>
-    <!-- 여행참가 거절 -->
-    <update id="changeStatusToRejected" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
-        UPDATE trip_join_request
-        SET status = #{status}
-        WHERE trip_article_id = #{tripArticleId}
-        AND host_user_id = #{hostUserId}
-        AND applicant_user_id = #{applicantUserId}
+    <!-- 방장이 마감 눌렀을 때 -->
+    <update id="travelDeadlineHostClick" parameterType="Long">
+        UPDATE travel_article
+        SET status = 'CLOSED'
+        WHERE id = #{travelArticleId}
+        AND status = 'OPEN'
     </update>
+    <!--기간만료 자동마감 -->
+    <update id="autoCloseExpiredArticles" parameterType="Long">
+        UPDATE travel_article
+        SET status = 'CLOSED'
+        WHERE status = 'OPEN'
+        AND NOW() >= recruit_end_date
+    </update>
+
 </mapper>

@@ -324,20 +324,5 @@ public class TravelsController {
 		// 4. 새로운 수정 폼 HTML 페이지 반환
 		return "travels/edit";
 	}
-
-
-    @PostMapping("/travel_deadline")
-    public String travelDeadline(@RequestParam("travelArticleId") Long travelArticleId,
-                                 @RequestParam("chatRoomId") Long chatRoomId,
-                                 RedirectAttributes redirectAttribute){
-        Map<String, Object> params = new HashMap<>();
-        params.put("travelArticleId", travelArticleId);
-        params.put("chatRoomId", chatRoomId);
-        boolean result = travelDeadlineService.travelDeadline(params);
-        if(result){
-            redirectAttribute.addFlashAttribute("message", "정원이 모두 찼습니다.");
-        }
-        return "redirect : schedule/detail?id=" + travelArticleId;
-    }
 	// ...
 }

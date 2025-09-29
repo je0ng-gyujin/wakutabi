@@ -6,10 +6,8 @@ import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
-import com.wakutabi.service.NotificationService;
-import com.wakutabi.service.TravelEditService;
-import com.wakutabi.service.TravelImageService;
-import com.wakutabi.service.TravelUpdateDeleteService;
+import com.wakutabi.mapper.TravelDeadlineMapper;
+import com.wakutabi.service.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +25,9 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/schedule")
@@ -38,6 +39,7 @@ public class TravelsController {
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
+    private final TravelDeadlineService travelDeadlineService; // 추가
     
     //검색
     @GetMapping("/search")
@@ -322,5 +324,20 @@ public class TravelsController {
 		// 4. 새로운 수정 폼 HTML 페이지 반환
 		return "travels/edit";
 	}
+
+
+    @PostMapping("/travel_deadline")
+    public String travelDeadline(@RequestParam("travelArticleId") Long travelArticleId,
+                                 @RequestParam("chatRoomId") Long chatRoomId,
+                                 RedirectAttributes redirectAttribute){
+        Map<String, Object> params = new HashMap<>();
+        params.put("travelArticleId", travelArticleId);
+        params.put("chatRoomId", chatRoomId);
+        boolean result = travelDeadlineService.travelDeadline(params);
+        if(result){
+            redirectAttribute.addFlashAttribute("message", "정원이 모두 찼습니다.");
+        }
+        return "redirect : schedule/detail?id=" + travelArticleId;
+    }
 	// ...
 }

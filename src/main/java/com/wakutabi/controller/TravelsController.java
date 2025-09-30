@@ -40,7 +40,7 @@ public class TravelsController {
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
     private final TravelDeadlineService travelDeadlineService; // 추가
-    
+    private final ChatService chatService;
     //검색
     @GetMapping("/search")
     public String searchTravels(
@@ -238,10 +238,12 @@ public class TravelsController {
             isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
         }
 
+        Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
 		// 조회한 게시글 정보를 모델에 담아 HTML로 전달
 		model.addAttribute("travel", travel);
 		model.addAttribute("images", images);
 		model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
+        model.addAttribute("chatRoomId", chatRoomId);// 채팅룸ID 추가
 
         return "travels/detail"; // views/travels/detail.html 경로
     

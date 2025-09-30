@@ -18,7 +18,7 @@ public class TravelDeadlineService {
 
 	// 여행마감처리(인원 다 찼을때)
 	public boolean travelDeadline(Map params){
-		return travelDeadlineMapper.travelDealine(params);
+		return travelDeadlineMapper.travelDeadlineMaxparticipants(params);
 	}
 	// 여행id로 호스트id 가져오기
 	public Long hostUserIdByTravelArticleId(Long travelArticleId){

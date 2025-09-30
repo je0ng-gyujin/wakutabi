@@ -3,7 +3,7 @@
 <mapper namespace="com.wakutabi.mapper.TravelDeadlineMapper">
     <!-- 인원 다 찼을 때 마감처리 -->
     <update id="travelDeadlineMaxparticipants" parameterType="MAP">
-        UPDATE travel_article ta
+        UPDATE trip_article ta
         JOIN chat_room cr
         ON ta.id = cr.trip_article_id
         JOIN (
@@ -20,14 +20,14 @@
     </update>
     <!-- 방장이 마감 눌렀을 때 -->
     <update id="travelDeadlineHostClick" parameterType="Long">
-        UPDATE travel_article
+        UPDATE trip_article
         SET status = 'CLOSED'
         WHERE id = #{travelArticleId}
         AND status = 'OPEN'
     </update>
     <!--기간만료 자동마감 -->
     <update id="autoCloseExpiredArticles" parameterType="Long">
-        UPDATE travel_article
+        UPDATE trip_article
         SET status = 'CLOSED'
         WHERE status = 'OPEN'
         AND NOW() >= recruit_end_date

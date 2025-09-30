@@ -2,8 +2,10 @@ package com.wakutabi.configure;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -48,7 +50,19 @@ public class SecurityConfig {
 						// 로그인 성공 시 실행될 핸들러를 지정합니다.
 						.successHandler(successHandler())
 						// 로그인 실패 시 이동할 URL을 "/user/login?error=true"로 지정합니다.
-						.failureUrl("/user/login?error=true")
+						.failureHandler((request, response, exception) -> {
+							String errorMessage;
+
+							if(exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException){
+								errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
+							} else {
+								errorMessage = "로그에 실패했습니다. 다시 시도해주세요";
+							}
+							// 로그인 실패 원인 저장
+							request.getSession().setAttribute("errorMessage", errorMessage);
+							// 로그인 페이지로 forward
+							response.sendRedirect("/login?error=true");
+						})
 						// 로그인 관련 페이지는 모두에게 허용합니다.
 						.permitAll())
 

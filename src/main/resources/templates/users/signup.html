@@ -1,87 +1,85 @@
 <!DOCTYPE html>
 
 <html
-	lang="ko"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/clean}">
+        lang="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/clean}">
 
 <head>
-<th:block layout:fragment="head">
-  <meta charset="UTF-8">
-  <title>Wakutabi signup</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <th:block layout:fragment="head">
+        <meta charset="UTF-8">
+        <title>Wakutabi signup</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" th:href="@{/css/member.css}">
-  <script defer src="/js/signup.js"></script>
-  </th:block>
+        <link rel="stylesheet" th:href="@{/css/member.css}">
+        <script defer src="/js/signup.js"></script>
+    </th:block>
 </head>
 
 <body class="bg-gradient-custom min-vh-100">
 <th:block layout:fragment="content">
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm p-4">
-          <div class="text-center">
-            <!-- <div class="b-icon">W</div> -->
-            <a class="navbar-brand logo-text text-decoration-none" href="/">
-            	<img src="/image/icon.png"alt="Wakutabi" height="50" class="me-2">
-            </a>
-            <h3 class="mb-4">Sign Up</h3>
-          </div>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm p-4">
+                    <div class="text-center">
+                        <a class="navbar-brand logo-text text-decoration-none" href="/">
+                            <img src="/image/icon.png" alt="Wakutabi" height="50" class="me-2">
+                        </a>
+                        <h3 class="mb-4">Sign Up</h3>
+                    </div>
 
-        <form th:action="@{/user/signup}" method="post" enctype="multipart/form-data">
-            <!-- 아이디 -->
-            <div class="mb-3">
-              <input type="text" name="username" id="username" class="form-control form-control-lg"
-                     placeholder="아이디 입력해 주세요">
-              <small id="id-check-msg" class="text-danger"></small>
-            </div>
+                    <form th:action="@{/user/signup}" method="post" th:object="${user}">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-            <!-- 비밀번호 -->
-            <div class="mb-3">
-              <input type="password" name="password" id="password" class="form-control form-control-lg"
-                     placeholder="패스워드 입력해 주세요">
-            </div>
+                        <div class="mb-3">
+                            <input type="text" th:field="*{username}" id="username" class="form-control form-control-lg"
+                                   placeholder="아이디 입력해 주세요">
+                            <small id="id-check-msg" class="text-danger"></small>
+                            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></span>
+                        </div>
 
-            <!-- 이름 -->
-            <div class="mb-3">
-              <input type="text" name="nickname" id="nickname" class="form-control form-control-lg"
-                     placeholder="닉네임을 입력해 주세요">
-              <p>*닉네임을 적지 않으시면 ID로 대체됩니다.</p>
-            </div>
-			
-            <!-- 이메일 -->
-            <div class="mb-3">
-              <input type="email" name="email" id="email" class="form-control form-control-lg"
-                     placeholder="이메일을 입력해 주세요">
-            </div>
-            
-            <!-- 생일 -->
-			<div class="mb-3">
-			  <label for="birthdate" class="form-label">생일을 선택해주세요</label>
-			  <input type="date" id="birth" name="birth" class="form-control form-control-lg" required>
-			</div>
+                        <div class="mb-3">
+                            <input type="password" th:field="*{password}" id="password" class="form-control form-control-lg"
+                                   placeholder="패스워드 입력해 주세요">
+                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></span>
+                        </div>
 
-            <!-- 제출 버튼 -->
-            <div class="d-grid mb-3">
-              <button type="submit" class="btn btn-warning btn-lg">회원가입</button>
+                        <div class="mb-3">
+                            <input type="text" th:field="*{nickname}" id="nickname" class="form-control form-control-lg"
+                                   placeholder="닉네임을 입력해 주세요">
+                            <p>*닉네임을 적지 않으시면 ID로 대체됩니다.</p>
+                             <span th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="email" th:field="*{email}" id="email" class="form-control form-control-lg"
+                                   placeholder="이메일을 입력해 주세요">
+                             <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="birth" class="form-label">생일을 선택해주세요</label>
+                            <input type="date" th:field="*{birth}" id="birth" class="form-control form-control-lg" required>
+                             <span th:if="${#fields.hasErrors('birth')}" th:errors="*{birth}" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-warning btn-lg">회원가입</button>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="/login" class="link-custom">로그인</a>
+                            <a href="#" class="link-custom">아이디/비밀번호 찾기</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-		
-            <!-- 링크들 -->
-            <div class="text-center">
-              <a href="/login" class="link-custom">로그인</a>
-              <a href="#" class="link-custom">아이디/비밀번호 찾기</a>
-            </div>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
 </th:block>
 <footer>
-    <!--  <p>Copyright © 2025 Wakutabi Co.,Ltd. All Rights Reserved.</p>-->
-  </footer>
+</footer>
 </body>
 </html>

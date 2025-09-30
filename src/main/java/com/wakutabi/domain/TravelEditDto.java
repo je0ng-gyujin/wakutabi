@@ -25,4 +25,5 @@ public class TravelEditDto {
     private LocalDateTime deletedAt;
 
     private List<TravelImageDto> images; // ✨ 2. 이미지 리스트 필드 추가
+    private List<String> tagNames; // ✨ 3. 태그 리스트 필드 추가
 }

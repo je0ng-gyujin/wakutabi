@@ -13,14 +13,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TravelEditService {
 
-	private final TravelEditMapper travelEditmapper;
+	private final TravelEditMapper travelEditMapper;
 	private final TravelTagMapper travelTagMapper; // ✨ 2. 태그 매퍼 주입
 
 	@Transactional // 게시글과 태그 저장은 하나의 트랜잭션으로 묶는 것이 안전합니다.
 	public void insertTravelEdit(TravelEditDto dto) {
 
 		// 1. 여행 게시글 저장 및 생성된 ID 확보
-		travelEditmapper.insertTravelEdit(dto);
+		travelEditMapper.insertTravelEdit(dto);
 		// MyBatis의 useGeneratedKeys 덕분에 게시글 ID가 dto.getId()에 자동 설정됩니다.
 		Long newArticleId = dto.getId();
 
@@ -58,5 +58,10 @@ public class TravelEditService {
 		}
 
 		// 이미지 처리 로직은 여기에 추가될 것입니다.
+	}
+
+	// 여행 상세 조회
+	public TravelEditDto getTravelDetail(Long id) {
+		return travelEditMapper.selectTravelDetail(id);
 	}
 }

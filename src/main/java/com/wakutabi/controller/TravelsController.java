@@ -10,7 +10,9 @@ import com.wakutabi.service.TravelImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,11 +34,13 @@ public class TravelsController {
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
 
+    // 여행 일정 작성 페이지로 이동
     @GetMapping("create")
     public String travelCreate() {
         return "travels/write";
     }
 
+    // 여행 일정 업로드 처리
     @PostMapping("travelupload")
     @ResponseBody
     public String uploadTravel(TravelUploadDto uploadDto, Principal principal)
@@ -46,6 +50,7 @@ public class TravelsController {
             return "로그인 후 이용 가능합니다.";
         }
 
+        // 1-1. 콘솔 상 업로드 로그 출력
         log.info("uploadDto: {}", uploadDto);
 
         // 2. JSON 문자열을 객체로 변환 (orderNumber → ImageOrderDto 리스트)
@@ -73,12 +78,12 @@ public class TravelsController {
         dto.setTagString(uploadDto.getTag());
         log.info("설정된 태그: {}", uploadDto.getTag());
 
-        // 날짜 변환
+        // 3-1. 날짜 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter).atStartOfDay());
         dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter).atStartOfDay());
 
-        // 로그인한 사용자 ID 설정 (예시: 1L)
+        // 3-2. 로그인한 사용자 ID 설정 (예시: 1L)
         dto.setHostUserId(1L);
 
         // 4. 게시글 DB 저장
@@ -93,7 +98,7 @@ public class TravelsController {
                 ImageOrderDto imageOrder = imageOrders.get(i);
 
                 if (!file.isEmpty()) {
-                    // 업로드 폴더 보장
+                    // 업로드 디렉토리 설정
                     String uploadDir = "C:/uploads/";
                     File dir = new File(uploadDir);
                     if (!dir.exists()) {
@@ -117,5 +122,28 @@ public class TravelsController {
 
         return "등록 완료! 생성된 글 ID: " + dto.getId();
 
+    }
+
+    // ✨ 여행 상세 조회 (View 렌더링)
+    // 최종 URL: GET /schedule/detail/{id}
+    @GetMapping("/detail/{id}")
+    // @PathVariable에 경로 변수 이름 "id"를 명시적으로 지정합니다.
+    public String getTravelDetailView(@PathVariable("id") Long id, Model model) {
+        log.info("View 요청 처리: /schedule/detail/{}", id);
+
+        // 1. 서비스 호출 및 데이터 조회
+        TravelEditDto travelDetail = travelEditService.getTravelDetail(id);
+
+        // 2. 데이터가 없다면 예외 처리
+        if (travelDetail == null) {
+            log.warn("게시글 ID {} 을 찾을 수 없어 404 페이지로 이동합니다.", id);
+            return "redirect:/error/404";
+        }
+
+        // 3. 모델에 데이터 추가
+        model.addAttribute("travelDetail", travelDetail);
+
+        // 4. 뷰 반환
+        return "travels/detail";
     }
 }

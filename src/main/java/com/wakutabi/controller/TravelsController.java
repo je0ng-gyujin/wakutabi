@@ -3,18 +3,23 @@ package com.wakutabi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.NotificationDto;
+import com.wakutabi.domain.RequestStatusDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
+import com.wakutabi.domain.TripJoinRequestDto;
+import com.wakutabi.domain.TripListDto;
 import com.wakutabi.service.NotificationService;
 import com.wakutabi.service.TravelEditService;
 import com.wakutabi.service.TravelImageService;
 import com.wakutabi.service.TravelUpdateDeleteService;
+import com.wakutabi.service.TripService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +43,7 @@ public class TravelsController {
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
+    private final TripService tripService; 
     
     //검색
     @GetMapping("/search")
@@ -323,4 +329,72 @@ public String deleteTravel(@RequestBody TravelEditDto dto, Principal principal) 
 		return "travels/edit";
 	}
 	// ...
+	@GetMapping("/myTrips")
+	public String MyTrips(Principal principal, Model model) {
+		
+		// 1. 현재 로그인된 사용자 ID를 가져옵니다.
+	    String stringUsername = principal.getName(); // Spring Security는 String 반환
+	    
+	    // 2. ⭐ Long 타입의 사용자 PK를 조회하는 로직을 사용 ⭐
+	    Long currentUserId = tripService.findUserIdByUsername(stringUsername); // 👈 새 메서드 호출
+	    
+	    if (currentUserId == null) {
+	        log.error("로그인된 사용자 이름으로 DB PK를 찾을 수 없습니다: {}", stringUsername);
+	        return "redirect:/login"; // 인증 문제로 간주하고 로그인 페이지로 리다이렉트
+	    }
+	    
+	    // 3. 사용자가 등록한 여행 목록을 서비스 계층에서 조회합니다.
+	    List<TripListDto> registeredTrips = tripService.getRegisteredTrips(currentUserId);
+
+	    model.addAttribute("registeredTrips", registeredTrips);
+        
+        // (선택) 사용자가 신청한 여행 목록도 필요하다면 여기서 추가합니다.
+        // List<TripDto> appliedTrips = tripService.getAppliedTrips(currentUserId);
+        // model.addAttribute("appliedTrips", appliedTrips);
+        
+        // myTrips.html 템플릿 반환
+		return "travels/myTrips";
+	}
+	
+ // ⭐ 수정된 신청자 목록 조회 API ⭐
+    @GetMapping("/api/schedule/{tripArticleId}/applicants")
+    @ResponseBody 
+    public List<TripJoinRequestDto> getApplicants(@PathVariable("tripArticleId") Long tripArticleId) {
+        // 기존 로직 유지: tripService.getPendingJoinRequests(tripArticleId) 호출
+        return tripService.getPendingJoinRequests(tripArticleId);
+    }
+    
+    // ⭐ 수정된 신청 수락/거절 처리 API ⭐
+    @PutMapping("/api/request/{requestId}/status")
+    @ResponseBody
+    public ResponseEntity<?> updateJoinRequestStatus(
+            // ⭐ 이 부분 수정 ⭐
+            @PathVariable("requestId") Long requestId, 
+            @RequestBody RequestStatusDto requestStatusDto, 
+            Principal principal) {
+        
+        // 1. 현재 로그인된 사용자 ID를 Long으로 가져옵니다. 
+        Long currentUserId;
+        try {
+            // principal.getName()이 ID(Long)를 반환한다는 가정 하에 Long으로 파싱
+            currentUserId = Long.parseLong(principal.getName()); 
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("인증된 사용자 정보를 찾을 수 없습니다.");
+        }
+        
+        try {
+            // 2. 서비스 로직 호출
+            tripService.processJoinRequest(requestId, requestStatusDto.getStatus(), currentUserId);
+            
+            // 3. 성공 응답 반환
+            return ResponseEntity.ok().build(); 
+            
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            log.warn("신청 처리 오류: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage()); 
+        } catch (Exception e) {
+            log.error("신청 처리 중 오류 발생: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("신청 처리 중 서버 오류가 발생했습니다.");
+        }
+    }
 }

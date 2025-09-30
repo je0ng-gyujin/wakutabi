@@ -127,5 +127,9 @@ public class UserController {
         return "infos/delete";
         }
 
+    @GetMapping("/survey")
+    public String enterSurvey() {
+    	return "infos/survey";
+    }
 
 }

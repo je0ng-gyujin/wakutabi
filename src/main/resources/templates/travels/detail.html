@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>[[${travelDetail.title}]] | 여행 상세보기</title>
-    <link rel="stylesheet" th:href="@{/css/travel.css}" />
+    <link rel="stylesheet" th:href="@{/css/travel_detail.css}" />
     <th:block layout:fragment="head"></th:block>
     <script defer th:src="@{/js/travel_detail.js}"></script>
 </head>
@@ -17,7 +17,7 @@
                     <h1 class="mb-2" th:text="${travelDetail.title}"></h1>
                     <p class="text-muted">
                     <i class="bi bi-geo-alt-fill me-1"></i>
-                    <span th:text="${travelDetail.location}"></span>
+                    <span th:text="${travelDetail.displayLocation}"></span>
                     </p>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                         <p class="card-text text-muted" th:text="${travelDetail.content}"></p>
                         <hr/>
                         <div class="row text-center mb-3">
-                            <div class="col-6 col-md-3 mb-2">
+                            <div class="col-6 col-md-2 mb-2">
                                 <span class="badge bg-secondary-subtle text-dark">
                                     <i class="bi bi-calendar me-1"></i><strong>일정</strong>
                                 </span>
@@ -39,17 +39,22 @@
                                 <p class="mb-0 mt-1" th:text="${#temporals.format(travelDetail.endDate, 'yyyy. MM. dd')}">
                                 </p>
                             </div>
-                            <div class="col-6 col-md-3 mb-2">
+                            <div class="col-6 col-md-2 mb-2">
                                 <span class="badge bg-secondary-subtle text-dark">
-                                    <i class="bi bi-calendar me-1"></i><strong>예상 요금</strong>
+                                    <i class="bi bi-currency-yen me-1"></i><strong>예상 요금</strong>
                                 </span>
                                 <p class="mb-0 mt-1" th:text="${#numbers.formatDecimal(travelDetail.estimatedCost, 0, 'COMMA', 0, 'POINT')} + '엔'">
                                 </p>
                             </div>
-
                             <div class="col-6 col-md-2 mb-2">
                                 <span class="badge bg-secondary-subtle text-dark">
-                                    <i class="bi bi-person-circle me-1"></i><strong>선호 연령</strong>
+                                    <i class="bi bi-gender-ambiguous me-1"></i><strong>성별 제한</strong>
+                                </span>
+                                <p class="mb-0 mt-1" th:text="${travelDetail.displayGenderLimit}"></p>
+                            </div>
+                            <div class="col-6 col-md-2 mb-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    <i class="bi bi-person-circle me-1"></i><strong>연령 제한</strong>
                                 </span>
                                 <p class="mb-0 mt-1" th:text="${travelDetail.ageLimit ?: '제한 없음'}"></p>
                             </div>
@@ -61,29 +66,25 @@
                             </div>
                             <div class="col-6 col-md-2 mb-2">
                                 <span
-                                    th:with="statusText=${travelDetail.status == 'OPEN' ? '모집 중' : 
-                                                        travelDetail.status == 'MATCHED' ? '모집 완료' : 
-                                                        travelDetail.status == 'CLOSED' ? '종료' : '취소'}"
                                     th:class="${travelDetail.status == 'OPEN' ? 'badge bg-success-subtle text-dark' : 
                                                 travelDetail.status == 'MATCHED' ? 'badge bg-danger-subtle text-dark' : 
                                                 travelDetail.status == 'CLOSED' ? 'badge bg-warning-subtle text-dark' : 
                                                 'badge bg-secondary-subtle text-dark'}">
                                     <i class="bi bi-person-plus me-1"></i><strong>상태</strong>
                                 </span>
-                                <p class="mb-0 mt-1" th:text="${statusText}"></p>
+                                <p class="mb-0 mt-1" th:text="${travelDetail.displayStatus}"></p> 
                             </div>
                         </div>
 
                         <div class="mb-3 no-hover-effects">
                         <span class="badge tag-item px-3 py-2 rounded-pill"
-                            th:each="tag : ${travelDetail.tagNames}"
-                            th:text="|# ${tag}|"
-                            >
+                            th:each="tagDisplay : ${travelDetail.displayTags}"
+                            th:text="${tagDisplay}"> 
                         </span>
                         </div>
-                        <div class="row g-2">
-                            <div class="col-4" th:each="image : ${travelDetail.images}">
-                                <img class="img-fluid rounded-3" th:src="@{${image.imagePath}}" alt="여행 이미지"/>
+                        <div class="row g-2 justify-content-center travel-images-container">
+                            <div class="col-2" th:each="image, stat : ${travelDetail.images}" th:if="${stat.index < 5}">
+                                <img class="travel-image" th:src="${image.imagePath}" alt="여행 이미지"/> 
                             </div>
                         </div>
                     </div>

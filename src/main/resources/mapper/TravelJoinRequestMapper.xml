@@ -9,7 +9,7 @@
         (#{tripArticleId},#{hostUserId},#{applicantUserId})
     </insert>
     <!-- 여행참가 수락 -->
- 	<update id="changeStatusToAccepted" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
+    <update id="changeStatusToAccepted" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
         UPDATE trip_join_request
         SET status = #{status}
         WHERE trip_article_id = #{tripArticleId}

@@ -9,9 +9,12 @@
 	
 	
 	<insert id="insertUser" parameterType="com.wakutabi.domain.SignUpDto">
-		insert into users (username,password,nickname,birth,email,verification_token, is_verified) values 
-		(#{username},#{password},#{nickname},#{birth},#{email},#{verificationToken}, #{isVerified})
-	</insert>
+    INSERT INTO users 
+    (username, password, nickname, birth, email, verification_token, is_verified,)
+    VALUES 
+    (#{username}, #{password}, #{nickname}, #{birth}, #{email}, #{verificationToken}, #{isVerified},)
+</insert>
+
 	<select id="findByUsername" resultType="com.wakutabi.domain.LoginDto">
 		select * from users where username=#{username}
 	</select>

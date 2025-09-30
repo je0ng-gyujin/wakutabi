@@ -1,6 +1,11 @@
 package com.wakutabi.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.UUID;
 
 import com.wakutabi.domain.*;
 import com.wakutabi.service.UserService;
@@ -10,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -21,11 +27,46 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping("/signup")
-	public String signRegister(SignUpDto user) {
-		userService.register(user);
-		// 회원가입 완료 후 이메일 확인 페이지로 리디렉션
-		return "redirect:/user/signup-complete";
-	}	
+	public String signRegister(
+	        @ModelAttribute SignUpDto user,
+	        @RequestParam(value = "profileImage", required = false) MultipartFile file
+	) {
+	    try {
+	        String imagePath = null;
+
+	        if (file != null && !file.isEmpty()) {
+	            // 저장할 파일 이름 생성
+	            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+	            // 실제 저장 경로 (예: resources/static/uploads/profile/)
+	            Path  savePath = Paths.get("src/main/resources/static/uploads/profile/" + fileName);
+
+	            // 디렉토리 없으면 생성
+	            Files.createDirectories(savePath.getParent());
+
+	            // 파일 저장
+	            Files.copy(file.getInputStream(), savePath);
+
+	            // DB 에 저장할 경로 (웹 접근 가능하도록)
+	            imagePath = "/upload/profile/" + fileName;
+	        } else {
+	            // 기본 이미지
+	            imagePath = "/images/default-profile.jpg";
+	        }
+
+	        // DTO 에 경로 세팅
+	        user.setImagePath(imagePath);
+
+	        // 서비스 호출
+	        userService.register(user);
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        // TODO: 에러 처리
+	    }
+
+	    return "redirect:/user/signup-complete";
+	}
 	
 	// 회원가입 완료 후 이메일 확인 안내 페이지
 	@GetMapping("/signup-complete")

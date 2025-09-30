@@ -1,24 +1,20 @@
-package com.wakutabi.controller;
+    package com.wakutabi.controller;
 
-import com.wakutabi.domain.NotificationDto;
-import com.wakutabi.service.ChatService;
-import com.wakutabi.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.wakutabi.domain.TravelJoinRequestDto;
 import com.wakutabi.service.NotificationService;
 import com.wakutabi.service.TravelJoinRequestService;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@Controller
-@RequiredArgsConstructor
-public class TravelJoinRequestController {
+    import java.util.HashMap;
+    import java.util.Map;
+    import java.util.Objects;
+    @Slf4j
+    @Controller
+    @RequiredArgsConstructor
+    public class TravelJoinRequestController {
 
     private final TravelJoinRequestService travelJoinRequestService;
     private final NotificationService notificationService;
@@ -32,33 +28,35 @@ public class TravelJoinRequestController {
             TravelJoinRequestDto travelJoinRequest,
             @ModelAttribute("userId") Long userId) {
 
-        Map<String, Object> result = new HashMap<>();
+            Map<String, Object> result = new HashMap<>();
 
-        try {
-            // userId 검증
-            if (userId == null) {
+            try {
+                // userId 검증
+                if (userId == null) {
+                    result.put("status", "fail");
+                    result.put("message", "로그인이 필요합니다.");
+                    return result;
+                }
+                if (Objects.equals(userId, travelJoinRequest.getHostUserId())) {
+                    result.put("status", "fail");
+                    result.put("message", "호스트는 참가신청 할 수 없습니다.");
+                    return result;
+                }
+                boolean closed = travelJoinFacadeService.joinTravel(travelJoinRequest,chatRoomId,userId);
+
+                result.put("status", "success");
+                result.put("tripArticleId", travelJoinRequest.getTripArticleId());
+                if(closed){
+                    result.put("message", "인원이 다 찼습니다.");
+                }else {
+                    result.put("message", "참가 신청이 완료되었습니다.");
+                }
+
+            } catch (Exception e) {
+                log.error("참가신청 중 오류",e);
                 result.put("status", "fail");
-                result.put("message", "로그인이 필요합니다.");
-                return result;
+                result.put("message", "참가 신청 중 오류가 발생했습니다.");
             }
-
-            travelJoinRequest.setApplicantUserId(userId);
-            travelJoinRequestService.insertTravelJoinRequest(travelJoinRequest);
-
-            notificationService.sendJoinRequest(
-                    travelJoinRequest.getTripArticleId(),
-                    travelJoinRequest.getHostUserId(),
-                    userId
-            );
-
-            result.put("status", "success");
-            result.put("message", "참가 신청이 완료되었습니다.");
-            result.put("tripArticleId", travelJoinRequest.getTripArticleId());
-
-        } catch (Exception e) {
-            result.put("status", "fail");
-            result.put("message", "참가 신청 중 오류가 발생했습니다.");
-        }
 
         return result;
     }

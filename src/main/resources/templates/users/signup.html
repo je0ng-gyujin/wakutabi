@@ -31,7 +31,7 @@
             <h3 class="mb-4">Sign Up</h3>
           </div>
 
-          <form th:action="@{/user/signup}" method="post">
+        <form th:action="@{/user/signup}" method="post" enctype="multipart/form-data">
             <!-- 아이디 -->
             <div class="mb-3">
               <input type="text" name="username" id="username" class="form-control form-control-lg"

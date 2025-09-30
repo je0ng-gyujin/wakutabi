@@ -126,8 +126,9 @@
             <div class="text-center mb-3" th:if="${participants}">
                 <div th:each="p : ${participants}" th:if="${p.role == 'HOST'}">
                     <img th:src="${p.imagePath != null ? p.imagePath : '/images/default-profile.jpg'}"
-                         alt="프로필 이미지" class="rounded-circle mb-2"
-                         style="width: 80px; height: 80px; object-fit: cover" />
+     alt="프로필 이미지" class="rounded-circle mb-2"
+     style="width: 80px; height: 80px; object-fit: cover" />
+
                     <h5 class="mb-0">여행 작성자</h5>
                     <small class="text-muted" th:text="'@' + ${p.nickname}"></small>
                 </div>

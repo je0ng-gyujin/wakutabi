@@ -16,8 +16,8 @@ public class WebConfig implements WebMvcConfigurer {
 	//NonNull 어노테이션 추가로 NullPointerException 방지
 	@Override
 	public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-
-		registry.addResourceHandler("/upload/**").addResourceLocations("file:C:/uploads/");
+		
+		registry.addResourceHandler("/upload/**").addResourceLocations("file:///C:/uploads/");
 
 
 	}

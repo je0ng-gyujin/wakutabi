@@ -53,7 +53,7 @@ CREATE TABLE trip_article (
 	start_date	         DATETIME	                                    NOT NULL,                                                               -- 여행시작날짜
 	recruit_end_date     DATETIME                                       NOT NULL,                                                               -- 모집날짜
 	end_date	         DATETIME	                                    NOT NULL,                                                               -- 여행종료날짜
-	maxParticipants      INT                                            NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명  
+	max_participants      INT                                           NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명  
 	age_limit	         CHAR(2)                                        NOT NULL CHECK(AGE_LIMIT IN('NO','20','30','40','MX')),                 -- 나이제한('NO':상관없음,'20':20대,'30':30대,'40':40대,'MX':혼합)
 	gender_limit	     CHAR(1)                                        NOT NULL CHECK(GENDER_LIMIT IN('N','M','F')),                           -- 성별제한('N':상관없음,'M':남자,'F':여자)
 	title	             VARCHAR(50)                                    NOT NULL,                                                               -- 제목

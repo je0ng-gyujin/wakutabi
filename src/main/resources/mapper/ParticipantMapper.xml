@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wakutabi.mapper.ParticipantMapper">
+
+    <select id="findParticipantsByTripId" resultType="com.wakutabi.domain.ParticipantDto">
+        (
+            SELECT
+                u.id         AS userId,
+                u.nickname,
+                u.image_path AS imagePath,
+                'HOST'       AS role
+            FROM trip_article t
+            JOIN users u ON t.host_user_id = u.id
+            WHERE t.id = #{tripArticleId}
+        )
+
+        UNION ALL
+
+        (
+            SELECT
+                u.id         AS userId,
+                u.nickname,
+                u.image_path AS imagePath,
+                cp.role
+            FROM chat_participants cp
+            JOIN users u ON cp.user_id = u.id
+            JOIN chat_room cr ON cp.chat_room_id = cr.id
+            WHERE cr.trip_article_id = #{tripArticleId}
+              AND cp.role = 'PARTICIPANT'
+        )
+        
+        ORDER BY
+            CASE
+                WHEN role = 'HOST' THEN 0
+                ELSE 1
+            END,
+            userId;
+    </select>
+
+</mapper>

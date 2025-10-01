@@ -1,98 +1,93 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{/layouts/clean}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/clean}">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>회원 정보 수정</title>
-<th:block layout:fragment="head">
-	<link rel="stylesheet" th:href="@{/css/mypage.css}">
-	<script defer src="/js/mypage.js"></script>
-</th:block>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 정보 수정</title>
+    <th:block layout:fragment="head">
+        <link rel="stylesheet" th:href="@{/css/mypage.css}">
+        <script defer th:src="@{/js/mypage.js}"></script>
+    </th:block>
 </head>
 
 <body>
 <div class="bg-gradient-custom2" layout:fragment="content">
-  <div class="container shadow p-4 bg-white rounded">
-    <div class="row">
-        <!-- 사이드메뉴 -->
-        <div class="col-md-3 border-end">
-            <h5 class="fw-bold mb-4">My page</h5>
-            <ul class="list-unstyled">
-                <li class="mb-3"><a href="/user/mypage" class="text-decoration-none text-dark">내 정보</a></li>
-                <li class="mb-3"><a href="/user/my-inquiries" class="text-decoration-none text-dark">내 문의 내역</a></li>
-                <li class="mb-3"><a href="/user/change-password" class="text-decoration-none text-dark">비밀번호 변경</a></li>
-                <li class="mb-3"><a href="/user/delete" class="text-decoration-none text-dark">회원 탈퇴</a></li>
-                <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
-            </ul>
-        </div>
+    <div class="container shadow p-4 bg-white rounded">
+        <div class="row">
+            <div class="col-md-3 border-end">
+                <h5 class="fw-bold mb-4">My page</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><a href="/user/mypage" class="text-decoration-none text-dark">내 정보</a></li>
+                    <li class="mb-3"><a href="/user/my-inquiries" class="text-decoration-none text-dark">내 문의 내역</a></li>
+                    <li class="mb-3"><a href="/user/change-password" class="text-decoration-none text-dark">비밀번호 변경</a></li>
+                    <li class="mb-3"><a href="/user/delete" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                    <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
+                </ul>
+            </div>
 
-        <!-- 메인 컨텐츠 -->
-        <div class="col-md-9">
-            <form method="post" th:action="@{/user/update}">
-                <input type="hidden" name="userId" value="1">
-                <!-- 프로필 이미지 업로드 영역 -->
-				<div class="mb-4 text-center position-relative d-inline-block">
-				    <!-- 이미지 태그 -->
-				    <img th:src="@{image/member.png}" 
-				         class="img-fluid rounded-circle profile-img mb-3" 
-				         alt="프로필 이미지" >
-				
-				    <!-- 수정 버튼 (왼쪽 하단) -->
-				    <label for="profileImage" 
-				           class="btn btn-sm btn-outline-secondary position-absolute">수정
-				    </label>
+            <div class="col-md-9" th:if="${user != null}">
+                <form method="post" th:action="@{/user/update}" th:object="${user}" enctype="multipart/form-data">
+                    
+                    <input type="hidden" th:field="*{id}">
 
-				    <!-- 실제 파일 입력 요소 (숨김) -->
-				    <input type="file" name="profileImage" id="profileImage" class="d-none" accept="image/*">
-				</div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">이름</label>
-                    <input type="text" class="form-control" name="username" th:value="${user.username}" readonly>
-                </div>
-				<div class="mb-3">
-                    <label class="form-label fw-bold">닉네임</label>
-                    <input type="text" class="form-control" name="nickname" th:value="${user.nickname}" readonly>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">이메일</label>
-                    <input type="email" class="form-control" name="email" th:value="${user.email}" value="user@example.com">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold" th:text="${userId}">생일 </label>
-                    <input type="date" class="form-control" name="birth" th:value="${user.birth}" value="1995-05-20">
-                </div>
+                    <div class="mb-4 text-center position-relative d-inline-block">
+                        <img th:src="*{imagePath != null ? imagePath : '/image/member.png'}"
+                             class="img-fluid rounded-circle profile-img mb-3"
+                             alt="프로필 이미지" id="profileImagePreview">
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">성별</label>
-                    <select class="form-select" name="gender">
-                        <option th:value="${user.gender}" selected>남자</option>
-                        <option value="FEMALE">여자</option>
-                        <option value="OTHER">기타</option>
-                        <option value="NONE">없음</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-		            <label class="form-label fw-bold">프로필 공개 여부</label>
-		            <select class="form-select" name="isPublic">
-		             	<option value="true" selected>공개</option>
-		              	<option value="false">비공개</option>
-		            </select>
-		        </div>
-				<div class="mb-3">
-		           <label class="form-label fw-bold">자기소개</label>
-		           <textarea class="form-control" name="introduce" rows="4" placeholder="자기소개를 입력하세요." th:text="${user.introduce}">안녕하세요, 반갑습니다!</textarea>
-		        </div>
-		        
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary px-4">저장하기</button>
-                </div>
-            </form>
+                        <label for="profileImageFile" class="btn btn-sm btn-outline-secondary position-absolute">수정</label>
+
+                        <input type="file" name="profileImageFile" id="profileImageFile" class="d-none" accept="image/*">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">아이디</label>
+                        <input type="text" class="form-control" th:field="*{username}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">닉네임</label>
+                        <input type="text" class="form-control" th:field="*{nickname}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">이메일</label>
+                        <input type="email" class="form-control" th:field="*{email}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">생일</label>
+                        <input type="date" class="form-control" th:field="*{birth}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">성별</label>
+                        <select class="form-select" th:field="*{gender}">
+                            <option value="MALE">남자</option>
+                            <option value="FEMALE">여자</option>
+                            <option value="OTHER">기타</option>
+                            <option value="NONE">없음</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">프로필 공개 여부</label>
+                        <select class="form-select" th:field="*{isPublic}">
+                            <option value="true">공개</option>
+                            <option value="false">비공개</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">자기소개</label>
+                        <textarea class="form-control" rows="4" th:field="*{introduce}" placeholder="자기소개를 입력하세요."></textarea>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary px-4">저장하기</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 </div>
 </body>
 </html>

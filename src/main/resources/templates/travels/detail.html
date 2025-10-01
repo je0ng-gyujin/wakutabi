@@ -8,20 +8,18 @@
     <link rel="stylesheet" th:href="@{/css/travel_review.css}" />
     <title>여행 상세</title>
     <script defer th:src="@{/js/travel_detail.js}"></script>
-    <meta name="_csrf">
-    <meta name="_csrf_header">
+    <!-- <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"> -->
 </head>
 <body>
 <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
     <div class="container py-4">
 
-        <!-- 여행 정보 없음 -->
         <div th:if="${travel == null}" class="text-center py-5">
             <h2>해당 여행 정보를 찾을 수 없습니다.</h2>
-            <a th:href="@{/schedule/list}" class="btn btn-primary mt-3">목록으로 돌아가기</a>
+            <a th:href="@{/schedule/search}" class="btn btn-primary mt-3">목록으로 돌아가기</a>
         </div>
 
-        <!-- 여행 정보 있음 -->
         <div th:if="${travel != null}">
             <div class="row mb-4">
                 <div class="col-12 text-center">
@@ -34,47 +32,33 @@
             </div>
 
             <div class="row">
-                <!-- 여행 정보 카드 -->
                 <div class="col-lg-8">
                     <div class="card shadow-sm rounded-4 mb-4">
                         <div class="card-body p-4">
-
                             <div class="d-flex justify-content-between">
                                 <h4 class="card-title fw-bold mb-3">여행 정보</h4>
                                 <div th:if="${isOwner}">
-                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}"
-                                       class="btn btn-sm btn-outline-secondary">수정</a>
-                                    <button id="deleteBtn" 
-       										class="btn btn-sm btn-outline-danger" 
-        										th:data-id="${travel.id}">
-    												삭제
-									</button>
+                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}" class="btn btn-sm btn-outline-secondary">수정</a>
+                                    <button id="deleteBtn" class="btn btn-sm btn-outline-danger" th:data-id="${travel.id}">삭제</button>
                                 </div>
                             </div>
-
                             <p class="card-text text-muted" th:text="${travel.content}">여행 내용</p>
                             <hr />
 
-                            <!-- 여행 세부 정보 -->
                             <div class="row text-center mb-3">
                                 <div class="col-6 col-md-3 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-calendar me-1"></i> <strong>일정</strong>
                                     </span>
-                                    <p class="mb-0 mt-1 fs-6"
-                                       th:text="${#temporals.format(travel.startDate, 'yyyy. MM. dd')} + ' 부터'"></p>
-                                    <p class="mb-0 mt-1"
-                                       th:text="${#temporals.format(travel.endDate, 'yyyy. MM. dd')} + ' 까지'"></p>
+                                    <p class="mb-0 mt-1 fs-6" th:text="${#temporals.format(travel.startDate, 'yyyy. MM. dd')} + ' 부터'"></p>
+                                    <p class="mb-0 mt-1" th:text="${#temporals.format(travel.endDate, 'yyyy. MM. dd')} + ' 까지'"></p>
                                 </div>
-
                                 <div class="col-6 col-md-3 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-currency-dollar me-1"></i> <strong>예상 요금</strong>
                                     </span>
-                                    <p class="mb-0 mt-1"
-                                       th:text="${#numbers.formatInteger(travel.estimatedCost, 3, 'COMMA')} + '원'"></p>
+                                    <p class="mb-0 mt-1" th:text="${#numbers.formatInteger(travel.estimatedCost, 3, 'COMMA')} + '원'"></p>
                                 </div>
-
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-person-circle me-1"></i> <strong>선호 연령</strong>
@@ -86,65 +70,52 @@
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-people me-1"></i> <strong>인원</strong>
                                     </span>
-                                    <p class="mb-0 mt-1" th:text="'3/' + ${travel.maxParticipants} + '명'"></p>
+                                    <p class="mb-0 mt-1" th:text="${(1 + #lists.size(participants))} + '/' + ${travel.maxParticipants} + '명'"></p>
                                 </div>
 
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-success-subtle text-dark">
                                         <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
                                     </span>
-                                    <p class="mb-0 mt-1"
-                                       th:text="${travel.status == 'OPEN' ? '모집 중' : travel.status}"></p>
+                                    <p class="mb-0 mt-1" th:text="${travel.status == 'OPEN' ? '모집 중' : travel.status}"></p>
                                 </div>
                             </div>
-
-                            <!-- 태그 -->
-                            <div class="mb-3 no-hover-effects">
-                                <span class="badge tag-item px-3 py-2 rounded-pill">🍜 식도락</span>
-                                <span class="badge tag-item px-3 py-2 rounded-pill">♨️ 온천</span>
-                                <span class="badge tag-item px-3 py-2 rounded-pill">🏛️ 문화</span>
                             </div>
-
-                            <!-- 이미지 -->
-                            <div class="row g-2" th:if="${images != null and !#lists.isEmpty(images)}">
-                                <div class="col-4" th:each="image : ${images}">
-                                    <img th:src="${image.imagePath}" class="img-fluid rounded-3" alt="여행 이미지" />
-                                </div>
-                            </div>
-
-                        </div>
                     </div>
                 </div>
 
                 <div class="col-lg-4">
-                        <form id="joinForm" th:action="@{/join-request}" method="post">
-                            <input type="hidden" name="tripArticleId" th:value="${travel.id}">
-                            <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
-                            <input type="hidden" name="chatRoomId" th:value="${chatRoomId}">
-                                 <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
-                                  <div class="text-center mb-3">
-                            <img src="/image/testuser.jpg" alt="프로필 이미지" class="rounded-circle mb-2"
-                                 style="width: 80px; height: 80px; object-fit: cover" />
-                            <h5 class="mb-0">여행 작성자</h5>
-                            <small class="text-muted">@김민지</small>
-                        </div>
-                        <div class="d-grid mb-3">
+                    <form id="joinForm" th:action="@{/join-request}" method="post">
+                        <input type="hidden" name="tripArticleId" th:value="${travel.id}">
+                        <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
+                        <input type="hidden" name="chatRoomId" th:value="${chatRoomId}">
+                        <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
                             
-                            <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
+                            <div class="text-center mb-3" th:if="${host != null}">
+                                <img th:src="${host.imagePath != null ? host.imagePath : '/image/default-profile.png'}" alt="프로필 이미지" class="rounded-circle mb-2"
+                                     style="width: 80px; height: 80px; object-fit: cover" />
+                                <h5 class="mb-0">여행 작성자</h5>
+                                <small class="text-muted" th:text="'@' + ${host.nickname}">@작성자닉네임</small>
+                            </div>
+
+                            <div class="d-grid mb-3">
+                                <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
+                            </div>
+                            <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
+                            <hr />
+
+                            <h6 class="fw-bold mb-3">참여자 목록</h6>
+                            <ul class="list-unstyled" th:if="${not #lists.isEmpty(participants)}">
+                                <li th:each="participant : ${participants}" class="d-flex align-items-center mb-2">
+                                    <img th:src="${participant.imagePath != null ? participant.imagePath : '/image/default-profile.png'}" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" />
+                                    <span class="ms-2" th:text="${participant.nickname}">참여자 닉네임</span>
+                                </li>
+                            </ul>
+                            <p th:if="${#lists.isEmpty(participants)}" class="text-muted small">아직 참여자가 없습니다.</p>
+
                         </div>
-                        <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
-                        <hr />
-                        <h6 class="fw-bold mb-3">참여자 목록</h6>
-                        <ul class="list-unstyled">
-                            <li class="d-flex align-items-center mb-2">
-                                <img src="/image/testuser.jpg" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" />
-                                <span class="ms-2">박지훈</span>
-                            </li>
-                        </ul>
-                    </div>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>

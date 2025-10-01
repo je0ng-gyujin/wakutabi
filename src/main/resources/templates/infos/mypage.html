@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{/layouts/clean}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/clean}">
 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyPage</title>
 <th:block layout:fragment="head">
-	<link rel="stylesheet" th:href="@{/css/mypage.css}">
+    <link rel="stylesheet" th:href="@{/css/mypage.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </th:block>
 </head>
 
@@ -16,11 +17,10 @@
 <div class="bg-gradient-custom2" layout:fragment="content">
   <div class="container shadow p-4 bg-white rounded">
     <div class="row">
-        <!-- 사이드메뉴 -->
         <div class="col-md-3 border-end">
             <h5 class="fw-bold mb-4">My page</h5>
             <ul class="list-unstyled">
-                <li class="mb-3"><a href="/user/mypage" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="/user/mypage" class="text-decoration-none text-dark fw-bold">내 정보</a></li>
                 <li class="mb-3"><a href="/user/my-inquiries" class="text-decoration-none text-dark">내 문의 내역</a></li>
                 <li class="mb-3"><a href="/user/change-password" class="text-decoration-none text-dark">비밀번호 변경</a></li>
                 <li class="mb-3"><a href="/user/delete" class="text-decoration-none text-dark">회원 탈퇴</a></li>
@@ -28,26 +28,37 @@
             </ul>
         </div>
 
-        <!-- 메인 컨텐츠 -->
-        <div class="col-md-9">
-        <div class="mb-4" >
-        	<img th:src="@{image/member.png}" class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
-            <h2 class="form-control-plaintextname" th:text="${user.nickname}">닉네임</h2>
-            <p class="rating mt-2" th:text="${user.rating}">3.5</p>
-		</div>
-		<p class="text-muted" th:text="${user.introduce}">자기소개.</p>
+        <div class="col-md-9" th:if="${user != null}">
+            <div class="mb-4">
+                <img th:src="${user.imagePath != null ? user.imagePath : '/image/member.png'}"
+                     class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
+
+                <h2 class="form-control-plaintextname" th:text="${user.nickname}">닉네임</h2>
+
+                <p class="rating mt-2">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <span th:text="${user.rating}">3.5</span>
+                </p>
+            </div>
+            <p class="text-muted" th:text="${user.introduce}">자기소개.</p>
+
             <form method="get" th:action="@{/user/update}">
                  <div class="mb-3">
-                    <label class="form-label fw-bold" >이메일</label>
+                    <label class="form-label fw-bold">이메일</label>
                     <div class="form-control-plaintext" th:text="${user.email}">user@example.com</div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold" >생일</label>
-                    <div class="form-control-plaintext" th:text="${user.birth}">1995-05-20</div>
+                    <label class="form-label fw-bold">생일</label>
+                    <div class="form-control-plaintext" th:text="${#temporals.format(user.birth, 'yyyy년 MM월 dd일')}">1995-05-20</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">성별</label>
-                    <div class="form-control-plaintext" th:text="${user.gender}">남자</div>
+                    <div class="form-control-plaintext" th:switch="${user.gender?.name()}">
+                        <span th:case="'MALE'">남자</span>
+                        <span th:case="'FEMALE'">여자</span>
+                        <span th:case="'OTHER'">기타</span>
+                        <span th:case="*">선택 안함</span>
+                    </div>
                 </div>
                 <div class="text-end">
                     <button type="submit" class="btn btn-primary px-4">회원정보 수정</button>
@@ -58,6 +69,4 @@
 </div>
 </div>
 </body>
-
-
 </html>

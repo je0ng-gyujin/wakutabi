@@ -49,8 +49,10 @@
 			birth 	   = #{birth},
 			gender	   = #{gender},	
 			is_public  = #{isPublic},
+			image_path = #{imagePath},
         	introduce  = #{introduce},
         	updated_at = NOW()
+        	where id = #{id}
 	</update>
 
 	<!-- 현재 비밀번호 가져오기 -->

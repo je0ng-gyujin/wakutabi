@@ -13,10 +13,11 @@ import lombok.NoArgsConstructor;
 		private String nickname;
 		private String email;                    
 	    private LocalDate birth;
-		public Gender gender;
+		private Gender gender;
 		private Boolean isPublic;
 		private String introduce;
 		private double rating;
+		private String imagePath;
 
 		public enum Gender{
 			MALE,

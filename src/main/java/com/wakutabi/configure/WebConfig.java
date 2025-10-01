@@ -9,16 +9,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-	//본인 환경에 맞게 수정 바랍니다.
-	@Value("${file.upload.path}")
-	private String uploadPath;
+    @Value("${file.upload.path}")
+    private String uploadPath; // "C:/upload/" 값이 여기에 주입됩니다.
 
-	//NonNull 어노테이션 추가로 NullPointerException 방지
-	@Override
-	public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-
-		registry.addResourceHandler("/upload/**").addResourceLocations("file:C:/uploads/");
-
-
-	}
+    @Override
+    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+        
+        // 웹 브라우저에서 /upload/** 로 시작하는 모든 요청을
+        registry.addResourceHandler("/upload/**")
+                // @Value로 주입받은 실제 로컬 경로와 연결합니다.
+                .addResourceLocations("file:///" + uploadPath); // ⬅️ 이 부분을 수정!
+    }
 }

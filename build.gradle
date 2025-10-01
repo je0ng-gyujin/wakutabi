@@ -35,8 +35,6 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// Author: 탁영복
-	// Description: Lombok 추가
 	/**
 	 * @author 탁영복
 	 * @description lombok 라이브러리 의존성 추가 및 테스트 환경 설정
@@ -53,5 +51,4 @@ tasks.named('test') {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-	options.compilerArgs << '-parameters'
 }

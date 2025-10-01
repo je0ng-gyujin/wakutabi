@@ -30,7 +30,7 @@
         UPDATE trip_article
         SET status = 'CLOSED'
         WHERE status = 'OPEN'
-        AND NOW() >= recruit_end_date
+        AND NOW() >= end_date
     </update>
 
 </mapper>

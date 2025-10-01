@@ -31,14 +31,13 @@
 
         <!-- 메인 컨텐츠 -->
         <div class="col-md-9">
-            <form method="post" th:action="@{/user/update}">
-                <input type="hidden" name="userId" value="1">
-                <!-- 프로필 이미지 업로드 영역 -->
-				<div class="mb-4 text-center position-relative d-inline-block">
-				    <!-- 이미지 태그 -->
-				    <img th:src="@{image/member.png}" 
-				         class="img-fluid rounded-circle profile-img mb-3" 
-				         alt="프로필 이미지" >
+           <form method="post" th:action="@{/user/update}" th:object="${user}" enctype="multipart/form-data">
+    <input type="hidden" name="id" th:value="*{id}">
+
+    <div class="mb-4 text-center position-relative d-inline-block">
+        <img th:src="*{imagePath != null ? imagePath : '/images/default-profile.jpg'}"
+             class="img-fluid rounded-circle profile-img mb-3"
+             alt="프로필 이미지">
 				
 				    <!-- 수정 버튼 (왼쪽 하단) -->
 				    <label for="profileImage" 

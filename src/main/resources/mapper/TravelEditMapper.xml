@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.TravelEditMapper">
+
+    <insert id="insertTravelEdit" parameterType="com.wakutabi.domain.TravelEditDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO trip_article
+        (host_user_id, location, start_date, end_date, max_participants,
+         age_limit, gender_limit, title, content, estimated_cost, status)
+        VALUES
+        (#{hostUserId}, #{location}, #{startDate}, #{endDate}, #{maxParticipants},
+         #{ageLimit}, #{genderLimit}, #{title}, #{content}, #{estimatedCost}, #{status})
+    </insert>
+
+    <resultMap id="travelDetailResultMap" type="com.wakutabi.domain.TravelEditDto">
+        <id property="id" column="trip_article_id"/>
+
+        <result property="hostUserId" column="host_user_id"/>
+
+        <result property="title" column="title"/>
+        <result property="location" column="location"/>
+        <result property="content" column="content"/> 
+        <result property="maxParticipants" column="max_participants"/>
+        <result property="ageLimit" column="age_limit"/>
+        <result property="genderLimit" column="gender_limit"/>
+        <result property="estimatedCost" column="estimated_cost"/>
+        <result property="status" column="status"/>
+
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+        
+
+        <collection property="images" ofType="com.wakutabi.domain.TravelImageDto">
+            <id property="id" column="image_id"/> 
+            <result property="imagePath" column="image_path"/>
+            <result property="orderNumber" column="order_number"/>
+        </collection>
+
+        <collection property="tagNames" javaType="java.util.List" ofType="string">
+            <result column="tag_name"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="selectTravelDetail" parameterType="long" resultMap="travelDetailResultMap">
+        SELECT
+        TA.id AS trip_article_id, 
+        TA.host_user_id,
+        TA.location,
+        TA.start_date,
+        TA.end_date,
+        TA.max_participants,
+        TA.age_limit,
+        TA.gender_limit,
+        TA.title,
+        TA.content,
+        TA.estimated_cost,
+        TA.status,
+        TA.created_at,
+        TA.updated_at,
+        TA.deleted_at,
+
+        TI.id AS image_id,
+        TI.image_path,
+        TI.order_number,
+
+        TT.tag_name
+
+        FROM trip_article TA
+        LEFT JOIN trip_article_image TI ON TA.id = TI.trip_article_id
+        LEFT JOIN trip_tag_mid_trip_article TTM ON TA.id = TTM.trip_article_id
+        LEFT JOIN trip_tag TT ON TTM.trip_tag_id = TT.id
+        WHERE TA.id = #{id}
+        ORDER BY TI.order_number ASC
+    </select>
+
+</mapper>

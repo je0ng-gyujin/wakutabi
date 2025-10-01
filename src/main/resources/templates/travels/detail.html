@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/base}">
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{/layouts/base}">
 <head>
+<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/travel_review.css}" />
@@ -23,16 +24,28 @@
 
         <!-- 여행 정보 있음 -->
         <div th:if="${travel != null}">
+=======
+    <meta charset="UTF-8" />
+    <title>[[${travelDetail.title}]] | 여행 상세보기</title>
+    <link rel="stylesheet" th:href="@{/css/travel_detail.css}" />
+    <th:block layout:fragment="head"></th:block>
+    <script defer th:src="@{/js/travel_detail.js}"></script>
+</head>
+<body>
+    <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+        <div class="container py-4">
+>>>>>>> spring/travel_article_crud_mgk
             <div class="row mb-4">
                 <div class="col-12 text-center">
-                    <h1 class="mb-2" th:text="${travel.title}">여행 제목</h1>
+                    <h1 class="mb-2" th:text="${travelDetail.title}"></h1>
                     <p class="text-muted">
-                        <i class="bi bi-geo-alt-fill me-1"></i>
-                        <span th:text="${travel.location}">지역</span>
+                    <i class="bi bi-geo-alt-fill me-1"></i>
+                    <span th:text="${travelDetail.displayLocation}"></span>
                     </p>
                 </div>
             </div>
 
+<<<<<<< HEAD
             <div class="row">
                 <!-- 여행 정보 카드 -->
                 <div class="col-lg-8">
@@ -110,12 +123,78 @@
                                 <div class="col-4" th:each="image : ${images}">
                                     <img th:src="${image.imagePath}" class="img-fluid rounded-3" alt="여행 이미지" />
                                 </div>
+=======
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h4 class="card-title fw-bold mb-3">여행 정보</h4>
+                        <p class="card-text text-muted" th:text="${travelDetail.content}"></p>
+                        <hr/>
+                        <div class="row text-center mb-3">
+                            <div class="col-6 col-md-2 mb-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    <i class="bi bi-calendar me-1"></i><strong>일정</strong>
+                                </span>
+                                <p class="mb-0 mt-1 fs-6" th:text="${#temporals.format(travelDetail.startDate, 'yyyy. MM. dd')}">
+                                </p>
+                                <p class="mb-0 mt-1" th:text="${#temporals.format(travelDetail.endDate, 'yyyy. MM. dd')}">
+                                </p>
                             </div>
+                            <div class="col-6 col-md-2 mb-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    <i class="bi bi-currency-yen me-1"></i><strong>예상 요금</strong>
+                                </span>
+                                <p class="mb-0 mt-1" th:text="${#numbers.formatDecimal(travelDetail.estimatedCost, 0, 'COMMA', 0, 'POINT')} + '엔'">
+                                </p>
+                            </div>
+                            <div class="col-6 col-md-2 mb-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    <i class="bi bi-gender-ambiguous me-1"></i><strong>성별 제한</strong>
+                                </span>
+                                <p class="mb-0 mt-1" th:text="${travelDetail.displayGenderLimit}"></p>
+                            </div>
+                            <div class="col-6 col-md-2 mb-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    <i class="bi bi-person-circle me-1"></i><strong>연령 제한</strong>
+                                </span>
+                                <p class="mb-0 mt-1" th:text="${travelDetail.ageLimit ?: '제한 없음'}"></p>
+>>>>>>> spring/travel_article_crud_mgk
+                            </div>
+                            <div class="col-6 col-md-2 mb-2">
+                                <span class="badge bg-secondary-subtle text-dark">
+                                    <i class="bi bi-people me-1"></i><strong>인원</strong>
+                                </span>
+                                <p class="mb-0 mt-1" th:text="|0/${travelDetail.maxParticipants}명|"></p>
+                            </div>
+                            <div class="col-6 col-md-2 mb-2">
+                                <span
+                                    th:class="${travelDetail.status == 'OPEN' ? 'badge bg-success-subtle text-dark' : 
+                                                travelDetail.status == 'MATCHED' ? 'badge bg-danger-subtle text-dark' : 
+                                                travelDetail.status == 'CLOSED' ? 'badge bg-warning-subtle text-dark' : 
+                                                'badge bg-secondary-subtle text-dark'}">
+                                    <i class="bi bi-person-plus me-1"></i><strong>상태</strong>
+                                </span>
+                                <p class="mb-0 mt-1" th:text="${travelDetail.displayStatus}"></p> 
+                            </div>
+                        </div>
 
+                        <div class="mb-3 no-hover-effects">
+                        <span class="badge tag-item px-3 py-2 rounded-pill"
+                            th:each="tagDisplay : ${travelDetail.displayTags}"
+                            th:text="${tagDisplay}"> 
+                        </span>
+                        </div>
+                        <div class="row g-2 justify-content-center travel-images-container">
+                            <div class="col-2" th:each="image, stat : ${travelDetail.images}" th:if="${stat.index < 5}">
+                                <img class="travel-image" th:src="${image.imagePath}" alt="여행 이미지"/> 
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
+<<<<<<< HEAD
                 <div class="col-lg-4">
                         <form id="joinForm" th:action="@{/join-request}" method="post">
                             <input type="hidden" name="tripArticleId" th:value="${travel.id}">
@@ -143,11 +222,61 @@
                         </ul>
                     </div>
                     </form>
+=======
+            <div class="col-lg-4">
+            <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
+                <div class="text-center mb-3">
+                    <img class="rounded-circle mb-2" src="/image/testuser.jpg" alt="프로필 이미지"
+                        style="width: 80px; height: 80px; object-fit: cover"/>
+                    <h5 class="mb-0">여행 작성자</h5>
+                    <small class="text-muted">@김민지</small>
+>>>>>>> spring/travel_article_crud_mgk
                 </div>
-
+                <div class="d-grid mb-3">
+                    <button class="btn btn-wakutabi-primary btn-lg">
+                    참가 신청하기
+                    </button>
+                </div>
+                <p class="text-muted text-center small">
+                    여행 참가 신청 시, 작성자에게 알림이 전송됩니다.
+                </p>
+                <hr/>
+                <h6 class="fw-bold mb-3">참여자 목록</h6>
+                <ul class="list-unstyled">
+                    <li class="d-flex align-items-center mb-2">
+                        <img class="participant-avatar" src="/image/testuser.jpg" alt="참여자"
+                        style="width: 55px; height: 55px"/>
+                        <span class="ms-2">박지훈</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <img class="participant-avatar" src="/image/testuser.jpg" alt="참여자"
+                        style="width: 55px; height: 55px"/>
+                        <span class="ms-2">박지훈</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <img class="participant-avatar" src="/image/testuser.jpg" alt="참여자"
+                        style="width: 55px; height: 55px"/>
+                        <span class="ms-2">박지훈</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <img class="participant-avatar" src="/image/testuser.jpg" alt="참여자"
+                        style="width: 55px; height: 55px"/>
+                        <span class="ms-2">박지훈</span>
+                    </li>
+                    <li class="d-flex align-items-center mb-2">
+                        <img class="participant-avatar" src="/image/testuser.jpg" alt="참여자"
+                        style="width: 55px; height: 55px"/>
+                        <span class="ms-2">박지훈</span>
+                    </li>
+                </ul>
+            </div>
             </div>
         </div>
+        </div>
     </div>
+<<<<<<< HEAD
 </div>
+=======
+>>>>>>> spring/travel_article_crud_mgk
 </body>
 </html>

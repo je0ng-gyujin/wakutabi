@@ -56,7 +56,7 @@ public class SecurityConfig {
 							if(exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException){
 								errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
 							} else {
-								errorMessage = "로그에 실패했습니다. 다시 시도해주세요";
+								errorMessage = "로그인에 실패했습니다. 다시 시도해주세요";
 							}
 							// 로그인 실패 원인 저장
 							request.getSession().setAttribute("errorMessage", errorMessage);

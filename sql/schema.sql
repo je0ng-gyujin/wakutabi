@@ -26,6 +26,17 @@ CREATE TABLE trip_tag (
 	id	          BIGINT       AUTO_INCREMENT PRIMARY KEY,  -- 트립태그 고유ID
 	tag_name      VARCHAR(50)  NOT NULL UNIQUE              -- 태그 이름
 );
+-- 태그 insert (종류 고정)
+INSERT INTO trip_tag (tag_name) VALUES
+('foodie'),
+('activity'),
+('nature'),
+('otaku'),
+('shopping'),
+('smallGroup'),
+('largeGroup'),
+('indoor'),
+('outdoor');
 -- 사용자 태그 중간테이블
 CREATE TABLE trip_tag_mid_users (
     user_id      BIGINT   NOT NULL,         -- 사용자 고유ID

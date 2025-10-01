@@ -1,41 +1,15 @@
 package com.wakutabi.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.NotificationDto;
-
-import com.wakutabi.domain.ParticipantDto;
+import com.wakutabi.domain.RequestStatusDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
-import com.wakutabi.service.NotificationService;
-import com.wakutabi.service.ParticipantService; // import 추가
-import com.wakutabi.service.TravelDeadlineService;
-import com.wakutabi.service.TravelEditService;
-import com.wakutabi.service.TravelImageService;
-import com.wakutabi.service.TravelUpdateDeleteService;
 
+import com.wakutabi.mapper.TravelDeadlineMapper;
+import com.wakutabi.service.*;
 
 import com.wakutabi.domain.TripJoinRequestDto;
 import com.wakutabi.domain.TripListDto;
@@ -66,20 +40,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Controller
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
 @Slf4j
 public class TravelsController {
 
+
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
+    private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
 
-    private final TravelUpdateDeleteService travelUpdateDeleteService;
-    private final TravelDeadlineService travelDeadlineService;
-    private final NotificationService notificationService;
-    private final ParticipantService participantService; // 의존성 주입 추가
-
+    private final TravelDeadlineService travelDeadlineService; // 추가
     private final ChatService chatService;
 
     private final TripService tripService; 
@@ -88,7 +61,7 @@ public class TravelsController {
     //검색
     @GetMapping("/search")
     public String searchTravels(
-            @RequestParam(value = "keyward", required = false) String query,
+    		@RequestParam(value = "keyward", required = false) String query,
             @RequestParam(value = "minPrice", required = false) Integer minPrice,
             @RequestParam(value = "maxPrice", required = false) Integer maxPrice,
             @RequestParam(value = "region", required = false) String region,
@@ -98,17 +71,19 @@ public class TravelsController {
             @RequestParam(value = "groupSize", required = false) List<String> groupSize,
             @RequestParam(value = "status", required = false) String status,
             Model model) {
+            
+	    	LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
+	    	LocalDateTime endDateTime   = endDate != null ? endDate.atTime(23, 59, 59) : null;
 
-        LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
-        LocalDateTime endDateTime = endDate != null ? endDate.atTime(23, 59, 59) : null;
+	    	log.info("Received search request. Query: {}, minPrice: {}, maxPrice: {}, region: {}, startDate: {}, endDate: {}, tags: {}, groupSize: {}, status: {}", 
+	                query, minPrice, maxPrice, region, startDate, endDate, tags, groupSize, status); // ⬅️ 로그 추가
 
-        log.info("Received search request. Query: {}, minPrice: {}, maxPrice: {}, region: {}, startDate: {}, endDate: {}, tags: {}, groupSize: {}, status: {}",
-                query, minPrice, maxPrice, region, startDate, endDate, tags, groupSize, status);
+	       List<TravelEditDto> travels = travelEditService.findFilteredTravels(query, minPrice, maxPrice, region, startDateTime, endDateTime, tags, groupSize, status); // ⬅️ status 파라미터 추가
 
-        List<TravelEditDto> travels = travelEditService.findFilteredTravels(query, minPrice, maxPrice, region, startDateTime, endDateTime, tags, groupSize, status);
-
-        log.info("검색 날짜 파라미터 - startDateTime: {}, endDateTime: {}", startDateTime, endDateTime);
-
+        
+            log.info("검색 날짜 파라미터 - startDateTime: {}, endDateTime: {}", startDateTime, endDateTime);
+            
+        // 2. 각 여행 게시글에 대한 대표 이미지를 조회합니다.
         if (travels != null) {
             for (TravelEditDto travel : travels) {
                 if (travel != null && travel.getId() != null) {
@@ -128,7 +103,9 @@ public class TravelsController {
                 }
             }
         }
-
+        
+        
+        //3. 모델에 검색 결과와 필터 파라미터들을 다시 담아서 뷰로 전달합니다.
         model.addAttribute("travels", travels);
         model.addAttribute("query", query);
         model.addAttribute("minPrice", minPrice);
@@ -139,30 +116,37 @@ public class TravelsController {
         model.addAttribute("tags", tags);
         model.addAttribute("groupSize", groupSize);
         model.addAttribute("status", status);
-
+        
         return "travels/search";
     }
 
-    // ---------------------------------------------
-    // 1. 여행 글 작성 페이지
-    // ---------------------------------------------
-    @GetMapping("/create")
-    public String travelCreate() {
-        return "travels/write";
-    }
+
+    
+
+	private final NotificationService notificationService;
+
+	// ---------------------------------------------
+	// 1. 여행 글 작성 페이지
+	// ---------------------------------------------
+	@GetMapping("/create")
+	public String travelCreate() {
+		return "travels/write";
+	}
 
     // ---------------------------------------------
-    // 2. 여행 글 업로드 (POST, AJAX/JSON)
-    // ---------------------------------------------
+	// 2. 여행 글 업로드 (POST, AJAX/JSON)
+	// ---------------------------------------------
     @PostMapping("/travelupload")
     @ResponseBody
-    public String uploadTravel(@RequestParam(name = "tags", required = false) String tags, TravelUploadDto uploadDto, Principal principal, @ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
+    public String uploadTravel(@RequestParam(name = "tags", required = false) String tags,TravelUploadDto uploadDto, Principal principal,@ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
+        // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
             return "로그인 후 이용 가능합니다.";
         }
 
         log.info("uploadDto: {}", uploadDto);
 
+        // 2. JSON 문자열을 객체로 변환 (orderNumber → ImageOrderDto 리스트)
         ObjectMapper objectMapper = new ObjectMapper();
         List<ImageOrderDto> imageOrders;
         try {
@@ -172,9 +156,10 @@ public class TravelsController {
             );
         } catch (IOException e) {
             log.error("이미지 순서 변환 실패", e);
-            return "이미지 순서 처리 실패";
+			      return "이미지 순서 처리 실패";
         }
 
+        // 3. 게시글 DTO 생성 및 값 설정
         TravelEditDto dto = new TravelEditDto();
         dto.setTitle(uploadDto.getTitle());
         dto.setLocation(uploadDto.getLocation());
@@ -185,18 +170,25 @@ public class TravelsController {
         dto.setEstimatedCost(uploadDto.getEstimatedCost() != null ? uploadDto.getEstimatedCost() : 0);
         dto.setStatus("OPEN");
 
+        // 날짜 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter));
         dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter));
 
+        
+        // TravelEditDto에 태그 설정
         if (tags != null && !tags.isEmpty()) {
-            dto.setTags(List.of(tags.split(",")));
+        	// 문자열 리스트로 변환하여 설정
+        	dto.setTags(List.of(tags.split(",")));
         }
-
+        
+        // 로그인한 사용자 ID 설정 (예시: 1L)
         dto.setHostUserId(userId);
 
+        // 4. 게시글 DB 저장
         travelEditService.saveTravelWithTags(dto);
-
+        
+        // 5. 이미지 파일 처리 및 DB 저장
         log.info("uploadDto.getImages = {}", uploadDto.getImages());
         List<MultipartFile> images = uploadDto.getImages();
         if (images != null && !images.isEmpty()) {
@@ -205,25 +197,29 @@ public class TravelsController {
                 ImageOrderDto imageOrder = imageOrders.get(i);
 
                 if (!file.isEmpty()) {
+                    // 업로드 폴더 보장
                     String uploadDir = "C:/uploads/";
                     File dir = new File(uploadDir);
                     if (!dir.exists()) {
                         dir.mkdirs();
                     }
 
+                    // 파일명에 UUID를 사용하여 저장 경로 생성
                     String savePath = uploadDir + imageOrder.getUuid() + "_" + file.getOriginalFilename();
                     file.transferTo(new File(savePath));
 
+                    // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
-                    imgDto.setTripArticleId(dto.getId());
+                    imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
                     imgDto.setImagePath(savePath.replaceFirst("C:/uploads", "/upload"));
-                    imgDto.setOrderNumber(imageOrder.getOrder());
+                    imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);
                 }
             }
         }
-
+        
+        // 6. 등록 된 여행에 대한 알림 테이블 저장
         NotificationDto noticeDto = new NotificationDto();
         String uploadedTravelUrl = "/schedule/detail?id=" + dto.getId();
         noticeDto.setUserId(userId);
@@ -234,6 +230,7 @@ public class TravelsController {
         notificationService.insertNotification(noticeDto);
 
         return "등록 완료! 생성된 글 ID: " + dto.getId();
+
     }
 
     // ---------------------------------------------
@@ -242,15 +239,21 @@ public class TravelsController {
     @GetMapping("/detail")
     public String travelDetail(@RequestParam("id") Long id,
                                @ModelAttribute("userId") Long userId,
-                               Model model, Principal principal) {
+                                 Model model, Principal principal) {
 
-        TravelEditDto travel = travelEditService.findTravelById(id);
-        if (travel == null) return "redirect:/error";
+		TravelEditDto travel = travelEditService.findTravelById(id);
+		if (travel == null)
+			return "redirect:/error";
 
-        List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
+		List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
 
-        List<ParticipantDto> participants = participantService.participant(id); // 수정된 부분
+		// 3. 현재 로그인한 사용자와 게시글 작성자 ID 비교
 
+        boolean isOwner = false;
+        if (principal != null) {
+            Long currentUserId = userId; // 실제 구현 시 principal 기반으로 조회
+            isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
+        }
 
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
 		// 조회한 게시글 정보를 모델에 담아 HTML로 전달
@@ -259,46 +262,19 @@ public class TravelsController {
 		model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
         model.addAttribute("chatRoomId", chatRoomId);// 채팅룸ID 추가
 
-        return "travels/detail";
+        return "travels/detail"; // views/travels/detail.html 경로
+    
+
+
+
     }
+    
+
+
 
     // ---------------------------------------------
     // 4. 여행 글 수정
     // ---------------------------------------------
-    @PostMapping("/travelupdate")
-    @ResponseBody
-    public String updateTravel(@ModelAttribute TravelEditDto dto,
-                               @ModelAttribute("userId") Long userId,
-                               Principal principal) {
-        if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
-        }
-
-        dto.setHostUserId(userId);
-        boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
-
-        return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-    }
-
-    @DeleteMapping("/traveldelete")
-    @ResponseBody
-    public String deleteTravel(@RequestBody TravelEditDto dto,
-                               @ModelAttribute("userId") Long userId,
-                               Principal principal) {
-        if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
-        }
-
-        Long hostUserId = userId;
-        boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
-
-        return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-    }
-
-    // ---------------------------------------------
-    // 6. 여행 글 수정 페이지
-    // ---------------------------------------------
-
  // TravelsController.java
  // TravelsController.java
  // ...

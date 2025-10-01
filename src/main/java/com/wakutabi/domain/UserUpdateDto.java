@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 		private Boolean isPublic;
 		private String introduce;
 		private double rating;
-		private String imagePath;
+
 		public enum Gender{
 			MALE,
 			FEMALE,

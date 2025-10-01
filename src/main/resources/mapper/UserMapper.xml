@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.UserMapper">
-
-
+	
+	
 	<select id="countByUsername" resultType="int">
 		select count(*) from users where username = #{username}
 	</select>
-
-
+	
+	
 	<insert id="insertUser" parameterType="com.wakutabi.domain.SignUpDto">
-		INSERT INTO users
-		(username, password, nickname, birth, email, verification_token, is_verified)
-		VALUES
-		(#{username}, #{password}, #{nickname}, #{birth}, #{email}, #{verificationToken}, #{isVerified})
+		insert into users (username,password,nickname,birth,email,verification_token, is_verified) values 
+		(#{username},#{password},#{nickname},#{birth},#{email},#{verificationToken}, #{isVerified})
 	</insert>
-
 	<select id="findByUsername" resultType="com.wakutabi.domain.LoginDto">
 		select * from users where username=#{username}
 	</select>
 
+	<!--유저ID 가져오기-->
 	<select id="getUserId" parameterType="String" resultType="Long">
 		select id from users where username = #{username}
 	</select>
+	<!--유저name 가져오기-->
 	<select id="getUsernameById" parameterType="Long" resultType="String">
 		select username from users where id = #{Id}
 	</select>
 
+	<!-- 유저정보 받기 -->
 	<select id="getUserInfo" parameterType="String" resultType="com.wakutabi.domain.UserUpdateDto">
-		SELECT
+		SELECT 
 			id,
 			username,
 			nickname,
@@ -36,46 +36,47 @@
 			rating,
 			gender,
 			introduce,
-			image_path,
 			rating
-		from users
+		from users 
 		where username = #{username}
 	</select>
 
+	<!-- 유저 정보 수정  -->
 	<update id="userInfoUpdate" parameterType="com.wakutabi.domain.UserUpdateDto">
 		UPDATE users
 		SET
         	email      = #{email},
 			birth 	   = #{birth},
-			gender	   = #{gender},
+			gender	   = #{gender},	
 			is_public  = #{isPublic},
-			image_path = #{imagePath},
         	introduce  = #{introduce},
         	updated_at = NOW()
-        	WHERE id = #{id}
 	</update>
 
+	<!-- 현재 비밀번호 가져오기 -->
 	<select id="findPasswordByUsername" parameterType="String" resultType="String">
 		select password from users where username = #{username}
 	</select>
-
+	
+	<!-- 회원 비밀번호 변경 -->
 	<update id="userPasswordUpdate" parameterType="com.wakutabi.domain.UserPasswordUpdateDto">
 		UPDATE users
 		SET
 			password = #{newPassword},
 		 	updated_at = NOW()
-		where username = #{username}
+		where username = #{username} 
 	</update>
 
+	<!-- 회원 탈퇴 -->
 	<update id="userWithdrawal" parameterType="String">
 		UPDATE users
 		SET
 			status = 'EXIT'
 		WHERE username = #{username}
 	</update>
-
-
-
+	
+	
+	
 	<update id="updateUserVerificationStatus">
     UPDATE users
     SET is_verified = <choose>
@@ -89,6 +90,6 @@
 	<select id="findVerificationTokenByUsername" resultType="String">
     select verification_token from users where username = #{username}
 	</select>
-
+	
 
 </mapper>

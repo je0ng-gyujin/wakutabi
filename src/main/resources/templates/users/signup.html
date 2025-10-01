@@ -13,6 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" th:href="@{/css/member.css}">
+  <script defer src="/js/signup.js"></script>
   </th:block>
 </head>
 
@@ -46,7 +47,7 @@
 
             <!-- 이름 -->
             <div class="mb-3">
-              <input type="text" name="name" id="name" class="form-control form-control-lg"
+              <input type="text" name="nickname" id="nickname" class="form-control form-control-lg"
                      placeholder="닉네임을 입력해 주세요">
               <p>*닉네임을 적지 않으시면 ID로 대체됩니다.</p>
             </div>
@@ -60,7 +61,7 @@
             <!-- 생일 -->
 			<div class="mb-3">
 			  <label for="birthdate" class="form-label">생일을 선택해주세요</label>
-			  <input type="date" id="birthdate" name="birthdate" class="form-control form-control-lg" required>
+			  <input type="date" id="birth" name="birth" class="form-control form-control-lg" required>
 			</div>
 
             <!-- 제출 버튼 -->
@@ -82,23 +83,5 @@
 <footer>
     <!--  <p>Copyright © 2025 Wakutabi Co.,Ltd. All Rights Reserved.</p>-->
   </footer>
-
-<!-- Ajax 스크립트
-  <script>
-    $("#username").on("blur", function () {
-      const username = $(this).val();
-      $.ajax({
-        url: "/user/check-username",
-        data: { username },
-        success: function (result) {
-          if (result === "exist") {
-            $("#id-check-msg").text("이미 사용중인 아이디 입니다");
-          } else {
-            $("#id-check-msg").text("사용 가능한 아이디 입니다");
-          }
-        }
-      });
-    });
-  </script> -->
 </body>
 </html>

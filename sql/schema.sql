@@ -67,6 +67,7 @@ CREATE TABLE trip_article (
 
 	CONSTRAINT fk_trip_article_host_user_id FOREIGN KEY (host_user_id) REFERENCES users (id)
 );
+
 -- 여행등록 이미지
 CREATE TABLE trip_article_image (
 	id	                   BIGINT          AUTO_INCREMENT PRIMARY KEY,   -- 여행등록 이미지 고유ID
@@ -168,7 +169,7 @@ CREATE TABLE chat_message (
 CREATE TABLE qna_questions (
     id                  BIGINT                                          AUTO_INCREMENT PRIMARY KEY,                                         -- Q&A 질문 고유ID
     user_id             BIGINT                                          NOT NULL,                                                           -- 사용자ID
-    trip_article_id     BIGINT                                          NOT NULL,                                                           -- 여행일정ID(여행관련 질문인 경우)
+    trip_article_id     BIGINT,                                                                                                             -- 여행일정ID(여행관련 질문인 경우)
     type                ENUM('COMMON','ACCOUNT','PAYMENT','BUG','ETC')  NOT NULL   DEFAULT 'COMMON',                                        -- 질문유형('COMMON':일반,'ACCOUNT':계정,'PAYMENT':결제,'BUG':버그신고,'ETC':기타)
     title               VARCHAR(50)                                     NOT NULL,                                                           -- 제목
     content             TEXT                                            NOT NULL,                                                           -- 내용

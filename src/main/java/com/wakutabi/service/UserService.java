@@ -1,26 +1,20 @@
 package com.wakutabi.service;
 
-<<<<<<< HEAD
-=======
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
->>>>>>> spring/travel_article_crud_mgk
 import com.wakutabi.domain.SignUpDto;
+import com.wakutabi.domain.UserPasswordUpdateDto;
+import com.wakutabi.domain.UserUpdateDto;
 import com.wakutabi.mapper.UserMapper;
 import java.util.UUID; 
 
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-=======
->>>>>>> spring/travel_article_crud_mgk
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 	private final EmailService emailService;
@@ -79,7 +73,6 @@ public class UserService {
 	    }
 	    return false;
 	}
-<<<<<<< HEAD
 	
 	public Long getUserId(String username){
 		Long userId = userMapper.getUserId(username);
@@ -114,6 +107,3 @@ public class UserService {
 		userMapper.userWithdrawal(username);
 	}
 }
-=======
-}
->>>>>>> spring/travel_article_crud_mgk

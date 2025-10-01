@@ -21,11 +21,10 @@
         <div class="col-md-3 border-end">
             <h5 class="fw-bold mb-4">My page</h5>
             <ul class="list-unstyled">
-                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">프로필</a></li>
-                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">내 정보</a></li>
-                <li class="mb-3"><a href="#" class="text-decoration-none text-dark fw-bold">내 문의 내역</a></li>
-                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">비밀번호 변경</a></li>
-                <li class="mb-3"><a href="#" class="text-decoration-none text-dark">회원 탈퇴</a></li>
+                <li class="mb-3"><a href="/user/mypage" class="text-decoration-none text-dark">내 정보</a></li>
+                <li class="mb-3"><a href="/user/my-inquiries" class="text-decoration-none text-dark">내 문의 내역</a></li>
+                <li class="mb-3"><a href="/user/change-password" class="text-decoration-none text-dark">비밀번호 변경</a></li>
+                <li class="mb-3"><a href="/user/delete" class="text-decoration-none text-dark">회원 탈퇴</a></li>
                 <li class="mb-3"><a href="/" class="text-decoration-none text-dark">홈으로</a></li>
             </ul>
         </div>
@@ -46,7 +45,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr onclick="location.href='#'" style="cursor:pointer;">
+      <tr onclick="location.href='/user/inquiry-read'" style="cursor:pointer;">
         <td>3</td>
         <td>결제 오류 관련 문의</td>
         <td>결제</td>

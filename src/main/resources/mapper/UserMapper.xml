@@ -15,7 +15,6 @@
 	<select id="findByUsername" resultType="com.wakutabi.domain.LoginDto">
 		select * from users where username=#{username}
 	</select>
-<<<<<<< HEAD
 
 	<!--유저ID 가져오기-->
 	<select id="getUserId" parameterType="String" resultType="Long">
@@ -93,6 +92,4 @@
 	</select>
 	
 
-=======
->>>>>>> spring/travel_article_crud_mgk
 </mapper>

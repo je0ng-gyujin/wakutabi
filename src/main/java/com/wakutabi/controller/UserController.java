@@ -1,6 +1,5 @@
 package com.wakutabi.controller;
 
-<<<<<<< HEAD
 import java.security.Principal;
 
 import com.wakutabi.domain.*;
@@ -13,19 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-=======
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.wakutabi.domain.SignUpDto;
-import com.wakutabi.service.UserService;
-
-import lombok.RequiredArgsConstructor;
->>>>>>> spring/travel_article_crud_mgk
 
 @Controller
 @RequiredArgsConstructor
@@ -77,7 +63,6 @@ public class UserController {
 			return "error";
 		}
 	}
-<<<<<<< HEAD
     // 회원정보 페이지
 	@GetMapping("/mypage")
     public String enterMypage(Principal principal, Model model){
@@ -162,7 +147,4 @@ public class UserController {
     public String enterSurvey() {
     	return "infos/survey";
     }
-=======
-
->>>>>>> spring/travel_article_crud_mgk
 }

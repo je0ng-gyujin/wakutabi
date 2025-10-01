@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.TravelTagMapper">
 
-<<<<<<< HEAD
 	<select id="findTagsByTripArticleId" resultType="string">
 	    SELECT t.tag_name
 	    FROM trip_tag t
@@ -20,27 +19,4 @@
         VALUES (#{tagName})
     </insert>
 	
-=======
-    <select id="findTagIdByName" parameterType="string" resultType="long">
-        SELECT id
-        FROM trip_tag
-        WHERE tag_name = #{tagName}
-    </select>
-
-    <insert id="insertNewTag" parameterType="com.wakutabi.domain.TravelTagDto" useGeneratedKeys="true"
-            keyProperty="id" keyColumn="id">
-        INSERT INTO trip_tag
-        (tag_name)
-        VALUES
-        (#{tagName})
-    </insert>
-
-    <insert id="linkArticleAndTag">
-        INSERT INTO trip_tag_mid_trip_article
-        (trip_article_id, trip_tag_id)
-        VALUES 
-        (#{param1}, #{param2})
-    </insert>
-
->>>>>>> spring/travel_article_crud_mgk
 </mapper>

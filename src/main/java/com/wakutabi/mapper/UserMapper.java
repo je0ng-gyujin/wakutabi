@@ -1,19 +1,19 @@
 package com.wakutabi.mapper;
 
+import com.wakutabi.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.wakutabi.domain.LoginDto;
-import com.wakutabi.domain.SignUpDto;
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
-		//username검색
+		// username검색
 		int countByUsername(@Param("username") String username);
-		//회원가입처리
+		// 회원가입처리
 		int insertUser(SignUpDto user);
-		//로그인 처리
+		// 로그인 처리
 		LoginDto findByUsername(String username);
-<<<<<<< HEAD
 		// 유저id 가져오기
 		Long getUserId(String username);
 		// 유저이름 가져오기
@@ -32,6 +32,4 @@ public interface UserMapper {
 	    void updateUserVerificationStatus(@Param("username") String username, @Param("isVerified") boolean isVerified);
 	    String findVerificationTokenByUsername(@Param("username") String username);
 
-=======
->>>>>>> spring/travel_article_crud_mgk
 }

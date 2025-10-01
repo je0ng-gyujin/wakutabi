@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.survey-card {
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+}
+.question {
+      font-weight: 500;
+}
+
+h2{
+	padding-top:20px;
+}
+
+.btn-primary{
+	margin-bottom:40px;
+	margin-right:10px;
+}
+.btn-secondary{
+	margin-bottom:40px;
+}

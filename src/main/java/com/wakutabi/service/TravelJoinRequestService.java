@@ -22,4 +22,5 @@ public class TravelJoinRequestService {
 	public void changeStatusToRejected(TravelJoinRequestDto statusToRejected){
 		travelJoinRequestMapper.changeStatusToRejected(statusToRejected);
 	}
+
 }

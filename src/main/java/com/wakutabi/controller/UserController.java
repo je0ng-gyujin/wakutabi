@@ -145,5 +145,14 @@ public class UserController {
         // 4. 보여줄 템플릿 파일의 경로를 반환합니다.
         // (src/main/resources/templates/infos/mypage.html 파일을 의미)
         return "infos/mypage";
+      
+        userService.userWithdrawal(username);
+        model.addAttribute("message", "탈퇴되었습니다.");
+        return "infos/delete";
+        }
+
+    @GetMapping("/survey")
+    public String enterSurvey() {
+    	return "infos/survey";
     }
 }

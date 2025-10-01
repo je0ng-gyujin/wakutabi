@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/clean}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" th:href="@{/css/survey.css}">
+<title>설문 조사</title>
+<th:block layout:fragment="head">
+
+</th:block>
+</head>
+
+<body>
+<div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+
+<div class="container">
+  <h2 class="text-center mb-4">여행 성향 설문조사</h2>
+
+  <!-- 식도락 -->
+  <div class="card survey-card p-4">
+    <h5>🍜 식도락</h5>
+    <p class="question">나는 여행갈 때, 음식에 예민하다.</p>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="foodie" id="foodie1" value="1">
+      <label class="form-check-label" for="foodie1">매우 아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="foodie" id="foodie2" value="2">
+      <label class="form-check-label" for="foodie2">아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="foodie" id="foodie3" value="3">
+      <label class="form-check-label" for="foodie3">보통</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="foodie" id="foodie4" value="4">
+      <label class="form-check-label" for="foodie4">그렇다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="foodie" id="foodie5" value="5">
+      <label class="form-check-label" for="foodie5">매우 그렇다</label>
+    </div>
+  </div>
+
+  <!-- 엑티비티 -->
+  <div class="card survey-card p-4">
+    <h5>🎯 엑티비티</h5>
+    <p class="question">나는 새로운 체험을 즐긴다.</p>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="activity" id="activity1" value="1">
+      <label class="form-check-label" for="activity1">매우 아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="activity" id="activity2" value="2">
+      <label class="form-check-label" for="activity2">아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="activity" id="activity3" value="3">
+      <label class="form-check-label" for="activity3">보통</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="activity" id="activity4" value="4">
+      <label class="form-check-label" for="activity4">그렇다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="activity" id="activity5" value="5">
+      <label class="form-check-label" for="activity5">매우 그렇다</label>
+    </div>
+  </div>
+
+  <!-- 자연 -->
+  <div class="card survey-card p-4">
+    <h5>🌿 자연</h5>
+    <p class="question">나는 도시에서 벗어나 한적한 자연을 느끼고 싶다.</p>
+    <!-- 동일한 1~5 Likert scale -->
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="nature" id="nature1" value="1">
+      <label class="form-check-label" for="nature1">매우 아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="nature" id="nature2" value="2">
+      <label class="form-check-label" for="nature2">아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="nature" id="nature3" value="3">
+      <label class="form-check-label" for="nature3">보통</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="nature" id="nature4" value="4">
+      <label class="form-check-label" for="nature4">그렇다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="nature" id="nature5" value="5">
+      <label class="form-check-label" for="nature5">매우 그렇다</label>
+    </div>
+  </div>
+
+  <!-- 오타쿠 -->
+  <div class="card survey-card p-4">
+    <h5>🎌 오타쿠</h5>
+    <p class="question">나는 애니, J-POP 등 일본문화를 좋아한다.</p>
+    <!-- 동일한 1~5 Likert scale -->
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="otaku" id="otaku1" value="1">
+      <label class="form-check-label" for="otaku1">매우 아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="otaku" id="otaku2" value="2">
+      <label class="form-check-label" for="otaku2">아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="otaku" id="otaku3" value="3">
+      <label class="form-check-label" for="otaku3">보통</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="otaku" id="otaku4" value="4">
+      <label class="form-check-label" for="otaku4">그렇다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="otaku" id="otaku5" value="5">
+      <label class="form-check-label" for="otaku5">매우 그렇다</label>
+    </div>
+  </div>
+
+  <!-- 쇼핑 -->
+  <div class="card survey-card p-4">
+    <h5>🛍️ 쇼핑</h5>
+    <p class="question">나의 여행의 즐거움은 쇼핑이다.</p>
+    <!-- 동일한 1~5 Likert scale -->
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="shopping" id="shopping1" value="1">
+      <label class="form-check-label" for="shopping1">매우 아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="shopping" id="shopping2" value="2">
+      <label class="form-check-label" for="shopping2">아니다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="shopping" id="shopping3" value="3">
+      <label class="form-check-label" for="shopping3">보통</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="shopping" id="shopping4" value="4">
+      <label class="form-check-label" for="shopping4">그렇다</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="shopping" id="shopping5" value="5">
+      <label class="form-check-label" for="shopping5">매우 그렇다</label>
+    </div>
+  </div>
+
+  <!-- 기타 -->
+  <div class="card survey-card p-4">
+    <h5>기타</h5>
+    <p class="question">나는 무조건 소수 정예다.</p>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="smallGroup" id="smallGroupYes" value="yes">
+      <label class="form-check-label" for="smallGroupYes">O</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="smallGroup" id="smallGroupNo" value="no">
+      <label class="form-check-label" for="smallGroupNo">X</label>
+    </div>
+
+    <p class="question mt-3">나는 집돌이/집순이다.</p>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="homebody" id="homebodyYes" value="yes">
+      <label class="form-check-label" for="homebodyYes">O</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="homebody" id="homebodyNo" value="no">
+      <label class="form-check-label" for="homebodyNo">X</label>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <button class="btn btn-primary px-4">제출</button>
+    <button class="btn btn-secondary px-4">홈으로</button>
+  </div>
+</div>
+</div>
+</body>
+
+
+</html>

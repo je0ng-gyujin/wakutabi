@@ -35,21 +35,26 @@ public class TravelJoinRequestController {
     private final TravelJoinFacadeService travelJoinFacadeService; // 의존성 주입 추가
 
     // 여행참가신청
-    @PostMapping("/join-request")
-    @ResponseBody
-    public Map<String, Object> insertTravelJoinRequestAjax(
-            TravelJoinRequestDto travelJoinRequest,
-            @ModelAttribute("userId") Long userId) {
+        @PostMapping("/join-request")
+        @ResponseBody   // 중요! String redirect가 아니라 JSON 응답으로
+        public Map<String, Object> insertTravelJoinRequestAjax(TravelJoinRequestDto travelJoinRequest,
+                                                               @RequestParam("chatRoomId")Long chatRoomId,
+                                                               @ModelAttribute("userId") Long userId) {
 
-        Map<String, Object> result = new HashMap<>();
+            Map<String, Object> result = new HashMap<>();
 
-        try {
-            if (userId == null) {
-                result.put("status", "fail");
-                result.put("message", "로그인이 필요합니다.");
-                return result;
-            }
-            if (Objects.equals(userId, travelJoinRequest.getHostUserId())) {
+            try {
+                String message = travelJoinFacadeService.joinTravel(travelJoinRequest,chatRoomId,userId);
+
+                result.put("status", "success");
+                result.put("tripArticleId", travelJoinRequest.getTripArticleId());
+                result.put("message", message);
+
+            } catch (IllegalStateException e) {
+                result.put("status","fail");
+                result.put("message", e.getMessage());
+            }catch (Exception e) {
+                log.error("참가신청 중 오류",e);
                 result.put("status", "fail");
                 result.put("message", "호스트는 참가신청 할 수 없습니다.");
                 return result;

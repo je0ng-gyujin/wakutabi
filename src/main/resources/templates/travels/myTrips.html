@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/layouts/base}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" th:href="@{/css/myTrips.css}">
+<title>내 여행 관리</title>
+<th:block layout:fragment="head">
+</th:block>
+<script defer th:src="@{/js/travel.js}"></script>
+</head>
+
+<body>
+			
+  <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+    <div class="container py-4">
+      <!-- Page Header -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h1 class="text-center mb-2">내 여행 관리</h1>
+        </div>
+      </div>
+
+      
+
+      <!-- Filter & Results -->
+      <div class="row">
+        
+        <!-- Results Section -->
+        <div class="col-lg-9">
+          <!-- Results Header -->
+          <!-- <div
+            class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <span class="search-result-count">총 24개</span>의 여행 일정을
+              찾았습니다
+            </div>
+            <div class="d-flex gap-2">
+              <select class="form-select form-select-sm"
+                style="width: auto;">
+                <option>최신순</option>
+                <option>인기순</option>
+                <option>마감임박순</option>
+                <option>평점순</option>
+              </select>
+            </div>
+          </div> -->
+
+          <!-- Schedule Cards -->
+          <div class="row g-4">
+            <!-- Schedule Card 1 -->
+        <h3 id="my-registered-trips">등록한 여행</h3>
+             <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="도쿄">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">🗼 도쿄 3박4일 먹방
+                          여행</h5>
+                        <span class="badge region-badge">도쿄</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2025년 12월 중 (2~5일간)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">도쿄의 숨은
+                        맛집들을 찾아다니는 진짜 먹방 여행! 현지인만 아는 라멘집부터 미슐린 레스토랑까지 함께
+                        즐겨요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">식도락</span>
+                        <span class="badge schedule-tag me-1">현지체험</span>
+                        <span class="badge schedule-tag me-1">소수정예</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            
+						<div class="status-info js-participants-toggle">
+						    <i class="bi bi-people-fill me-1">3/6명</i> 참여 중
+						</div>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-primary btn-sm">수정</button>
+                            <button class="btn btn-wakutabi-primary btn-sm btn-manage" data-trip-id="123">
+					            신청 관리
+					        </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="applicants-container collapse mt-2"></div>
+            </div>
+            
+            <section id="my-registered-trips" class="mb-5">
+    <div th:if="${#lists.isEmpty(registeredTrips)}" class="alert alert-info" role="alert">
+        아직 등록한 여행 일정이 없습니다.
+    </div>
+
+    <div th:each="trip : ${registeredTrips}" class="mb-4">
+        <div class="col-12">
+            <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                    <div class="col-md-4">
+    <img
+        th:src="${trip.mainImagePath} ?: '/image/default_trip.jpg'"
+        class="img-fluid rounded-start object-fit-cover"
+        th:alt="${trip.title}" > </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0" th:text="${trip.title}">🗼 도쿄 3박4일 먹방 여행</h5>
+                                <span class="badge region-badge" th:text="${trip.location}">도쿄</span>
+                            </div>
+
+                            <div class="date-range mb-2">
+                                <i class="bi bi-calendar-event me-1"></i> 
+                                <span th:text="${#temporals.format(trip.startDate, 'yyyy년 MM월 dd일')}">2025년 12월 02일</span>
+                                ~ 
+                                <span th:text="${#temporals.format(trip.endDate, 'MM월 dd일')}">12월 05일</span>
+                            </div>
+                            
+                            <p class="card-text text-muted mb-3">여행 요약이나 간단한 내용이 표시될 공간입니다.</p>
+
+                            <div class="mb-3">
+                                <span class="badge schedule-tag me-1">#태그예시</span>
+                            </div>
+
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <div class="participants-info p-2 rounded">
+                                        <div class="status-info js-participants-toggle">
+                                            <i class="bi bi-people-fill me-1"></i> 
+                                            <span th:text="|참여 중 ${trip.currentParticipants}/${trip.maxParticipants}명|">3/6명 참여 중</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <div class="d-flex gap-2 justify-content-md-end">
+                                        <a th:href="@{'/schedule/' + ${trip.id}}" class="btn btn-wakutabi-outline btn-sm">상세보기</a>
+                                        <a th:href="@{'/schedule/edit/' + ${trip.id}}" class="btn btn-wakutabi-primary btn-sm">수정</a>
+                                        <button class="btn btn-wakutabi-primary btn-sm btn-manage" 
+                                                th:data-trip-id="${trip.id}" 
+                                                data-bs-toggle="collapse" 
+                                                th:data-bs-target="|#applicant-${trip.id}|">
+                                            신청 관리
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:id="|${'applicant-' + trip.id}|" class="applicants-container collapse mt-2">
+                </div>
+        </div>
+    </div>
+</section>
+
+
+            <button id="loadMoreRegistered" 
+			        class="btn btn-outline-secondary py-2 mt-3">
+			  <i class="bi bi-arrow-down-circle me-2"></i> 여행 더보기
+			</button>
+            <!--Schedule Card 2  -->
+            <h3 id="my-applied-trips">신청한 여행</h3>
+            <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="교토">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">🏛️ 교토 전통 문화 체험</h5>
+                        <span class="badge region-badge">교토</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2024년
+                        12월 중 (3일간)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">교토의 전통
+                        문화를 깊이 체험하는 여행. 기모노 체험, 다도, 전통 공예 등 일본의 진짜 문화를
+                        만나보세요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">문화</span>
+                        <span class="badge schedule-tag me-1">체험</span>
+                        <span class="badge schedule-tag me-1">전통</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            <small> <i class="bi bi-people me-1"></i>
+                              <strong>5/8명</strong> 참여 중
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-warning btn-sm">신청 취소</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="교토">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">🏛️ 교토 전통 문화 체험</h5>
+                        <span class="badge region-badge">교토</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2024년
+                        12월 중 (3일간)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">교토의 전통
+                        문화를 깊이 체험하는 여행. 기모노 체험, 다도, 전통 공예 등 일본의 진짜 문화를
+                        만나보세요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">문화</span>
+                        <span class="badge schedule-tag me-1">체험</span>
+                        <span class="badge schedule-tag me-1">전통</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            <small> <i class="bi bi-people me-1"></i>
+                              <strong>5/8명</strong> 참여 중
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-warning btn-sm">신청 취소</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="교토">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">🏛️ 교토 전통 문화 체험</h5>
+                        <span class="badge region-badge">교토</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2024년
+                        12월 중 (3일간)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">교토의 전통
+                        문화를 깊이 체험하는 여행. 기모노 체험, 다도, 전통 공예 등 일본의 진짜 문화를
+                        만나보세요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">문화</span>
+                        <span class="badge schedule-tag me-1">체험</span>
+                        <span class="badge schedule-tag me-1">전통</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            <small> <i class="bi bi-people me-1"></i>
+                              <strong>5/8명</strong> 참여 중
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-warning btn-sm">신청 취소</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div class="col-12">
+              <div class="card schedule-card border-0 shadow-sm">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img
+                      src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=250&fit=crop"
+                      class="img-fluid rounded-start h-100 object-fit-cover"
+                      alt="교토">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <div
+                        class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">🏛️ 교토 전통 문화 체험</h5>
+                        <span class="badge region-badge">교토</span>
+                      </div>
+
+                      <div class="date-range mb-2">
+                        <i class="bi bi-calendar-event me-1"></i> 2024년
+                        12월 중 (3일간)
+                      </div>
+
+                      <p class="card-text text-muted mb-3">교토의 전통
+                        문화를 깊이 체험하는 여행. 기모노 체험, 다도, 전통 공예 등 일본의 진짜 문화를
+                        만나보세요.</p>
+
+                      <div class="mb-3">
+                        <span class="badge schedule-tag me-1">문화</span>
+                        <span class="badge schedule-tag me-1">체험</span>
+                        <span class="badge schedule-tag me-1">전통</span>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="participants-info p-2 rounded">
+                            <small> <i class="bi bi-people me-1"></i>
+                              <strong>5/8명</strong> 참여 중
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                          <div
+                            class="d-flex gap-2 justify-content-md-end">
+                            <button
+                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
+                            <button
+                              class="btn btn-wakutabi-warning btn-sm">신청 취소</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <button id="loadMoreRegistered" 
+			        class="btn btn-outline-secondary py-2 mt-3">
+			  <i class="bi bi-arrow-down-circle me-2"></i> 여행 더보기
+			</button>
+
+        </div>
+      </div>
+      
+      <!-- Sidebar Filters -->
+        <div class="col-lg-3 mb-4">
+           <!--  Search Input -->
+           <div class="filter-section p-3 shadow-sm sticky-top">
+            <div class="row mb-3">
+              <div class="col-12">
+              <form id="searchForm" action="/schedule/myTrips" method="get">
+                <div class="input-group pb-3"> 
+                  <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-primary"></i>
+                  </span> 
+                  <input type="text"
+                    class="form-control border-start-0 ps-0"
+                    placeholder="여행지 검색" id="searchInput"
+                    name="keyward" th:value="${query}">
+                  <button class="btn btn-wakutabi-primary px-4"
+                    type="submit">
+                    <i class="bi bi-search me-2"></i>검색
+                  </button>
+                </div>
+                <div class="filter-section p-3 shadow mb-4">
+              <h5 class="mb-3">바로 가기</h5>
+              <div class="d-grid gap-2">
+                  <a href="#my-registered-trips" class="btn btn-wakutabi-primary">
+                      <i class="bi bi-airplane-fill me-2"></i> 등록한 여행
+                  </a>
+                  <a href="#my-applied-trips" class="btn btn-outline-secondary">
+                      <i class="bi bi-file-earmark-check me-2"></i> 신청한 여행
+                  </a>
+              </div>
+          </div>
+         </form>
+          </div>
+            </div>
+          </div>
+        </div>
+      
+    </div>
+  </div>
+  </div>
+</body>
+</html>

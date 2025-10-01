@@ -158,7 +158,173 @@ $(document).ready(
 					      }
 					    });
 					  });
-					  
+					  document.addEventListener('DOMContentLoaded', function () {
+					  		     function initLoadMore(sectionId, buttonId, step = 5) {
+					  		       const container = document.getElementById(sectionId);
+					  		       const btn = document.getElementById(buttonId);
+
+					  		       if (!container) {
+					  		         console.warn(`[LoadMore] container not found: ${sectionId}`);
+					  		         return;
+					  		       }
+					  		       if (!btn) {
+					  		         console.warn(`[LoadMore] button not found: ${buttonId}`);
+					  		         return;
+					  		       }
+
+					  		       const cards = Array.from(container.querySelectorAll('.schedule-card'));
+					  		       console.log(`[LoadMore] ${sectionId} found schedule-card count =`, cards.length);
+
+					  		       if (cards.length <= step) {
+					  		         // 카드가 step 이하이면 버튼 숨김, 카드 모두 보이게
+					  		         cards.forEach(c => {
+					  		           const wrap = c.closest('.col-12') || c.parentElement;
+					  		           if (wrap) wrap.classList.remove('hidden-card');
+					  		         });
+					  		         btn.style.display = 'none';
+					  		         return;
+					  		       }
+
+					  		       // 처음엔 모두 숨기기
+					  		       cards.forEach(c => {
+					  		         const wrap = c.closest('.col-12') || c.parentElement;
+					  		         if (wrap) wrap.classList.add('hidden-card');
+					  		       });
+
+					  		       let visible = 0;
+					  		       function showMore() {
+					  		         const next = Math.min(visible + step, cards.length);
+					  		         for (let i = visible; i < next; i++) {
+					  		           const wrap = cards[i].closest('.col-12') || cards[i].parentElement;
+					  		           if (wrap) wrap.classList.remove('hidden-card');
+					  		         }
+					  		         visible = next;
+					  		         btn.style.display = (visible < cards.length) ? 'inline-block' : 'none';
+					  		         console.log(`[LoadMore] ${sectionId} visible = ${visible}/${cards.length}`);
+					  		       }
+
+					  		       // 초기 노출
+					  		       showMore();
+
+					  		       // 버튼 이벤트
+					  		       btn.addEventListener('click', showMore);
+					  		     }
+
+					  		     // 두 섹션 초기화 (id 이름이 다르면 여기만 바꾸면 됩니다)
+					  		     initLoadMore('registeredTrips', 'loadMoreRegistered', 5);
+					  		     initLoadMore('appliedTrips', 'loadMoreApplied', 5);
+					  		   });
+					  			
+					  		   
+							   // travel.js 파일 내부에 추가 (또는 기존 '신청 관리' 로직 대체)
+
+							   // 1. '신청 관리' 버튼 클릭 이벤트 리스너
+							   $(document).on('click', '.btn-manage', function(e) {
+							       // 버튼이 눌렸을 때 토글되는 영역을 찾습니다.
+							       const tripArticleId = $(this).data('trip-id');
+							       const container = $(`#applicant-container-${tripArticleId}`);
+
+							       // 만약 컨테이너가 이미 펼쳐져 있다면 닫고 내용 지우기
+							       if (container.hasClass('show') && container.html().trim() !== '') {
+							           container.slideUp(200, function() {
+							               $(this).empty().removeClass('show');
+							           });
+							           return; 
+							       }
+							       
+							       // 닫혀 있다면 펼치면서 신청자 목록을 가져오는 AJAX 요청 함수 호출
+							       fetchApplicants(tripArticleId, container);
+							   });
+
+
+							   // 2. 신청자 목록을 AJAX로 가져와서 화면에 렌더링하는 함수
+							   function fetchApplicants(tripArticleId, container) {
+							       // 로딩 스피너 표시
+							       container.html(`
+							           <div class="card border p-3 text-center text-muted">
+							               <div class="spinner-border spinner-border-sm me-2" role="status">
+							                   <span class="visually-hidden">Loading...</span>
+							               </div>
+							               신청자 목록을 불러오는 중입니다...
+							           </div>
+							       `).slideDown(200, function() {
+							           $(this).addClass('show'); // 컨테이너가 펼쳐진 상태임을 표시
+							       });
+
+							       const apiUrl = `/schedule/api/schedule/${tripArticleId}/applicants`; 
+							       
+							       $.ajax({
+							           url: apiUrl,
+							           type: 'GET',
+							           dataType: 'json', // 서버에서 JSON을 기대합니다.
+							           success: function(applicants) {
+							               // 3. 성공 시, HTML을 생성하여 영역에 삽입
+							               renderApplicants(applicants, container, tripArticleId);
+							           },
+							           error: function(xhr, status, error) {
+							               console.error("신청자 목록 로딩 실패:", error);
+							               container.html(`
+							                   <div class="alert alert-danger mt-2" role="alert">
+							                       신청자 목록을 불러오는 데 실패했습니다. 잠시 후 다시 시도해 주세요.
+							                   </div>
+							               `);
+							           }
+							       });
+							   }
+
+							   // 3. 신청자 목록을 HTML로 변환하여 렌더링하는 함수
+							   function renderApplicants(applicants, container, tripArticleId) {
+							       
+							       // 신청자 수 표시 업데이트 (Optional: 필요하다면 신청자 수를 따로 업데이트)
+							       // $(`#applicant-count-${tripArticleId}`).text(applicants.length);
+
+							       if (applicants.length === 0) {
+							           container.html(`
+							               <div class="card border p-3 text-center text-muted">
+							                   현재 대기 중인 신청자가 없습니다.
+							               </div>
+							           `);
+							           return;
+							       }
+
+							       // 신청자 리스트를 순회하며 HTML 문자열 생성
+							       const applicantRows = applicants.map(app => `
+							           <div class="applicant-row d-flex justify-content-between align-items-center mb-2 p-2 border-bottom" data-request-id="${app.requestId}">
+							               <div class="applicant-info d-flex align-items-center me-3">
+							                   <img src="${app.profileUrl || '/image/default_profile.png'}" 
+							                        alt="${app.nickname}" 
+							                        class="rounded-circle me-2" 
+							                        style="width: 30px; height: 30px; object-fit: cover;">
+							                   
+							                   <div>
+							                       <strong>${app.nickname}</strong>
+							                       <span class="text-muted ms-2 small">
+							                           (${app.gender === 'M' ? '남성' : '여성'}, ${app.age}세)
+							                       </span>
+							                       <div class="small text-break">${app.introduce || '자기소개 없음'}</div>
+							                   </div>
+							               </div>
+							               
+							               <div class="applicant-actions d-flex flex-shrink-0">
+							                   <button class="btn btn-success btn-sm me-2 btn-applicant-action" 
+							                           data-request-id="${app.requestId}" 
+							                           data-action="ACCEPT">수락</button>
+							                   <button class="btn btn-danger btn-sm btn-applicant-action" 
+							                           data-request-id="${app.requestId}" 
+							                           data-action="REJECT">거절</button>
+							               </div>
+							           </div>
+							       `).join('');
+
+							       const finalHtml = `
+							           <div class="card border p-3 mt-2">
+							               <h6 class="mb-3">대기 중인 신청자 목록 (${applicants.length}명)</h6>
+							               ${applicantRows}
+							           </div>
+							       `;
+
+							       container.html(finalHtml);
+							   }
 		});
 		
 		document.querySelectorAll('.region-item').forEach(item => {
@@ -256,3 +422,71 @@ $(document).ready(
 		       document.getElementById("tagsInput").value = selectedTags.join(",");
 		     });
 		   });
+		   
+		   // 4. 수락/거절 버튼 클릭 이벤트 리스너
+		   $(document).on('click', '.btn-applicant-action', function() {
+		       const button = $(this);
+		       const requestId = button.data('request-id');
+		       const action = button.data('action'); // 'ACCEPT' 또는 'REJECT'
+		       const row = button.closest('.applicant-row'); // 신청자 정보가 담긴 행
+
+		       if (!confirm(`정말로 이 신청을 ${action === 'ACCEPT' ? '수락' : '거절'}하시겠습니까?`)) {
+		           return;
+		       }
+		       
+		       // 버튼 비활성화 (중복 클릭 방지)
+		       button.prop('disabled', true).text('처리 중...');
+
+		       // 💡 서버에 요청을 보낼 API 경로 (예시: PUT 요청으로 상태 변경)
+		       const apiUrl = `/schedule/api/request/${requestId}/status`; 
+		       
+		       $.ajax({
+		           url: apiUrl,
+		           type: 'PUT', // 상태 변경은 PUT 또는 POST를 사용합니다.
+		           contentType: 'application/json',
+		           data: JSON.stringify({ status: action }), // 서버에 'ACCEPT' 또는 'REJECT' 상태를 보냅니다.
+		           
+		           // Spring Security 사용 시 CSRF 토큰을 헤더에 포함해야 합니다.
+		           // beforeSend: function(xhr) {
+		           //     xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="_csrf"]').attr('content'));
+		           // },
+		           
+		           success: function(response) {
+		               alert(`신청이 성공적으로 ${action === 'ACCEPT' ? '수락' : '거절'} 처리되었습니다.`);
+		               
+		               // 5. 처리 성공 후, 화면에서 해당 행 제거
+		               row.fadeOut(300, function() {
+		                   $(this).remove();
+		                   
+		                   // (Optional) 처리 후 남은 신청자 수에 따라 제목 업데이트 로직 추가 가능
+		               });
+		               
+		               // (Optional) 수락 처리 시, 메인 카드에 있는 '참여 중' 인원 수를 +1 업데이트하는 로직 추가
+		               if (action === 'ACCEPT') {
+		                   updateParticipantCount(row.closest('.schedule-card')); 
+		               }
+		           },
+		           error: function(xhr, status, error) {
+		               console.error("신청 처리 실패:", error);
+		               alert(`신청 처리 중 오류가 발생했습니다: ${xhr.responseJSON ? xhr.responseJSON.message : '서버 오류'}`);
+		               // 실패 시 버튼을 다시 활성화
+		               button.prop('disabled', false).text(action === 'ACCEPT' ? '수락' : '거절');
+		           }
+		       });
+		   });
+
+		   // (Optional) 카드 참여 인원 수 업데이트 함수
+		   function updateParticipantCount(cardElement) {
+		       const countSpan = cardElement.find('.js-participants-toggle span');
+		       let currentText = countSpan.text().match(/(\d+)\/(\d+)/);
+		       
+		       if (currentText && currentText.length === 3) {
+		           let current = parseInt(currentText[1]);
+		           let max = parseInt(currentText[2]);
+		           
+		           if (current < max) {
+		               current += 1;
+		               countSpan.text(`참여 중 ${current}/${max}명`);
+		           }
+		       }
+		   }

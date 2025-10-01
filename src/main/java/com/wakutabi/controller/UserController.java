@@ -142,4 +142,9 @@ public class UserController {
         model.addAttribute("message", "탈퇴되었습니다.");
         return "infos/delete";
         }
+
+    @GetMapping("/survey")
+    public String enterSurvey() {
+    	return "infos/survey";
+    }
 }

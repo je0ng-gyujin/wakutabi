@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.TripMapper">
+
+    <resultMap id="TripListDtoMap" type="com.wakutabi.domain.TripListDto"> 
+        <id property="id" column="trip_id"/>
+        <result property="title" column="title"/>
+        <result property="location" column="location"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="mainImagePath" column="main_image_path"/>
+        <result property="status" column="status"/>
+        <result property="currentParticipants" column="current_participants_count"/> 
+        <result property="maxParticipants" column="maxParticipants"/>
+    </resultMap>
+
+	<select id="findUserIdByUsername" resultType="java.lang.Long">
+	    SELECT id 
+	    FROM users 
+	    WHERE username = #{username} 
+	    LIMIT 1
+	</select>
+	
+    <select id="findRegisteredTripsByHostId" resultMap="TripListDtoMap">
+    SELECT
+        t.id AS trip_id,
+        t.title,
+        t.location,
+        t.start_date,
+        t.end_date,
+        (
+            SELECT tai.image_path
+            FROM trip_article_image tai
+            WHERE tai.trip_article_id = t.id
+            ORDER BY tai.order_number ASC, tai.id ASC
+            LIMIT 1
+        ) AS main_image_path,
+        t.status,
+        t.maxParticipants, (
+            SELECT
+                COUNT(cp.id)
+            FROM
+                chat_room cr
+            JOIN
+                chat_participants cp ON cr.id = cp.chat_room_id
+            WHERE
+                cr.trip_article_id = t.id
+                AND cp.status = 'ACTIVE'
+        ) AS current_participants_count
+    FROM
+        trip_article t
+    WHERE
+        t.host_user_id = #{hostId}
+        AND t.deleted_at IS NULL
+    ORDER BY
+        t.created_at DESC
+</select>
+
+<select id="findJoinRequestsByTripId" resultType="com.wakutabi.domain.TripJoinRequestDto">
+    SELECT
+        tjr.id AS requestId, tjr.trip_article_id,
+        tjr.applicant_user_id,
+        tjr.status,
+        tjr.created_at,
+        u.nickname,
+        u.gender,
+        u.introduce,
+        YEAR(CURDATE()) - YEAR(u.birth) AS age 
+    FROM
+        trip_join_request tjr
+    JOIN
+        users u ON tjr.applicant_user_id = u.id
+    WHERE
+        tjr.trip_article_id = #{tripArticleId}
+        AND tjr.status = 'PENDING' ORDER BY
+        tjr.created_at ASC
+</select>
+
+<select id="findRequestAndApplicantInfoById" resultType="com.wakutabi.domain.TripJoinRequestDto">
+    SELECT
+        tjr.applicant_user_id AS applicantUserId,
+        tjr.trip_article_id AS tripArticleId
+    FROM
+        trip_join_request tjr
+    WHERE
+        tjr.id = #{requestId}
+</select>
+
+<update id="updateJoinRequestStatus">
+    UPDATE trip_join_request
+    SET status = #{status},
+        updated_at = NOW()
+    WHERE id = #{requestId}
+</update>
+
+<select id="findChatRoomIdByTripArticleId" resultType="java.lang.Long">
+    SELECT id
+    FROM chat_room
+    WHERE trip_article_id = #{tripArticleId}
+    LIMIT 1
+</select>
+
+<insert id="addChatParticipant">
+    INSERT INTO chat_participants
+    (chat_room_id, user_id, status)
+    VALUES
+    (#{chatRoomId}, #{userId}, 'ACTIVE')
+</insert>
+</mapper>

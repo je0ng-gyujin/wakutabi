@@ -1,6 +1,7 @@
 package com.wakutabi.controller;
 
 import com.wakutabi.domain.TravelJoinRequestDto;
+import com.wakutabi.service.ChatService;
 import com.wakutabi.service.NotificationService;
 import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.service.TravelJoinRequestService;
@@ -23,6 +24,7 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final UserService userService;
     private final TravelJoinRequestService travelJoinRequestService;
+    private final ChatService chatService;
 
     @GetMapping("/read")
     public RedirectView markAsReadAndRedirect(@ModelAttribute("userId") Long userId, @RequestParam("id") Long notificationId, Principal principal) {
@@ -67,7 +69,8 @@ public class NotificationController {
                 .build();
         travelJoinRequestService.changeStatusToAccepted(statusToAccepted);
         // 채팅 참가자로 넣기
-        //chatService.addUserToCharRoom(notificationDto.getTravelArticleId(), notificationDto.getTitle)())
+        Long chatRoomId = chatService.chatRoomFindByTripArticleId(tripArticleId);
+        chatService.addUserToChatParticipants(chatRoomId, applicantUserId);
         // 여행참가수락알림DTO 생성
         NotificationDto sendRequestAnswer = NotificationDto.builder()
                 .userId(applicantUserId)

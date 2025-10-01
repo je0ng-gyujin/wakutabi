@@ -35,7 +35,9 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	
+
+	// 이메일 발송을 위한 Spring Boot Starter Mail 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 	/**
 	 * @author 정규진
 	 * @description 웹소켓 기능 구현을 위한 웹소켓 스타터 의존성 추가
@@ -47,6 +49,12 @@ dependencies {
 	 */
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    // Lombok을 사용하고 있다면, 이메일 관련 클래스에도 적용 가능
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    
+    // 테스트 관련 의존성
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	// Author: 탁영복
 	// Description: Lombok 추가
 	/**

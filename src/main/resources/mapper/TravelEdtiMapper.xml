@@ -10,6 +10,10 @@
         (#{hostUserId}, #{location}, #{startDate}, #{endDate}, #{maxParticipants},
          #{ageLimit}, #{genderLimit}, #{title}, #{content}, #{estimatedCost}, #{status})
     </insert>
+    <!-- 여행id로 호스트id 구하기 -->
+    <select id="hostIdFindById" resultType="Long">
+        SELECT host_user_id from trip_article where id = #{id}
+    </select>
 
  	<select id="findById" resultType="com.wakutabi.domain.TravelEditDto">
         SELECT * FROM trip_article WHERE id = #{id}

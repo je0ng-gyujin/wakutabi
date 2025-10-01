@@ -9,7 +9,7 @@
         (#{tripArticleId},#{hostUserId},#{applicantUserId})
     </insert>
     <!-- 여행참가 수락 -->
- 	<update id="changeStatusToAccepted" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
+    <update id="changeStatusToAccepted" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
         UPDATE trip_join_request
         SET status = #{status}
         WHERE trip_article_id = #{tripArticleId}
@@ -24,4 +24,23 @@
         AND host_user_id = #{hostUserId}
         AND applicant_user_id = #{applicantUserId}
     </update>
+    <select id="existJoinRequest" parameterType="map" resultType="map">
+        SELECT
+            EXISTS(
+                SELECT 1
+                FROM trip_join_request
+                WHERE trip_article_id = #{travelArticleId}
+                AND applicant_user_id = #{applicantUserId}
+                AND status IN ('PENDING')
+            ) AS has_pending,
+            EXISTS(
+                SELECT 1
+                FROM chat_participants cp
+                JOIN chat_room cr
+                ON cp.chat_room_id = cr.id
+                WHERE cr.trip_article_id = #{travelArticleId}
+                  AND cp.user_id = #{applicantUserId}
+                  AND cp.status = 'ACTIVE'
+            ) AS has_active
+    </select>
 </mapper>

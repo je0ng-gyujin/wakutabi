@@ -1,58 +1,51 @@
-package com.wakutabi.controller;
+    package com.wakutabi.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+    import com.wakutabi.mapper.TravelDeadlineMapper;
+    import com.wakutabi.service.*;
+    import lombok.RequiredArgsConstructor;
+    import lombok.extern.slf4j.Slf4j;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.web.bind.annotation.*;
 
-import com.wakutabi.domain.TravelJoinRequestDto;
-import com.wakutabi.service.NotificationService;
-import com.wakutabi.service.TravelJoinRequestService;
+    import com.wakutabi.domain.TravelJoinRequestDto;
 
-import java.util.HashMap;
-import java.util.Map;
+    import java.util.HashMap;
+    import java.util.Map;
+    import java.util.Objects;
+    @Slf4j
+    @Controller
+    @RequiredArgsConstructor
+    public class TravelJoinRequestController {
 
-@Controller
-@RequiredArgsConstructor
-public class TravelJoinRequestController {
+        private final TravelJoinRequestService travelJoinRequestService;
+        private final NotificationService notificationService;
+        private final TravelJoinFacadeService travelJoinFacadeService;
+        private final ChatService chatService;
+        // 여행참가신청
+        @PostMapping("/join-request")
+        @ResponseBody   // 중요! String redirect가 아니라 JSON 응답으로
+        public Map<String, Object> insertTravelJoinRequestAjax(TravelJoinRequestDto travelJoinRequest,
+                                                               @RequestParam("chatRoomId")Long chatRoomId,
+                                                               @ModelAttribute("userId") Long userId) {
 
-    private final TravelJoinRequestService travelJoinRequestService;
-    private final NotificationService notificationService;
+            Map<String, Object> result = new HashMap<>();
 
-    // 여행참가신청
-    @PostMapping("/join-request")
-    @ResponseBody   // 중요! String redirect가 아니라 JSON 응답으로
-    public Map<String, Object> insertTravelJoinRequestAjax(
-            TravelJoinRequestDto travelJoinRequest,
-            @ModelAttribute("userId") Long userId) {
+            try {
+                String message = travelJoinFacadeService.joinTravel(travelJoinRequest,chatRoomId,userId);
 
-        Map<String, Object> result = new HashMap<>();
+                result.put("status", "success");
+                result.put("tripArticleId", travelJoinRequest.getTripArticleId());
+                result.put("message", message);
 
-        try {
-            // userId 검증
-            if (userId == null) {
+            } catch (IllegalStateException e) {
+                result.put("status","fail");
+                result.put("message", e.getMessage());
+            }catch (Exception e) {
+                log.error("참가신청 중 오류",e);
                 result.put("status", "fail");
-                result.put("message", "로그인이 필요합니다.");
-                return result;
+                result.put("message", "참가 신청 중 오류가 발생했습니다.");
             }
 
-            travelJoinRequest.setApplicantUserId(userId);
-            travelJoinRequestService.insertTravelJoinRequest(travelJoinRequest);
-
-            notificationService.sendJoinRequest(
-                    travelJoinRequest.getTripArticleId(),
-                    travelJoinRequest.getHostUserId(),
-                    userId
-            );
-
-            result.put("status", "success");
-            result.put("message", "참가 신청이 완료되었습니다.");
-            result.put("tripArticleId", travelJoinRequest.getTripArticleId());
-
-        } catch (Exception e) {
-            result.put("status", "fail");
-            result.put("message", "참가 신청 중 오류가 발생했습니다.");
+            return result;
         }
-
-        return result;
     }
-}   

@@ -24,7 +24,7 @@
           <th:block th:case="'TRAVEL_REQUEST'">
             여행 참가 신청이 왔습니다.
             <div style="text-align:center; margin-top:8px;">
-              <form th:action="@{/notifications/accept}" method="post" style="display:inline;" onsubmit="hideButtons(this)">>
+              <form th:action="@{/notifications/accept}" method="post" style="display:inline;">
                 <input type="hidden" name="noticeId" th:value="${notice.id}">
                 <button class="btn btn-success btn-sm">수락</button>
               </form>

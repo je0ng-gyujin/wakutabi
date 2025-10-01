@@ -7,7 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.Data;
 @Data
 public class TravelUploadDto {
-
+	
+	private String tripArticleId;
 	private String location;
     private String content;
     private String title;

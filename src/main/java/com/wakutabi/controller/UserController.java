@@ -1,21 +1,17 @@
 package com.wakutabi.controller;
 
-
 import java.security.Principal;
-import java.util.List;
 
 import com.wakutabi.domain.*;
+import com.wakutabi.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.boot.context.properties.bind.BindResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.wakutabi.service.UserService;
-
-
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,15 +23,35 @@ public class UserController {
 	@PostMapping("/signup")
 	public String signRegister(SignUpDto user) {
 		userService.register(user);
-		return "redirect:/";
+		// 회원가입 완료 후 이메일 확인 페이지로 리디렉션
+		return "redirect:/user/signup-complete";
+	}	
+	
+	// 회원가입 완료 후 이메일 확인 안내 페이지
+	@GetMapping("/signup-complete")
+	public String enterSignupComplete() {
+		return "infos/signup-complete";
 	}
-
-	// ⭐️ 로그인 폼을 렌더링하는 메서드 추가
-	@GetMapping("/login")
-	public String loginForm() {
-		return "users/login";
+	
+	// 이메일 인증 링크를 처리하는 엔드포인트
+	// UserController.java
+	// UserController.java
+	@GetMapping("/verify-email")
+	public String verifyEmail(@RequestParam("username") String username,
+	                          @RequestParam("token") String token,
+	                          Model model) { // RedirectAttributes -> Model
+	    boolean isVerified = userService.verifyEmail(username, token);
+	    
+	    if (isVerified) {
+	        model.addAttribute("message", "이메일 인증이 완료되었습니다. 이제 로그인할 수 있습니다."); // RedirectAttributes.addFlashAttribute -> Model.addAttribute
+	        return "infos/verification-success"; // redirect:/user/verification-success -> infos/verification-success
+	    } else {
+	        model.addAttribute("error", "잘못된 인증 링크입니다.");
+	        return "infos/verification-failure";
+	    }
 	}
-
+	
+	
 	@GetMapping("/check-username")
 	@ResponseBody
 	public String checkUsername(@RequestParam("username") String username) {
@@ -131,5 +147,4 @@ public class UserController {
     public String enterSurvey() {
     	return "infos/survey";
     }
-
 }

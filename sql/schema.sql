@@ -1,23 +1,26 @@
 -- [사용자 관련]
 -- 사용자
 CREATE TABLE users (
-    id           BIGINT                                      AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
-    username     VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 사용자ID
-    nickname     VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
-    password     VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
-    gender       ENUM('MALE','FEMALE','OTHER','NONE')        NOT NULL DEFAULT 'NONE',                                        -- 성별
-    birth        DATE                                        NOT NULL,                                                       -- 생일
-    email        VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
-    image_path   VARCHAR(255),                                                                                               -- 프로필사진
-    is_public    BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
-    role         ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
-    status       ENUM('ACTIVE','SUSPENDED','BANNED','EXIT')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPENDED':일시정지, 'BANNED':영구정지)
-    exit_reason  VARCHAR(500),                                                                                               -- 탈퇴이유
-    introduce    TEXT,                                                                                                       -- 자기소개글
-    rating       DOUBLE,                                                                                                     -- 평점
-    created_at   DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
-    updated_at   DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- 수정일자
+    id           BIGINT                                             AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
+    username            VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 사용자ID
+    nickname            VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
+    password            VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
+    gender              ENUM('MALE','FEMALE','OTHER','NONE')        NOT NULL DEFAULT 'NONE',                                        -- 성별
+    birth               DATE                                        NOT NULL,                                                       -- 생일
+    email               VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
+    verification_token  VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일 인증 토큰
+    is_verified         BOOLEAN                                     NOT NULL DEFAULT FALSE                                          -- 인증 완료
+    image_path          VARCHAR(255),                                                                                               -- 프로필사진
+    is_public           BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
+    role                ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
+    status              ENUM('ACTIVE','SUSPENDED','BANNED','EXIT')  NOT NULL DEFAULT 'ACTIVE',                                      -- 계정상태('ACTIVE':활성화, 'SUSPENDED':일시정지, 'BANNED':영구정지)
+    exit_reason         VARCHAR(500),                                                                                               -- 탈퇴이유
+    introduce           TEXT,                                                                                                       -- 자기소개글
+    rating              DOUBLE,                                                                                                     -- 평점
+    created_at          DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
+    updated_at          DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- 수정일자
 );
+select * from users;
 -- [태그 관련]
 -- 태그
 CREATE TABLE trip_tag (
@@ -202,14 +205,16 @@ CREATE TABLE qna_answers (
 -- [알림 관련]
 -- 시스템알림
 CREATE TABLE system_notification (
-    id           BIGINT        AUTO_INCREMENT PRIMARY KEY,          -- 알림ID
-    user_id      BIGINT        NOT NULL ,                           -- 알림 받는 사용자
-    type         VARCHAR(50)   NOT NULL,                            -- 알림 종류 (TRIP_START, REVIEW_RECEIVED, PASSWORD_RESET 등)
-    title        VARCHAR(100)  NOT NULL,                            -- 알림 제목
-    link         VARCHAR(255),                                      -- 관련 페이지 (예: trip_detail?id=123)
-    is_read      BOOLEAN       NOT NULL DEFAULT FALSE,              -- 읽음 여부
-    created_at   DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
-    expired_at   DATETIME,                                          -- 유효기간 (선택)
+    id               BIGINT        AUTO_INCREMENT PRIMARY KEY,          -- 알림ID
+    user_id          BIGINT        NOT NULL ,                           -- 알림 받는 사용자
+    trip_article_id  BIGINT,							                -- 여행일정ID
+    type             VARCHAR(50)   NOT NULL,                            -- 알림 종류 (TRIP_START, REVIEW_RECEIVED, PASSWORD_RESET 등)
+    title            VARCHAR(100)  NOT NULL,                            -- 알림 제목
+    link             VARCHAR(255),                                      -- 관련 페이지 (예: trip_detail?id=123)
+    is_read          BOOLEAN       NOT NULL DEFAULT FALSE,              -- 읽음 여부
+    created_at       DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+    expired_at       DATETIME,                                          -- 유효기간 (선택)
 
-    CONSTRAINT fk_system_notification_user_id FOREIGN KEY (user_id) REFERENCES users (id)
+    CONSTRAINT fk_system_notification_user_id         FOREIGN KEY (user_id)         REFERENCES users (id),
+    CONSTRAINT fk_system_notification_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES trip_article (id)
 );

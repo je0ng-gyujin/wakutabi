@@ -31,7 +31,8 @@
             <h3 class="mb-4">Sign Up</h3>
           </div>
 
-          <form th:action="@{/user/signup}" method="post">
+          <form id="signupForm" th:action="@{/user/signup}" method="post" th:Object="${SignUpDto}">
+
             <!-- 아이디 -->
             <div class="mb-3">
               <input type="text" name="username" id="username" class="form-control form-control-lg"
@@ -42,7 +43,9 @@
             <!-- 비밀번호 -->
             <div class="mb-3">
               <input type="password" name="password" id="password" class="form-control form-control-lg"
-                     placeholder="패스워드 입력해 주세요">
+                     placeholder="패스워드 입력해 주세요" th:field="*{password}">
+              <small id="pw-check-msg" class="text-danger" th:if="${#fields.hasErrors('password')}"
+                     th:errors="*{password}"></small>
             </div>
 
             <!-- 이름 -->

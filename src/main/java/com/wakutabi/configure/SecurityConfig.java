@@ -3,6 +3,7 @@ package com.wakutabi.configure;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,7 +54,9 @@ public class SecurityConfig {
 						.failureHandler((request, response, exception) -> {
 							String errorMessage;
 
-							if(exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException){
+							if (exception instanceof DisabledException) {
+								errorMessage = exception.getMessage(); // "이메일 인증이 완료되지 않은 계정입니다." 등 근데 작동을 안함
+							} else if(exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException){
 								errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
 							} else {
 								errorMessage = "로그인에 실패했습니다. 다시 시도해주세요";

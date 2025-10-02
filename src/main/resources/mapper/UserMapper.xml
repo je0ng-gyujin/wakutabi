@@ -6,14 +6,25 @@
 	<select id="countByUsername" resultType="int">
 		select count(*) from users where username = #{username}
 	</select>
-	
-	
+	<!-- 이메일 갯수 확인 -->
+	<select id="countByEmail" parameterType="string" resultType="int">
+		select count(*) from users where email = #{email}
+	</select>
+    <!-- 회원가입	-->
 	<insert id="insertUser" parameterType="com.wakutabi.domain.SignUpDto">
 		insert into users (username,password,nickname,birth,email,verification_token, is_verified) values 
-		(#{username},#{password},#{nickname},#{birth},#{email},#{verificationToken}, #{isVerified})
+		(#{username},#{password},
+		<choose>
+			<when test="nickname != null and nickname != ''">#{nickname}</when>
+			<otherwise>#{username}</otherwise>
+		</choose>,
+		#{birth},#{email},#{verificationToken},#{isVerified})
 	</insert>
 	<select id="findByUsername" resultType="com.wakutabi.domain.LoginDto">
-		select * from users where username=#{username}
+		SELECT username, password, status,
+		is_verified AS isVerified
+		FROM users
+		WHERE username = #{username}
 	</select>
 
 	<!--유저ID 가져오기-->

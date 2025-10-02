@@ -23,7 +23,12 @@ public class UserService {
 		int result = userMapper.countByUsername(username);
 		return result;
 	}
+	// 이메일 중복 검사
+	public int countByEmail(String email){
+		return userMapper.countByEmail(email);
+	}
 
+	// 회원 이메일 인증
 	 @Transactional
 	    public void register(SignUpDto user) {
 	        String pw = passwordEncoder.encode(user.getPassword());

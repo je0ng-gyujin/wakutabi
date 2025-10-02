@@ -4,7 +4,7 @@
 
     <insert id="insertTravelEdit" parameterType="com.wakutabi.domain.TravelEditDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO trip_article
-        (host_user_id, location, start_date, end_date, maxParticipants,
+        (host_user_id, location, start_date, end_date, max_participants,
          age_limit, gender_limit, title, content, estimated_cost, status)
         VALUES
         (#{hostUserId}, #{location}, #{startDate}, #{endDate}, #{maxParticipants},

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const estimatedCostInput = document.getElementById('estimatedCost');
 
     // 태그 입력 필드와 태그 영역
-    const tagInput = document.getElementById('tag');
+    const tagInput = document.getElementById('tagsInput');
     const tagSection = document.querySelector('.form-section.p-3.rounded.mb-4:nth-child(4)');
 
     // ⭐ 미리보기 섹션 요소 가져오기

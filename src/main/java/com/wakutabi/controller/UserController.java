@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -82,7 +81,7 @@ public class UserController {
     // 회원정보 수정 처리
     @PostMapping("/update")
     public String userInfoUpdate(UserUpdateDto user){
-       userService.userInfoUpdate(user);
+        userService.userInfoUpdate(user);
         return "redirect:/user/mypage";
     }
     // 문의 내역

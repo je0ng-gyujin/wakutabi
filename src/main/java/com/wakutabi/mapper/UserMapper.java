@@ -10,6 +10,8 @@ import java.util.List;
 public interface UserMapper {
 		// username검색
 		int countByUsername(@Param("username") String username);
+		// 이메일 중복 검사
+		int countByEmail(String email);
 		// 회원가입처리
 		int insertUser(SignUpDto user);
 		// 로그인 처리

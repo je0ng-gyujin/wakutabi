@@ -21,7 +21,11 @@ public class UserController {
 	private final UserService userService;
 
 	@PostMapping("/signup")
-	public String signRegister(SignUpDto user) {
+	public String signRegister(@Valid SignUpDto user, BindingResult bindingResult,
+                               Model model) {
+        if(bindingResult.hasErrors()){
+            return "users/signup";
+        }
 		userService.register(user);
 		// 회원가입 완료 후 이메일 확인 페이지로 리디렉션
 		return "redirect:/user/signup-complete";
@@ -32,7 +36,19 @@ public class UserController {
 	public String enterSignupComplete() {
 		return "infos/signup-complete";
 	}
-	
+
+    // 이메일 중복여부 확인
+    @GetMapping("/check-email")
+    @ResponseBody
+    public String checkEmail(@RequestParam("email") String email){
+        try {
+            int count = userService.countByEmail(email);
+            return count > 0 ? "exist" : "ok";
+        }catch(Exception e){
+            e.printStackTrace();
+            return "error";
+        }
+    }
 	// 이메일 인증 링크를 처리하는 엔드포인트
 	// UserController.java
 	// UserController.java

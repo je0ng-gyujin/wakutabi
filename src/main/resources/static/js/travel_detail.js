@@ -74,3 +74,49 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. 태그 영문명 -> 한글+이모지 매핑 객체 정의
+    const tagMapping = {
+        "foodie": "🍜 식도락",
+        "activity": "🏃 액티비티",
+        "nature": "🌲 자연",
+        "otaku": "🎮 오타쿠",
+        "shopping": "🛍️ 쇼핑",
+        "smallGroup": "👤 소수팟",
+        "largeGroup": "👥 다인팟",
+        "indoor": "🏠 실내파",
+        "outdoor": "🌞 실외파"
+        // 필요한 다른 태그도 여기에 추가하세요.
+    };
+
+    // 2. 태그 컨테이너 요소 (id="travelTags")를 가져옵니다.
+    const tagsContainer = document.getElementById('travelTags'); 
+
+    if (tagsContainer) {
+        // 3. HTML의 data-tags 속성에서 영문 태그 목록 문자열을 가져옵니다.
+        const tagsRaw = tagsContainer.getAttribute('data-tags');
+        
+        // 4. 태그가 존재하면 처리합니다.
+        if (tagsRaw) {
+            const tagsList = tagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+            
+            // 기존 "등록된 태그가 없습니다." 메시지를 지웁니다.
+            tagsContainer.innerHTML = '';
+            
+            // 5. 각 영문 태그를 순회하며 이모지가 포함된 요소로 만들어 컨테이너에 추가합니다.
+            tagsList.forEach(tagKey => {
+                const displayTag = tagMapping[tagKey] || tagKey; // 변환된 한글+이모지 이름
+
+                const tagElement = document.createElement('span');
+                // 상세 페이지 디자인에 맞는 클래스를 사용해 주세요. (예: badge, text-bg-info)
+                tagElement.classList.add('tag-item');
+                tagElement.classList.add('me-2');
+                
+                tagElement.textContent = displayTag;
+
+                tagsContainer.appendChild(tagElement);
+            });
+        }
+    }
+});

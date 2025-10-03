@@ -30,7 +30,17 @@ public class TravelEditService {
 	
 	 // DB에서 게시글 정보를 가져옵니다.
     public TravelEditDto findTravelById(Long id) {
-        return travelEditmapper.findById(id);
+        // 1️⃣ Mapper에서 여행 게시글 조회
+        TravelEditDto travelEditDto = travelEditmapper.findById(id);
+
+        // 2️⃣ 해당 게시글의 태그 조회 후 DTO에 세팅
+        if (travelEditDto != null) {
+            List<String> tags = travelTagMapper.findTagsByTripArticleId(id);
+            travelEditDto.setTags(tags);
+        }
+
+        // 3️⃣ 완성된 DTO 반환
+        return travelEditDto;
     }
     
  // 복합 검색 및 필터링 기능을 위한 메서드

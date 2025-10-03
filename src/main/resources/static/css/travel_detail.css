@@ -1,0 +1,192 @@
+@import url("/css/travel.css");
+
+:root {
+	--primary-color: #60B5FF;
+	--secondary-color: #AFDDFF;
+	--background-color: #FFECDB;
+	--accent-color: #1E73BE;
+	--warning-color: #FF9149;
+	--glass-bg: rgba(255, 255, 255, 0.9);
+	--glass-border: rgba(255, 255, 255, 0.3);
+	--gray-color: #606060;
+}
+
+.btn-wakutabi-primary {
+	--bs-btn-bg: var(--primary-color);
+	--bs-btn-border-color: var(--primary-color);
+	--bs-btn-hover-bg: var(--accent-color);
+	--bs-btn-hover-border-color: var(--accent-color);
+	--bs-btn-active-bg: var(--accent-color);
+	--bs-btn-active-border-color: var(--accent-color);
+	--bs-btn-color: #fff;
+}
+
+.btn-wakutabi-outline {
+	--bs-btn-color: var(--primary-color);
+	--bs-btn-border-color: var(--primary-color);
+	--bs-btn-hover-bg: var(--primary-color);
+	--bs-btn-hover-border-color: var(--primary-color);
+	--bs-btn-hover-color: #fff;
+}
+
+.bg-gradient-custom {
+	background: linear-gradient(135deg, var(--background-color) 0%,
+		var(--secondary-color) 100%);
+}
+
+.navbar-glass {
+	background: rgba(255, 255, 255, 0.95) !important;
+	backdrop-filter: blur(10px);
+	border-bottom: 2px solid var(--primary-color);
+}
+
+.logo-text {
+	font-size: 2rem;
+	font-weight: bold;
+	color: var(--primary-color);
+}
+
+.nav-link-custom {
+	font-weight: 500;
+	border-radius: 25px;
+	transition: all 0.3s ease;
+	margin: 0 0.25rem;
+}
+
+.nav-link-custom:hover {
+	background-color: var(--primary-color);
+	color: white !important;
+	transform: translateY(-2px);
+}
+
+.form-container {
+	background: var(--glass-bg);
+	backdrop-filter: blur(10px);
+	border: 1px solid var(--glass-border);
+}
+
+.rating-container {
+	direction: rtl; /* 별이 오른쪽에서부터 채워지도록 설정 */
+	display: inline-block;
+}
+
+.rating-stars {
+	font-size: 2rem;
+	color: #ddd;
+	cursor: pointer;
+	transition: color 0.2s;
+	display: inline-block;
+}
+
+.rating-stars:hover, .rating-container input[type="radio"]:checked ~
+	.rating-stars {
+	color: #ffc107;
+}
+
+.rating-stars:hover ~ .rating-stars {
+	color: #ffc107;
+}
+
+/* 개별 이미지 아이템 (모든 경우에 150px 고정 너비 적용) */
+.image-item {
+    width: 150px; /* 모든 이미지의 고정 너비 */
+    flex-shrink: 0; /* 이미지 아이템이 축소되는 것을 방지 */
+}
+
+/* 이미지 갤러리 (수평 스크롤 컨테이너) */
+.image-gallery {
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+}
+
+.image-upload-area {
+	border: 2px dashed var(--primary-color);
+	background: rgba(96, 181, 255, 0.05);
+	border-radius: 10px;
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+.image-upload-area:hover {
+	background: rgba(96, 181, 255, 0.1);
+	border-color: var(--accent-color);
+}
+
+.image-preview {
+	position: relative;
+	display: inline-block;
+	margin: 10px;
+}
+
+.image-preview img {
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+	border-radius: 10px;
+	border: 2px solid var(--primary-color);
+}
+
+.image-preview .remove-btn {
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	background: #dc3545;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.tag-input-container {
+	background: rgba(255, 255, 255, 0.8);
+	border-radius: 10px;
+	padding: 10px;
+	border: 1px solid var(--glass-border);
+}
+
+.tag-item {
+	background: var(--secondary-color);
+	color: var(--accent-color);
+	border: 1px solid var(--primary-color);
+	padding: 5px 12px;
+	border-radius: 20px;
+	margin: 5px;
+	display: inline-block;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.tag-item:hover {
+	background: var(--primary-color);
+	color: white;
+}
+
+.tag-item.selected {
+	background: var(--primary-color);
+	color: white;
+}
+
+.schedule-info {
+	background: rgba(96, 181, 255, 0.1);
+	border-left: 4px solid var(--primary-color);
+	padding: 15px;
+	border-radius: 5px;
+}
+
+.footer-glass {
+	background: white !important;
+	backdrop-filter: blur(10px);
+	border-top: 2px solid var(--primary-color);
+}
+
+.footer-link {
+	color: var(--primary-color);
+	text-decoration: none;
+}
+
+.footer-link:hover {
+	color: var(--accent-color);
+}

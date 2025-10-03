@@ -218,3 +218,15 @@
 	background: var(--primary-color);
 	color: white;
 }
+
+/* 여행 상세 페이지 - 여행 세부 정보 정렬 수정 */
+
+.card-body .row {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* '일정' 항목의 텍스트를 중앙 정렬하여 가독성을 높입니다. */
+.card-body .row .col-md-2 {
+    text-align: center;
+}

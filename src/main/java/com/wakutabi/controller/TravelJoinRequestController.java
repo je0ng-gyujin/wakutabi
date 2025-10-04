@@ -1,6 +1,5 @@
     package com.wakutabi.controller;
 
-    import com.wakutabi.mapper.TravelDeadlineMapper;
     import com.wakutabi.service.*;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
@@ -11,16 +10,13 @@
 
     import java.util.HashMap;
     import java.util.Map;
-    import java.util.Objects;
+
     @Slf4j
     @Controller
     @RequiredArgsConstructor
     public class TravelJoinRequestController {
 
-        private final TravelJoinRequestService travelJoinRequestService;
-        private final NotificationService notificationService;
         private final TravelJoinFacadeService travelJoinFacadeService;
-        private final ChatService chatService;
         // 여행참가신청
         @PostMapping("/join-request")
         @ResponseBody   // 중요! String redirect가 아니라 JSON 응답으로

@@ -1,9 +1,7 @@
 package com.wakutabi.service;
 
-import com.wakutabi.domain.TravelJoinRequestDto;
 import com.wakutabi.mapper.TravelDeadlineMapper;
 import com.wakutabi.mapper.TravelEditMapper;
-import com.wakutabi.mapper.TravelJoinRequestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

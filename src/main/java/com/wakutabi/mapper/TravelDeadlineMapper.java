@@ -1,6 +1,5 @@
 package com.wakutabi.mapper;
 
-import com.wakutabi.domain.TravelJoinRequestDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,6 +13,6 @@ public interface TravelDeadlineMapper {
     // 방장이 모집마감 눌렀을 때
     int travelDeadlineHostClick(@RequestParam("travelArticleId")Long travelArticleId);
     // 기간만료 자동마감처리
-    int autoCloseExpiredArticles();
+    int autoMatchedExpiredArticles();
 
 }

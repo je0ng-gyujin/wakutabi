@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.TravelEndMapper">
+    <!-- 현재 OPEN,MATCHED 여행ID 찾기 -->
+    <select id="findOpenAndMatchedArticleIds" resultType="long">
+        SELECT id
+        FROM trip_article
+        WHERE status In ('OPEN','MATCHED')
+        AND NOW() >= end_date
+    </select>
+    <!-- 종료시간되면 여행 CLOSED로 상태 변경 -->
+    <update id="updateEndTravels" parameterType="list">
+        UPDATE trip_article
+        SET status = 'CLOSED'
+        WHERE id IN
+        <foreach collection = "list" item="id" open = "(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.ChatParticipantsMapper">
+    <!-- 여행수락 받은 사람들 채팅참가자 테이블에 INSERT -->
+    <insert id="addUserToChatParticipants" parameterType="map">
+        INSERT INTO chat_participants (chat_room_id, user_id)
+        VALUES (#{chatRoomId}, #{applicantUserId})
+    </insert>
+    <!-- 여행종료 때 리뷰 보낼 기간만료까지 남아있던 참가자들ID 구하기 -->
+    <select id="findParticipantsStayedUntilEnd" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT cp.user_id
+        FROM chat_participants cp
+        JOIN chat_room cr
+        ON cp.chat_room_id = cr.id
+        JOIN trip_article ta
+        ON cr.trip_article_id = ta.id
+        WHERE ta.id = #{travelArticleId}
+        AND cp.created_at &lt;=  ta.recruit_end_date
+        AND (cp.deleted_at IS NULL OR cp.deleted_at > ta.recruit_end_date)
+        AND cp.status = 'ACTIVE'
+    </select>
+</mapper>

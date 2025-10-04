@@ -56,7 +56,7 @@ LIMIT 50
   </select>
   
   <insert id="insertChatMsgWhenText" parameterType="com.wakutabi.domain.ChatMsgDto" useGeneratedKeys="true" keyProperty="id">
-INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{roomId},#{message});
+INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{roomId},#{message})
   </insert>
   
   <select id="findChatMsgByMsgId" parameterType="java.lang.Long" resultMap="chatMsgResultMap">
@@ -87,13 +87,9 @@ INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{ro
     <result column="nickname" property="nickname"/>
     <result column="user_image_path" property="userImagePath"/>
   </resultMap>
-  <!--    -->
-  <select id="chatRoomFindByTripArticleId" parameterType="Long" resultType="Long">
+  <!-- 여행ID로 채팅룸ID찾기 -->
+  <select id="chatRoomFindByTripArticleId" parameterType="java.lang.Long" resultType="java.lang.Long">
       SELECT id FROM chat_room WHERE trip_article_id = #{tripArticleId}
   </select>
-  <!--    -->
-  <insert id="addUserToChatParticipants" parameterType="map">
-      INSERT INTO chat_participants (chat_room_id, user_id)
-      VALUES (#{chatRoomId}, #{applicantUserId})
-  </insert>
+
 </mapper>

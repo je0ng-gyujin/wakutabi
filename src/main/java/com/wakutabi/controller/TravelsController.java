@@ -8,7 +8,6 @@ import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
 
-import com.wakutabi.mapper.TravelDeadlineMapper;
 import com.wakutabi.service.*;
 
 import com.wakutabi.domain.TripJoinRequestDto;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,9 +34,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/schedule")

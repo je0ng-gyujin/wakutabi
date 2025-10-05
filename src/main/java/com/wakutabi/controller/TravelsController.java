@@ -13,11 +13,6 @@ import com.wakutabi.service.*;
 
 import com.wakutabi.domain.TripJoinRequestDto;
 import com.wakutabi.domain.TripListDto;
-import com.wakutabi.service.NotificationService;
-import com.wakutabi.service.TravelEditService;
-import com.wakutabi.service.TravelImageService;
-import com.wakutabi.service.TravelUpdateDeleteService;
-import com.wakutabi.service.TripService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -265,21 +260,69 @@ public class TravelsController {
     // TravelsController.java
     // TravelsController.java
     // ...
+
     @PostMapping("/travelupdate")
-    @ResponseBody
     public String updateTravel(@ModelAttribute TravelEditDto dto,
             @ModelAttribute("userId") Long userId,
-            Principal principal) {
+            @RequestParam(value = "tags", required = false) List<String> tags,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @RequestParam(value = "deletedImageIds", required = false) String deletedImageIds,
+            @RequestParam(value = "remainImageIds", required = false) String remainImageIds,
+            Principal principal, RedirectAttributes redirectAttributes) throws IllegalStateException, IOException {
+
         if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
+            redirectAttributes.addFlashAttribute("error", "로그인 후 이용 가능합니다.");
+            return "redirect:/login";
         }
 
-        dto.setHostUserId(userId); // Set the hostUserId from the authenticated user
+        dto.setHostUserId(userId);
         boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
 
-        return isUpdated ? "게시글 수정 완료!" : "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+        travelEditService.updateTravelTags(dto.getId(), tags);
+
+        // 1. 삭제/유지/추가 이미지 관리
+        List<Long> remainIds = parseIdList(remainImageIds);
+        List<Long> deleteIds = parseIdList(deletedImageIds);
+
+        List<TravelImageDto> allImages = travelImageService.findImagesByTripArticleId(dto.getId());
+        for (TravelImageDto img : allImages) {
+            // 삭제할 이미지: deletedImageIds에 포함되거나, remainImageIds에 없는 경우
+            if (deleteIds.contains(img.getId()) || !remainIds.contains(img.getId())) {
+                travelImageService.deleteImageById(img.getId());
+            }
+            // 남길 이미지는 아무 것도 하지 않음
+        }
+
+        // 2. 새 이미지 업로드 (추가)
+        travelImageService.addImages(dto.getId(), images);
+
+        if (isUpdated) {
+            return "redirect:/schedule/detail?id=" + dto.getId();
+        } else {
+            redirectAttributes.addFlashAttribute("error", "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)");
+            return "redirect:/error";
+        }
     }
 
+    // 문자열로 된 ID 리스트를 Long 리스트로 변환하는 헬퍼 메서드
+    private List<Long> parseIdList(String ids) {
+        List<Long> result = new java.util.ArrayList<>();
+        if (ids != null && !ids.isEmpty()) {
+            for (String idStr : ids.split(",")) {
+                idStr = idStr.trim();
+                if (!idStr.isEmpty()) {
+                    try {
+                        result.add(Long.valueOf(idStr));
+                    } catch (NumberFormatException e) {
+                        log.warn("Invalid image ID: {}", idStr);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    // ---------------------------------------------
     @DeleteMapping("/traveldelete")
     @ResponseBody
     public String deleteTravel(@RequestBody TravelEditDto dto,
@@ -321,8 +364,11 @@ public class TravelsController {
             return "redirect:/access-denied"; // 권한 없으면 접근 거부 페이지로
         }
 
+        List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
+
         // 3. 데이터를 Model에 담아 Thymeleaf로 전달
         model.addAttribute("travel", travel);
+        model.addAttribute("images", images);
 
         // 4. 새로운 수정 폼 HTML 페이지 반환
         return "travels/edit";

@@ -30,6 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewAgeLimit = document.getElementById('previewAgeLimit');
     const previewGenderLimit = document.getElementById('previewGenderLimit');
 
+    // 삭제된 이미지 ID를 저장할 hidden input 필드
+    const deletedImageIdsInput = document.getElementById('deletedImageIds');
+    // 남아있는 이미지 ID를 저장할 hidden input 필드
+    const remainImageIdsInput = document.getElementById('remainImageIds');
+
     // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
     function getTodayFormatted() {
         const today = new Date();
@@ -246,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ submit 이벤트: 이미지 + 데이터 전송
     document.getElementById("travelRegistrationForm").addEventListener("submit", (e) => {
-        e.preventDefault();
 
         if (!validateDates()) {
             endDateInput.focus();
@@ -263,15 +267,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
             return;
         }
-
+        // 폼 제출 전에 남아있는 이미지 ID 업데이트
+        updateRemainImageIds();
+        
         // 유효성 검사를 모두 통과하면 폼 제출
         const form = e.target;
         
         // ⭐ 예상 비용 필드의 값에서 쉼표 제거 후 전송
-        const estimatedCostValue = estimatedCostInput.value.replace(/,/g, '');
+        estimatedCostInput.value = estimatedCostInput.value.replace(/,/g, '');
         
         const formData = new FormData(form);
-        formData.set('estimatedCost', estimatedCostValue); // 쉼표가 제거된 값으로 덮어쓰기
 
         fetch(form.action, {
             method: "POST",
@@ -279,11 +284,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(res => res.text())
         .then(msg => {
-            alert(msg);
+            alert("수정 성공!");
         })
         .catch(err => {
             console.error(err);
-            alert("업로드 실패!");
+            alert("수정 실패!");
         });
     });
 
@@ -358,5 +363,29 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePreviewRegion();
     updatePreviewParticipants();
     // updatePreviewTags()는 initializeSelectedTags()에서 이미 호출됩니다.
+
+    // ⭐ 서버에서 렌더링된 이미지의 X버튼에 삭제 이벤트 추가
+    document.querySelectorAll('.remove-image').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const imgDiv = btn.parentElement;
+            const imgId = imgDiv.dataset.id; // 서버에 저장된 이미지 ID
+            let deletedIds = deletedImageIdsInput.value ? deletedImageIdsInput.value.split(',') : [];
+            deletedIds.push(imgId);
+            deletedImageIdsInput.value = deletedIds.join(',');
+
+            imgDiv.remove();
+            updateImgOrder();
+            updateRemainImageIds(); // 남아있는 이미지 ID 업데이트
+        });
+    });
+
+    // 폼 제출 전에 남길 이미지 id를 모두 hidden에 저장
+    function updateRemainImageIds() {
+        const remainIds = [];
+        document.querySelectorAll('.uploaded-image').forEach(div => {
+            if (div.dataset.id) remainIds.push(div.dataset.id);
+        });
+        remainImageIdsInput.value = remainIds.join(',');
+    }
 
 });

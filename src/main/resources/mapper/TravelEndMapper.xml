@@ -8,7 +8,7 @@
         WHERE status In ('OPEN','MATCHED')
         AND NOW() >= end_date
     </select>
-    <!-- 종료시간되면 여행 CLOSED로 상태 변경 -->
+    <!-- 종료시간되면 여행 CLOSED로 상태 변경(CANCELED 여행 제외) -->
     <update id="updateEndTravels" parameterType="list">
         UPDATE trip_article
         SET status = 'CLOSED'
@@ -16,5 +16,6 @@
         <foreach collection = "list" item="id" open = "(" separator="," close=")">
             #{id}
         </foreach>
+        AND status != 'CANCELED'
     </update>
 </mapper>

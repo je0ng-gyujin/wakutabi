@@ -34,4 +34,9 @@ public class TravelUpdateDeleteService {
         
         return deleteRows > 0;
     }
+    // 여행 취소
+    public boolean canceledTravelArticle(Long id){
+        int result = travelupdatedeletemapper.canceledTravelArticle(id);
+        return result > 0;
+    }
 }

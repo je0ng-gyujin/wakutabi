@@ -35,6 +35,10 @@
     </delete>
     <!-- 여행상태 -->
     <select id="statusByTravelArticleId" resultType="string">
-        SELECT status FROM trip_article WHERE id = #{travelArticleId}
+        SELECT status FROM trip_article WHERE id = #{id}
     </select>
+    <!-- 여행일정상태 취소로 변경 -->
+    <update id="canceledTravelArticle">
+        UPDATE trip_article SET status = 'CANCELED' WHERE id = #{id}
+    </update>
 </mapper>

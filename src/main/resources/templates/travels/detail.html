@@ -45,6 +45,9 @@
                                     <a th:href="@{'/schedule/edit?id=' + ${travel.id}}" id="editBtn"
                                        class="btn btn-sm btn-outline-secondary" th:data-id="${travel.id}"
                                         th:data-status="${travel.status}">수정</a>
+                                    <button id="canceledBtn" class="btn btn-sm btn-outline-warning"
+                                            th:data-id="${travel.id}" th:data-status="${travel.status}">취소
+                                    </button>
                                     <button id="deleteBtn" class="btn btn-sm btn-outline-danger" 
                                             th:data-id="${travel.id}">삭제
 									</button>
@@ -156,10 +159,10 @@
                 </div>
             </div>
         </div>
+        <script th:inline="javascript" th:if="${errorMessage != null}">
+            alert([[${errorMessage}]]);
+        </script>
     </div>
 </div>
 </body>
-<script th:if="${errorMessage != null}">
-    alert([[${errorMessage}]]);
-</script>
 </html>

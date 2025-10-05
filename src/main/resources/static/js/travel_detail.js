@@ -1,24 +1,72 @@
 document.addEventListener("DOMContentLoaded", () => {
     const editBtn = document.getElementById("editBtn");
+    const canceledBtn = document.getElementById("canceledBtn")
     const deleteBtn = document.getElementById("deleteBtn");
-
+    // 여행 수정
     if(editBtn){
         editBtn.addEventListener("click", (e) => {
         e.preventDefault(); // e태그 기본으로 막기
-        const travelId = editBtn.getAttribute("data-id");
-        const travelStatus = editBtn.getAttribute("data-status")?.toUpperCase();
+        const tripId = editBtn.getAttribute("data-id");
+        const tripStatus = editBtn.getAttribute("data-status")?.toUpperCase();
         // 상태 한글로 매핑
         const statusMap = {
-            "MATCHED" : "매칭완료",
+            "MATCHED" : "모집완료",
             "CLOSED" : "여행종료",
             "CANCELED" : "여행취소"};
         // alert출력
-        if(["MATCHED","CLOSED","CANCELED"].includes(travelStatus)){
-            alert(`해당 여행은 [${statusMap[travelStatus]}] 상태로 수정할 수 없습니다.`);
+        if(["MATCHED","CLOSED","CANCELED"].includes(tripStatus)){
+            alert(`해당 여행은 [${statusMap[tripStatus]}] 상태로 수정할 수 없습니다.`);
             return;
         }
         // 정상일 경우에만
-        location.href = `/schedule/edit?id=${travelId}`;
+        location.href = `/schedule/edit?id=${tripId}`;
+        });
+    }
+    // 여행 취소
+    if(canceledBtn){
+        canceledBtn.addEventListener("click", () => {
+            const tripId = canceledBtn.getAttribute("data-id");
+            const tripStatus = canceledBtn.getAttribute("data-status")?.toUpperCase();
+            if(!confirm("정말 취소하시겠습니까?")) return;
+            // 상태 한글로 매핑
+            const statusMap = {
+                "MATCHED" : "모집완료",
+                "CLOSED" : "여행종료"};
+            // alert출력
+            if(["MATCHED","CLOSED"].includes(tripStatus)){
+                alert(`해당 여행은 [${statusMap[tripStatus]}] 상태로 취소할 수 없습니다.`);
+                return;
+            }
+
+            // CSRF 토큰과 헤더를 가져올 때, 요소가 존재하는지 먼저 확인
+            const csrfMeta = document.querySelector('meta[name="_csrf"]');
+            const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+
+            // meta 태그가 없으면 함수 실행 중단
+            if(!csrfMeta || !csrfHeaderMeta){
+                console.error("CSRF meta tags not found.");
+                alert("취소를 할 수 없습니다(보안 설정 오류");
+                return;
+            }
+            const token = csrfMeta.getAttribute('content');
+            const header = csrfHeaderMeta.getAttribute('content');
+
+            fetch(`/schedule/travelCanceled?id=${tripId}`, {
+                method : "PATCH",
+                headers : {
+                    "Content-Type" : "application/json",
+                    [header] : token
+                },
+                body : JSON.stringify({id: tripId})
+            })
+            .then(res => res.text())
+            .then(msg => {
+                alert(msg);
+                if(msg.includes("완료")){
+                    location.href="/schedule/detail?id="+tripId;
+                }
+            })
+            .catch(err => console.error("취소 요청 실패", err));
         });
     }
     if (deleteBtn) {

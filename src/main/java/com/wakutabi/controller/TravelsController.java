@@ -310,7 +310,7 @@ public class TravelsController {
             return "해당 여행은 ["+status+"] 상태로 취소할 수 없습니다.";
         }
         boolean isCanceled = travelUpdateDeleteService.canceledTravelArticle(id);
-        return isCanceled ? "여행이 취소되었습니다." : "여행 취소 도중 오류가 발생했습니다.";
+        return isCanceled ? "여행이 취소 완료되었습니다." : "여행 취소 도중 오류가 발생했습니다.";
     }
     // TravelsController.java
     // ...

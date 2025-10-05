@@ -3,72 +3,133 @@ document.addEventListener("DOMContentLoaded", () => {
     const canceledBtn = document.getElementById("canceledBtn")
     const deleteBtn = document.getElementById("deleteBtn");
     // 여행 수정
-    if(editBtn){
-        editBtn.addEventListener("click", (e) => {
-        e.preventDefault(); // e태그 기본으로 막기
+    if (editBtn) {
+      editBtn.addEventListener("click", (e) => {
+        e.preventDefault(); // 기본 링크 동작 방지
+
         const tripId = editBtn.getAttribute("data-id");
         const tripStatus = editBtn.getAttribute("data-status")?.toUpperCase();
-        // 상태 한글로 매핑
+
+        // 상태 한글 매핑
         const statusMap = {
-            "MATCHED" : "모집완료",
-            "CLOSED" : "여행종료",
-            "CANCELED" : "여행취소"};
-        // alert출력
-        if(["MATCHED","CLOSED","CANCELED"].includes(tripStatus)){
-            alert(`해당 여행은 [${statusMap[tripStatus]}] 상태로 수정할 수 없습니다.`);
-            return;
+          "MATCHED": "모집완료",
+          "CLOSED": "여행종료",
+          "CANCELED": "여행취소"
+        };
+
+        // 1️⃣ 수정 불가 상태일 경우
+        if (["MATCHED", "CLOSED", "CANCELED"].includes(tripStatus)) {
+          SwalDefault.fire({
+            icon: "warning",
+            title: "수정 불가",
+            text: `해당 여행은 [${statusMap[tripStatus]}] 상태이므로 수정할 수 없습니다.`,
+            confirmButtonText: "확인",
+          });
+          return;
         }
-        // 정상일 경우에만
+
+        // 2️⃣ 정상일 경우에만 이동
         location.href = `/schedule/edit?id=${tripId}`;
-        });
+      });
     }
+
     // 여행 취소
-    if(canceledBtn){
-        canceledBtn.addEventListener("click", () => {
-            const tripId = canceledBtn.getAttribute("data-id");
-            const tripStatus = canceledBtn.getAttribute("data-status")?.toUpperCase();
-            if(!confirm("정말 취소하시겠습니까?")) return;
-            // 상태 한글로 매핑
-            const statusMap = {
-                "MATCHED" : "모집완료",
-                "CLOSED" : "여행종료"};
-            // alert출력
-            if(["MATCHED","CLOSED"].includes(tripStatus)){
-                alert(`해당 여행은 [${statusMap[tripStatus]}] 상태로 취소할 수 없습니다.`);
-                return;
-            }
+    if (canceledBtn) {
+      canceledBtn.addEventListener("click", () => {
+        const tripId = canceledBtn.getAttribute("data-id");
+        const tripStatus = canceledBtn.getAttribute("data-status")?.toUpperCase();
 
-            // CSRF 토큰과 헤더를 가져올 때, 요소가 존재하는지 먼저 확인
-            const csrfMeta = document.querySelector('meta[name="_csrf"]');
-            const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+        // 상태 한글 매핑
+        const statusMap = {
+          "MATCHED": "모집완료",
+          "CLOSED": "여행종료"
+        };
 
-            // meta 태그가 없으면 함수 실행 중단
-            if(!csrfMeta || !csrfHeaderMeta){
-                console.error("CSRF meta tags not found.");
-                alert("취소를 할 수 없습니다(보안 설정 오류");
-                return;
-            }
-            const token = csrfMeta.getAttribute('content');
-            const header = csrfHeaderMeta.getAttribute('content');
+        // 1️⃣ 상태 체크
+        if (tripStatus === "CANCELED") {
+          SwalDefault.fire({
+            icon: "info",
+            title: "이미 취소된 여행",
+            text: "이미 취소한 여행입니다.",
+            confirmButtonText: "확인",
+          });
+          return;
+        }
 
-            fetch(`/schedule/travelCanceled?id=${tripId}`, {
-                method : "PATCH",
-                headers : {
-                    "Content-Type" : "application/json",
-                    [header] : token
-                },
-                body : JSON.stringify({id: tripId})
-            })
+        if (["MATCHED", "CLOSED"].includes(tripStatus)) {
+          SwalDefault.fire({
+            icon: "warning",
+            title: "취소 불가",
+            text: `해당 여행은 [${statusMap[tripStatus]}] 상태로 취소할 수 없습니다.`,
+            confirmButtonText: "확인",
+          });
+          return;
+        }
+
+        // 2️⃣ SweetAlert2로 확인창
+        SwalDefault.fire({
+          title: "정말 취소하시겠습니까?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "네, 취소합니다",
+          cancelButtonText: "아니요",
+        }).then((result) => {
+          if (!result.isConfirmed) return; // 사용자가 '아니요' 선택 시 중단
+
+          // 3️⃣ CSRF 토큰 체크
+          const csrfMeta = document.querySelector('meta[name="_csrf"]');
+          const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+
+          if (!csrfMeta || !csrfHeaderMeta) {
+            console.error("CSRF meta tags not found.");
+            SwalDefault.fire({
+              icon: "error",
+              title: "보안 설정 오류",
+              text: "취소를 진행할 수 없습니다. 잠시 후 다시 시도해주세요.",
+              confirmButtonText: "확인",
+            });
+            return;
+          }
+
+          const token = csrfMeta.getAttribute('content');
+          const header = csrfHeaderMeta.getAttribute('content');
+
+          // 4️⃣ fetch 요청
+          fetch(`/schedule/travelCanceled?id=${tripId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              [header]: token
+            },
+            body: JSON.stringify({ id: tripId })
+          })
             .then(res => res.text())
             .then(msg => {
-                alert(msg);
-                if(msg.includes("완료")){
-                    location.href="/schedule/detail?id="+tripId;
+              // 5️⃣ 결과 알림
+              SwalDefault.fire({
+                icon: msg.includes("") ? "success" : "error",
+                title: msg.includes("완료") ? "취소 완료" : "취소 실패",
+                text: msg,
+                confirmButtonText: "확인",
+              }).then(() => {
+                if (msg.includes("완료")) {
+                  location.href = `/schedule/detail?id=${tripId}`;
                 }
+              });
             })
-            .catch(err => console.error("취소 요청 실패", err));
+            .catch(err => {
+              console.error("취소 요청 실패", err);
+              SwalDefault.fire({
+                icon: "error",
+                title: "요청 실패",
+                text: "서버와의 통신 중 오류가 발생했습니다.",
+                confirmButtonText: "확인",
+              });
+            });
         });
+      });
     }
+
     if (deleteBtn) {
         deleteBtn.addEventListener("click", () => {
             const tripId = deleteBtn.getAttribute("data-id");

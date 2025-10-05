@@ -1,6 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const editBtn = document.getElementById("editBtn");
     const deleteBtn = document.getElementById("deleteBtn");
 
+    if(editBtn){
+        editBtn.addEventListener("click", (e) => {
+        e.preventDefault(); // e태그 기본으로 막기
+        const travelId = editBtn.getAttribute("data-id");
+        const travelStatus = editBtn.getAttribute("data-status")?.toUpperCase();
+        // 상태 한글로 매핑
+        const statusMap = {
+            "MATCHED" : "매칭완료",
+            "CLOSED" : "여행종료",
+            "CANCELED" : "여행취소"};
+        // alert출력
+        if(["MATCHED","CLOSED","CANCELED"].includes(travelStatus)){
+            alert(`해당 여행은 [${statusMap[travelStatus]}] 상태로 수정할 수 없습니다.`);
+            return;
+        }
+        // 정상일 경우에만
+        location.href = `/schedule/edit?id=${travelId}`;
+        });
+    }
     if (deleteBtn) {
         deleteBtn.addEventListener("click", () => {
             const tripId = deleteBtn.getAttribute("data-id");

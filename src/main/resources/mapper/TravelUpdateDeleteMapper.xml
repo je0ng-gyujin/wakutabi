@@ -33,6 +33,8 @@
     <delete id="deleteTravelArticle">
         DELETE FROM trip_article WHERE id = #{id} AND host_user_id = #{hostUserId}
     </delete>
-
-
+    <!-- 여행상태 -->
+    <select id="statusByTravelArticleId" resultType="string">
+        SELECT status FROM trip_article WHERE id = #{travelArticleId}
+    </select>
 </mapper>

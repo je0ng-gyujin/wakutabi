@@ -22,4 +22,7 @@ public interface TravelTagMapper {
     
  // ⭐ ⭐ ⭐ 변경: 파라미터를 TripTagDto로 변경 ⭐ ⭐ ⭐
     void insertTag(TripTagDto tagDto);
+
+    // 특정 여행 게시글에 연결된 모든 태그 삭제
+    void deleteTripTagsByTravelId(@Param("tripArticleId") Long tripArticleId);
 }

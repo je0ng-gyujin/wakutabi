@@ -7,7 +7,7 @@
         title = #{title},
         location = #{location},
         content = #{content},
-        maxParticipants = #{maxParticipants},
+        max_participants = #{maxParticipants},
         age_limit = #{ageLimit},
         gender_limit = #{genderLimit},
         estimated_cost = #{estimatedCost},
@@ -16,7 +16,7 @@
         status = #{status},
         updated_at = NOW()
     WHERE id = #{id}
-      AND host_user_id = #{hostUserId}
+    AND host_user_id = #{hostUserId}
 </update>
 <update id="updateTraveImage">
 	update trip_article_image

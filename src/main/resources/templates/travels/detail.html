@@ -42,8 +42,9 @@
                             <div class="d-flex justify-content-between">
                                 <h4 class="card-title fw-bold mb-3">여행 정보</h4>
                                 <div th:if="${isOwner}">
-                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}"
-                                       class="btn btn-sm btn-outline-secondary">수정</a>
+                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}" id="editBtn"
+                                       class="btn btn-sm btn-outline-secondary" th:data-id="${travel.id}"
+                                        th:data-status="${travel.status}">수정</a>
                                     <button id="deleteBtn" class="btn btn-sm btn-outline-danger" 
                                             th:data-id="${travel.id}">삭제
 									</button>
@@ -158,4 +159,7 @@
     </div>
 </div>
 </body>
+<script th:if="${errorMessage != null}">
+    alert([[${errorMessage}]]);
+</script>
 </html>

@@ -8,6 +8,7 @@ import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
 
+import com.wakutabi.mapper.TravelUpdateDeleteMapper;
 import com.wakutabi.service.*;
 
 import com.wakutabi.domain.TripJoinRequestDto;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class TravelsController {
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
     private final TravelDeadlineService travelDeadlineService; // 추가
+    private final TravelUpdateDeleteMapper travelUpdateDeleteMapper;
 
     private final ChatService chatService;
 
@@ -343,11 +346,21 @@ public class TravelsController {
     @GetMapping("/edit")
     public String travelEdit(@RequestParam("id") Long id,
             @ModelAttribute("userId") Long userId,
-            Model model, Principal principal) {
+            Model model, Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/login"; // 로그인 페이지로 리다이렉트
         }
-
+        // 여행일정 status 상태 가져오기
+        String status = travelUpdateDeleteMapper.statusByTravelArticleId(id);
+        // 여행 상태가 MATCHED, CLOSED, CANCELED 면
+        if(status.equalsIgnoreCase("MATCHED") ||
+           status.equalsIgnoreCase("CLOSED") ||
+           status.equalsIgnoreCase("CANCELED")){
+        //
+            redirectAttributes.addFlashAttribute("errorMessage",
+                              "해당 여행은 ["+status+"] 상태로 수정할 수 없습니다.");
+            return "redirect:/schedule/detail?id="+id;
+        }
         // 1. 게시글 ID로 기존 데이터 조회
         TravelEditDto travel = travelEditService.findTravelById(id);
         if (travel == null) {

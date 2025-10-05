@@ -294,7 +294,24 @@ public class TravelsController {
         return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
     }
     // ...
-
+    @PatchMapping("/travelCanceled")
+    @ResponseBody
+    public String canceledTravel(@RequestParam("id")Long id, Principal principal,
+                                 RedirectAttributes redirectAttributes){
+        if(principal == null){
+            return "redirect:/login";
+        }
+        // 여행일정 status 상태 가져오기
+        String status = travelUpdateDeleteMapper.statusByTravelArticleId(id);
+        // 여행 상태가 MATCHED, CLOSED, CANCELED 면
+        if(status.equalsIgnoreCase("MATCHED") ||
+           status.equalsIgnoreCase("CLOSED")){
+            // js로 errorMessage 보내기
+            return "해당 여행은 ["+status+"] 상태로 취소할 수 없습니다.";
+        }
+        boolean isCanceled = travelUpdateDeleteService.canceledTravelArticle(id);
+        return isCanceled ? "여행이 취소되었습니다." : "여행 취소 도중 오류가 발생했습니다.";
+    }
     // TravelsController.java
     // ...
     // ---------------------------------------------

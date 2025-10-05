@@ -16,4 +16,6 @@ public interface TravelUpdateDeleteMapper {
     
     // 게시글과 연관된 이미지를 먼저 삭제하는 메서드 (자식 테이블)
     int deleteTravelImages(@Param("id") Long id);
+    // 여행일정status
+    String statusByTravelArticleId(@Param("travelArticleId")Long travelArticleId);
 }

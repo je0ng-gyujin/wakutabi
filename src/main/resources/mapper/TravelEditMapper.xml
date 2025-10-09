@@ -23,6 +23,7 @@
     SELECT *
     FROM trip_article
     <where>
+        status != 'CANCELED'
         <if test="query != null and query != ''">
             AND (title LIKE CONCAT('%', #{query}, '%') OR content LIKE CONCAT('%', #{query}, '%'))
         </if>

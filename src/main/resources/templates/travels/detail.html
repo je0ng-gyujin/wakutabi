@@ -105,8 +105,13 @@
                                     <span class="badge bg-success-subtle text-dark">
                                         <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
                                     </span>
-                                    <p class="mb-0 mt-1"
-                                       th:text="${travel.status == 'OPEN' ? '모집 중' : travel.status}"></p>
+                                    <p class="mb-0 mt-1" th:switch="${travel.status}">
+                                       <span th:case="'OPEN'">모집 중</span>
+                                        <span th:case="'MATCHED'">모집 완료</span>
+                                        <span th:case="'CLOSED'">여행 종료</span>
+                                        <span th:case="'CANCELED'">취소됨</span>
+                                        <span th:case="*">모집 중</span>
+                                    </p>
                                 </div>
                             </div>
 

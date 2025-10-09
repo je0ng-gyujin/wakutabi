@@ -2,22 +2,20 @@ package com.wakutabi.service;
 
 import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.mapper.ChatParticipantsMapper;
-import com.wakutabi.mapper.TravelDeadlineMapper;
-import com.wakutabi.mapper.TravelEndMapper;
+import com.wakutabi.mapper.TravelCanceledAndEndMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TravelEndScheduler {
+public class TravelCanceledAndEndScheduler {
 
-    private final TravelEndMapper travelEndMapper;
+    private final TravelCanceledAndEndMapper travelCanceledAndEndMapper;
     private final ChatParticipantsMapper chatParticipantsMapper;
     private final NotificationService notificationService;
 
@@ -25,16 +23,30 @@ public class TravelEndScheduler {
     @Scheduled(cron = "0 * * * * *")
     public void autoEndArticles() {
         // 1) 종료 대상 여행글 조회(end_date 경과 & 상태 OPEN/MATCHED)
-        List<Long> expiredIds = travelEndMapper.findOpenAndMatchedArticleIds();
+        List<Long> expiredIds = travelCanceledAndEndMapper.findOpenAndMatchedArticleIds();
         log.info("종료 대상 여행글 ID들: {}", expiredIds); // 비어있어도 한 번 찍자
+        // 2) 여행 상태를 CLOSED로 변경
+        if (!expiredIds.isEmpty()) {
+            int updatedArticles = travelCanceledAndEndMapper.updateEndTravels(expiredIds);
+            log.info("자동 종료 처리된 여행글 수: {}", updatedArticles);
+        }
+        // 3) 취소 여행 ID 조회
+        List<Long> canceledTripIds = travelCanceledAndEndMapper.findCanceledArticleIds();
+        // 3) 종료 여행 ID 조회
+        List<Long> closedTripIds = travelCanceledAndEndMapper.findEndArticleIds();
 
-        if (expiredIds.isEmpty()) return;
+        // 4) 해당 여행의 ACTIVE 참가자 상태를 CANCELED로 전환
+        if (!canceledTripIds.isEmpty()){
+            int canceledUpdated = chatParticipantsMapper.updateStatusToCanceled(canceledTripIds);
+            log.info("취소된 여행 참가자 CANCELED 변경: {}건", canceledUpdated);
+        }
+        // 4) 해당 여행의 ACTIVE 참가자 상태를 COMPLETED로 전환
+        if (!closedTripIds.isEmpty()){
+            int completedUpdated = chatParticipantsMapper.updateStatusToCompleted(closedTripIds);
+            log.info("정상 종료 여행 참가자 COMPLETED 변경: {}건", completedUpdated);
+        }
 
-        // 2) 여행 CLOSED 처리
-        int updated = travelEndMapper.updateEndTravels(expiredIds);
-        log.info("자동 종료 처리된 여행글 수: {}", updated);
-
-        // 3) 종료된 여행글의 참가자 조회 → 알림 발송
+        // 5) 종료된 여행글의 참가자 조회 → 알림 발송
         for (Long articleId : expiredIds) {
             List<Long> participants = chatParticipantsMapper.findParticipantsStayedUntilEnd(articleId);
 

@@ -101,6 +101,21 @@ function renderMessages(messages) {
 	}, 0);
 }
 
+// 여행 취소, 종료 채팅 비활성화
+document.querySelectorAll("#chatListPanel a").forEach(link => {
+    const tripStatus = link.dataset.status;
+
+    if(tripStatus === 'CANCELED' || tripStatus === 'CLOSED'){
+        link.classList.add('disabled-room');
+        link.style.backgroundColor = "rgba(175, 221, 255, 0.3)"; // secondary-color 기반
+        link.style.opacity = "0.7";                              // 자연스러운 반투명도
+        link.style.color = "#7a7a7a";                            // 연한 회색 글씨
+        link.style.cursor = "not-allowed";                       // 클릭 불가 커서
+        link.style.filter = "none";                              // grayscale 제거 (톤 유지)
+    }
+})
+
+
 // 채팅방 클릭 시 이벤트
 document.querySelectorAll("#chatListPanel a").forEach(link => {
 	link.addEventListener('click', (e) => {
@@ -109,6 +124,19 @@ document.querySelectorAll("#chatListPanel a").forEach(link => {
 		const roomId = e.currentTarget.dataset.roomId;
 		const tripId = e.currentTarget.dataset.tripId;
 		const title = e.currentTarget.dataset.title;
+		const tripStatus = e.currentTarget.dataset.status; // 여행 상태
+
+		// 비활성화 상태
+		if (tripStatus === 'CLOSED' || tripStatus === 'CANCELED'){
+		    SwalDefault.fire({
+            	icon: "warning",
+            	title: "채팅 비활성화",
+            	html: "이 여행의 채팅은 종료되었거나 취소되어<br>이용할 수 없습니다.",
+            	confirmButtonText: "확인",
+            	confirmButtonColor: "#3085d6",
+            });
+		    return; // 아래 AJAX / WebSocket 로직 중단
+		}
 
 		// DB에서 메시지를 가져오는 Ajax 요청
 		$.ajax({

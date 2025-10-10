@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TravelImageService {
+    public TravelImageDto findImageById(Long id) {
+        return travelImageMapper.findImageById(id);
+    }
     private final TravelImageMapper travelImageMapper;
 
     public void insertTravelImage(TravelImageDto dto) {
@@ -61,14 +64,24 @@ public class TravelImageService {
         }
     }
 
+    @Transactional
     public void deleteImageById(Long imageId) {
         TravelImageDto img = travelImageMapper.findImageById(imageId);
+        boolean fileDeleted = false;
+        boolean dbDeleted = false;
         if (img != null && img.getImagePath() != null) {
             File file = new File("C:/uploads" + img.getImagePath().replace("/upload", ""));
-            if (file.exists())
-                file.delete();
+            if (file.exists()) {
+                fileDeleted = file.delete();
+                if (!fileDeleted) {
+                    System.err.println("[이미지 삭제 실패] 파일 삭제 실패: " + file.getAbsolutePath());
+                }
+            }
         }
-        travelImageMapper.deleteImageById(imageId);
+    dbDeleted = travelImageMapper.deleteImageById(imageId) > 0;
+        if (!dbDeleted) {
+            System.err.println("[이미지 삭제 실패] DB 레코드 삭제 실패: imageId=" + imageId);
+        }
     }
 
     public void addImages(Long tripArticleId, List<MultipartFile> newImages) throws IllegalStateException, IOException {

@@ -15,7 +15,7 @@ public interface TravelImageMapper {
     // --- 이 메소드를 추가하여 특정 게시글의 이미지 목록을 찾습니다. ---
     List<TravelImageDto> findByTripArticleId(@Param("tripArticleId") Long tripArticleId);
 
-    void deleteImageById(@Param("id") Long id);
+    int deleteImageById(@Param("id") Long id);
 
     TravelImageDto findImageById(@Param("id") Long id);
 

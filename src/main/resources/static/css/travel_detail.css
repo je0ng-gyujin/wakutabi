@@ -89,8 +89,33 @@
 
 /* 개별 이미지 아이템 (모든 경우에 150px 고정 너비 적용) */
 .image-item {
-    width: 150px; /* 모든 이미지의 고정 너비 */
-    flex-shrink: 0; /* 이미지 아이템이 축소되는 것을 방지 */
+	width: 150px !important;
+	height: 150px !important;
+	flex-shrink: 0;
+	overflow: hidden;
+	border-radius: 8px;
+	border: 2px solid var(--primary-color);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.image-item img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: contain !important; /* 비율 유지, 빈 공간은 투명 */
+	transition: transform 0.3s ease;
+	border-radius: 6px;
+	}
+
+.image-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.image-item img:hover {
+    transform: scale(1.05); /* 호버 시 약간 확대 */
 }
 
 /* 이미지 갤러리 (수평 스크롤 컨테이너) */

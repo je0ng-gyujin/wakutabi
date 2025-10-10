@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadedImages = document.getElementById('uploadedImages');
     const orderNumberInput = document.getElementById('orderNumber');
 
+    // 중복 제출 방지를 위한 전역 플래그
+    let isSubmitting = false;
+
     // 날짜 입력 필드와 에러 메시지 요소
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
@@ -251,6 +254,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ submit 이벤트: 이미지 + 데이터 전송
     document.getElementById("travelRegistrationForm").addEventListener("submit", (e) => {
+        e.preventDefault(); // 기본 폼 제출 방지
+
+        // 중복 제출 방지 - 이미 제출 중이면 무시
+        if (isSubmitting) {
+            console.log("이미 제출 중입니다. 요청이 무시됩니다.");
+            return false;
+        }
 
         if (!validateDates()) {
             endDateInput.focus();
@@ -267,11 +277,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
             return;
         }
+        
+        // 제출 상태를 true로 설정
+        isSubmitting = true;
         // 폼 제출 전에 남아있는 이미지 ID 업데이트
         updateRemainImageIds();
         
         // 유효성 검사를 모두 통과하면 폼 제출
         const form = e.target;
+        
+        // 중복 제출 방지
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton.disabled) {
+            return; // 이미 제출 중이면 무시
+        }
+        submitButton.disabled = true;
+        submitButton.textContent = '수정 중...';
         
         // ⭐ 예상 비용 필드의 값에서 쉼표 제거 후 전송
         estimatedCostInput.value = estimatedCostInput.value.replace(/,/g, '');
@@ -284,11 +305,26 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(res => res.text())
         .then(msg => {
-            alert("수정 성공!");
+            if (msg.includes("수정 완료")) {
+                alert("수정 성공!");
+                // 상세 페이지로 리다이렉트
+                const travelId = document.querySelector('input[name="id"]').value;
+                window.location.href = `/schedule/detail?id=${travelId}`;
+            } else {
+                alert("수정 실패: " + msg);
+                // 버튼 상태 복구
+                submitButton.disabled = false;
+                submitButton.textContent = '수정하기';
+                isSubmitting = false; // 제출 상태 초기화
+            }
         })
         .catch(err => {
             console.error(err);
             alert("수정 실패!");
+            // 버튼 상태 복구
+            submitButton.disabled = false;
+            submitButton.textContent = '수정하기';
+            isSubmitting = false; // 제출 상태 초기화
         });
     });
 

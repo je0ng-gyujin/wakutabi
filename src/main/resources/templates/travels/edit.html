@@ -31,7 +31,8 @@
                 <div class="col-lg-8">
                     <div class="registration-container rounded-4 p-4 shadow-sm">
                         <form id="travelRegistrationForm" action="/schedule/travelupdate"
-                              method="post" enctype="multipart/form-data">
+                              method="post" enctype="multipart/form-data" 
+                              onsubmit="return preventDoubleSubmit(this)">
                             <input type="hidden" name="id" th:value="${travel.id}">
                             <input type="hidden" name="status" th:value="${travel.status}">
 
@@ -289,5 +290,19 @@
         </div>
     </div>
 </div>
+
+<script>
+// 이중 제출 방지 함수
+function preventDoubleSubmit(form) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton.disabled) {
+        return false; // 이미 제출 중이면 차단
+    }
+    submitButton.disabled = true;
+    submitButton.textContent = '수정 중...';
+    return true; // 제출 허용
+}
+</script>
+
 </body>
 </html>

@@ -10,6 +10,7 @@
     <script defer th:src="@{/js/travel_detail.js}"></script>
     <meta name="_csrf">
     <meta name="_csrf_header">
+
 </head>
 <body>
 <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
@@ -127,7 +128,7 @@
                             <div class="d-flex flex-nowrap overflow-auto g-2 image-gallery justify-content-center"
                                  th:if="${images != null and !#lists.isEmpty(images)}">
                                 <div class="image-item p-1" th:each="image : ${images}">
-                                    <img th:src="${image.imagePath}" class="img-fluid rounded-3" alt="여행 이미지" />
+                                    <img th:src="${image.imagePath}" class="rounded-3" alt="여행 이미지" />
                                 </div>
                             </div>
 

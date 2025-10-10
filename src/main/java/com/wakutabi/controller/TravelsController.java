@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 @RequestMapping("/schedule")
@@ -48,6 +49,10 @@ public class TravelsController {
     private final ChatService chatService;
 
     private final TripService tripService;
+    
+    // 중복 요청 방지를 위한 캐시
+    private final ConcurrentHashMap<String, Long> requestCache = new ConcurrentHashMap<>();
+    private static final long REQUEST_TIMEOUT = 5000; // 5초
 
     private final NotificationService notificationService;
 
@@ -261,45 +266,110 @@ public class TravelsController {
     // ...
 
     @PostMapping("/travelupdate")
+    @ResponseBody
     public String updateTravel(@ModelAttribute TravelEditDto dto,
             @ModelAttribute("userId") Long userId,
             @RequestParam(value = "tags", required = false) List<String> tags,
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @RequestParam(value = "deletedImageIds", required = false) String deletedImageIds,
             @RequestParam(value = "remainImageIds", required = false) String remainImageIds,
-            Principal principal, RedirectAttributes redirectAttributes) throws IllegalStateException, IOException {
+            Principal principal, RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
-            redirectAttributes.addFlashAttribute("error", "로그인 후 이용 가능합니다.");
-            return "redirect:/login";
+            return "로그인 후 이용 가능합니다.";
         }
-
-        dto.setHostUserId(userId);
-        boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
-
-        travelEditService.updateTravelTags(dto.getId(), tags);
-
-        // 1. 삭제/유지/추가 이미지 관리
-        List<Long> remainIds = parseIdList(remainImageIds);
-        List<Long> deleteIds = parseIdList(deletedImageIds);
-
-        List<TravelImageDto> allImages = travelImageService.findImagesByTripArticleId(dto.getId());
-        for (TravelImageDto img : allImages) {
-            // 삭제할 이미지: deletedImageIds에 포함되거나, remainImageIds에 없는 경우
-            if (deleteIds.contains(img.getId()) || !remainIds.contains(img.getId())) {
-                travelImageService.deleteImageById(img.getId());
+        
+        // 중복 요청 방지 체크
+        long currentTime = System.currentTimeMillis();
+        
+        // 같은 여행 ID와 사용자에 대한 최근 요청 체크
+        String userTravelKey = dto.getId() + "_" + userId;
+        Long lastRequestTime = requestCache.get(userTravelKey);
+        
+        if (lastRequestTime != null && (currentTime - lastRequestTime) < REQUEST_TIMEOUT) {
+            log.warn("중복 요청 감지 - 사용자: {}, 여행 ID: {}, 마지막 요청: {}ms 전", 
+                userId, dto.getId(), currentTime - lastRequestTime);
+            return "요청이 처리 중입니다. 잠시 후 다시 시도해주세요.";
+        }
+        
+        // 현재 요청 시간 기록
+        requestCache.put(userTravelKey, currentTime);
+        
+        try {
+            log.info("여행 수정 시작 - ID: {}, 새 이미지 개수: {}", dto.getId(), 
+                images != null ? images.size() : 0);
+            
+            dto.setHostUserId(userId);
+            boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
+            
+            if (!isUpdated) {
+                log.warn("게시글 본문 수정 실패 - ID: {}, 권한 없거나 게시글을 찾을 수 없음", dto.getId());
+                return "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
             }
-            // 남길 이미지는 아무 것도 하지 않음
-        }
 
-        // 2. 새 이미지 업로드 (추가)
-        travelImageService.addImages(dto.getId(), images);
+            // 태그 업데이트
+            travelEditService.updateTravelTags(dto.getId(), tags);
 
-        if (isUpdated) {
-            return "redirect:/schedule/detail?id=" + dto.getId();
-        } else {
-            redirectAttributes.addFlashAttribute("error", "게시글 수정 실패! (권한 없거나 게시글을 찾을 수 없습니다)");
-            return "redirect:/error";
+            // 1. 삭제/유지 이미지 관리
+            List<Long> remainIds = parseIdList(remainImageIds);
+            List<Long> deleteIds = parseIdList(deletedImageIds);
+            
+            log.info("이미지 관리 - 남길 이미지 ID: {}, 삭제할 이미지 ID: {}", remainIds, deleteIds);
+
+            List<TravelImageDto> allImages = travelImageService.findImagesByTripArticleId(dto.getId());
+            for (TravelImageDto img : allImages) {
+                // 삭제할 이미지: deletedImageIds에 포함되거나, remainImageIds에 없는 경우
+                if (deleteIds.contains(img.getId()) || !remainIds.contains(img.getId())) {
+                    log.info("이미지 삭제 - ID: {}, Path: {}", img.getId(), img.getImagePath());
+                    travelImageService.deleteImageById(img.getId());
+                }
+            }
+
+            // 2. 새 이미지 업로드 (추가) - remainImageIds에 포함되지 않은 새 파일만 업로드
+            if (images != null && !images.isEmpty()) {
+                int actualImageCount = 0;
+                List<MultipartFile> newImages = new java.util.ArrayList<>();
+                for (MultipartFile file : images) {
+                    if (!file.isEmpty()) {
+                        // remainImageIds에 포함된 파일명과 비교하여 중복 추가 방지
+                        boolean isRemain = false;
+                        for (Long remainId : remainIds) {
+                            TravelImageDto remainImg = travelImageService.findImageById(remainId);
+                            if (remainImg != null && file.getOriginalFilename() != null && remainImg.getImagePath() != null && remainImg.getImagePath().contains(file.getOriginalFilename())) {
+                                isRemain = true;
+                                break;
+                            }
+                        }
+                        if (!isRemain) {
+                            newImages.add(file);
+                            actualImageCount++;
+                        }
+                    }
+                }
+                log.info("실제 업로드할 새 이미지 개수: {}", actualImageCount);
+                if (actualImageCount > 0) {
+                    travelImageService.addImages(dto.getId(), newImages);
+                    log.info("새 이미지 업로드 완료");
+                }
+            }
+
+            log.info("여행 수정 완료 - ID: {}", dto.getId());
+            return "수정 완료! ID: " + dto.getId();
+            
+        } catch (Exception e) {
+            log.error("여행 수정 중 오류 발생 - ID: {}, Error: {}", dto.getId(), e.getMessage(), e);
+            return "수정 중 오류가 발생했습니다: " + e.getMessage();
+        } finally {
+            // 처리 완료 후 캐시에서 제거 (5초 후)
+            new Thread(() -> {
+                try {
+                    Thread.sleep(REQUEST_TIMEOUT);
+                    requestCache.remove(userTravelKey);
+                    log.debug("요청 캐시 정리 완료 - {}", userTravelKey);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            }).start();
         }
     }
 

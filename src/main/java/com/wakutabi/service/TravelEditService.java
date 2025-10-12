@@ -45,7 +45,7 @@ public class TravelEditService {
     // 복합 검색 및 필터링 기능을 위한 메서드
     public List<TravelEditDto> findFilteredTravels(String query, Integer minPrice, Integer maxPrice,
             String region, LocalDateTime startDate, LocalDateTime endDate,
-            List<String> tags, List<String> groupSize, String status) {
+            List<String> tags, List<String> groupSize, String status, int offset, int size) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("query", query);
@@ -57,6 +57,8 @@ public class TravelEditService {
         params.put("tagsList", tags); // Mapper XML에서 <foreach collection="tagsList"> 사용
         params.put("groupSize", groupSize);
         params.put("status", status);
+        params.put("offset", offset);
+        params.put("size", size);
 
         // 1️⃣ Mapper에서 여행 게시글 조회
         List<TravelEditDto> travels = travelEditmapper.selectTravels(params);
@@ -68,6 +70,24 @@ public class TravelEditService {
         }
 
         return travels;
+    }
+
+        public int countFilteredTravels(String query, Integer minPrice, Integer maxPrice,
+                String region, LocalDateTime startDate, LocalDateTime endDate,
+                List<String> tags, List<String> groupSize, String status) {
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("query", query);
+            params.put("minPrice", minPrice);
+            params.put("maxPrice", maxPrice);
+            params.put("region", region);
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("tagsList", tags);
+            params.put("groupSize", groupSize);
+            params.put("status", status);
+
+            return travelEditmapper.countFilteredTravels(params);
     }
 
     @Transactional // ⭐트랜잭션 처리를 위해 어노테이션을 붙입니다.

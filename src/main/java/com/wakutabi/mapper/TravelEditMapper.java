@@ -24,5 +24,6 @@ public interface TravelEditMapper {
     
  // Map으로 필터 전달
     List<TravelEditDto> selectTravels(Map<String, Object> params);
-
+    // 페이지
+    int countFilteredTravels(Map<String, Object> params);
 }

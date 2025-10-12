@@ -14,7 +14,6 @@ import com.wakutabi.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RequiredArgsConstructor
 @Controller
 public class MainController {

@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadedImages = document.getElementById('uploadedImages');
     const orderNumberInput = document.getElementById('orderNumber');
 
+    // 중복 제출 방지를 위한 전역 플래그
+    let isSubmitting = false;
+
     // 날짜 입력 필드와 에러 메시지 요소
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
@@ -16,9 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 태그 입력 필드와 태그 영역
     const tagInput = document.getElementById('tagsInput');
+    const tagHiddenInput = document.getElementById('tag');
     const tagSection = document.querySelector('.form-section.p-3.rounded.mb-4:nth-child(4)');
 
-    // ⭐ 미리보기 섹션 요소 가져오기
+    // 미리보기 섹션 요소 가져오기
     const previewImage = document.querySelector('.card-img-top');
     const previewTitle = document.getElementById('previewTitle');
     const previewRegion = document.getElementById('previewRegion');
@@ -28,6 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewTags = document.getElementById('previewTags');
     const previewAgeLimit = document.getElementById('previewAgeLimit');
     const previewGenderLimit = document.getElementById('previewGenderLimit');
+
+    // 삭제된 이미지 ID를 저장할 hidden input 필드
+    const deletedImageIdsInput = document.getElementById('deletedImageIds');
+    // 남아있는 이미지 ID를 저장할 hidden input 필드
+    const remainImageIdsInput = document.getElementById('remainImageIds');
 
     // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
     function getTodayFormatted() {
@@ -41,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 페이지 로드 시 출발일의 최소 날짜를 오늘로 설정
     startDateInput.min = getTodayFormatted();
 
-    // 이미지 업로드 클릭/드래그 이벤트
+    // 이미지 업로드 클릭/드래그 이벤트 ... (생략) ...
     imageUploadArea.addEventListener('click', () => imageInput.click());
     imageUploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -65,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Array.from(files).forEach(file => {
             if (!file.type.startsWith('image/')) return;
             const reader = new FileReader();
+            // 기존 이미지 처리 로직 ... (생략)
             const fileUuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
@@ -87,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateImgOrder();
                 });
                 if (imageSortable === null) {
+                    // Sortable 초기화 로직 ... (생략)
                     imageSortable = new Sortable(uploadedImages, {
                         animation: 150,
                         ghostClass: 'sortable-ghost',
@@ -127,33 +138,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 태그 선택 기능
-    const selectedTags = new Set();
-    document.querySelectorAll('.tag-item').forEach(tag => {
+    // Set에 객체 대신 안전하게 태그 값(value)만 저장합니다.
+    const selectedTagValues = new Set(); 
+    const allTagItems = document.querySelectorAll('.tag-item');
+
+    // 🏷️ 기존 태그를 불러와서 설정하는 함수
+    function initializeSelectedTags() {
+        const selectedTagListContainer = document.querySelector('.tag-list');
+        const initialTagsString = selectedTagListContainer ? selectedTagListContainer.dataset.selectedTag : '';
+        
+        if (!initialTagsString) return;
+        
+        const initialTags = initialTagsString.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        
+        initialTags.forEach(tagValue => {
+            const tagItem = document.querySelector(`.tag-item[data-tag="${tagValue}"]`);
+            if (tagItem) {
+                // 1. 시각적으로 'selected' 클래스 추가
+                tagItem.classList.add('selected');
+                
+                // 2. selectedTagValues Set에 값(value) 추가
+                selectedTagValues.add(tagValue);
+            }
+        });
+    
+        // 3. Hidden Input 필드 값 최신화
+        tagHiddenInput.value = Array.from(selectedTagValues).join(',');
+    
+        // ⭐⭐ 여기를 추가하여 미리보기를 초기화 시점에 업데이트합니다! ⭐⭐
+        updatePreviewTags();
+    }
+    
+    // ----------------------------------------------------------------------
+    
+    allTagItems.forEach(tag => {
         tag.addEventListener('click', () => {
             const tagValue = tag.dataset.tag;
-            const tagName = tag.textContent.trim(); // 태그 텍스트 가져오기 (이모지 포함)
             tag.classList.toggle('selected');
+
             if (tag.classList.contains('selected')) {
-                selectedTags.add({ value: tagValue, name: tagName });
+                selectedTagValues.add(tagValue); // 값(value)만 저장
             } else {
-                selectedTags.delete(Array.from(selectedTags).find(t => t.value === tagValue));
+                selectedTagValues.delete(tagValue); // 값(value)으로 삭제
             }
-            tagInput.value = Array.from(selectedTags).map(t => t.value).join(',');
-            updatePreviewTags(); // 태그 미리보기 업데이트
+
+            // Hidden Input과 미리보기 업데이트
+            tagHiddenInput.value = Array.from(selectedTagValues).join(',');
+            updatePreviewTags();
         });
     });
 
-    // 🗓️ 날짜 유효성 검증 함수
+    // 🗓️ 날짜 유효성 검증 함수 ... (생략) ...
     function validateDates() {
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
         let isValid = true;
 
-        // 에러 메시지 초기화
         startDateError.textContent = '';
         endDateError.textContent = '';
 
-        // 1. 귀국일이 출발일보다 빠른지 확인
         if (startDate && endDate) {
             const startDateObj = new Date(startDate);
             const endDateObj = new Date(endDate);
@@ -162,26 +205,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 isValid = false;
             }
         }
-
         return isValid;
     }
 
-    // ⭐ 여행 기간 자동 계산 함수
+    // ⭐ 여행 기간 자동 계산 함수 ... (생략) ...
     function calculateTravelPeriod() {
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
         const travelPeriodElement = document.getElementById('travelPeriod');
 
-        // 출발일과 귀국일이 모두 입력되었을 때만 계산
         if (startDate && endDate) {
             const start = new Date(startDate);
             const end = new Date(endDate);
             const diffInTime = end.getTime() - start.getTime();
-
-            // 밀리초를 일수로 변환
             const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
 
-            // 날짜 차이가 0보다 작으면 '날짜를 다시 확인해주세요'
             if (diffInDays < 0) {
                 travelPeriodElement.textContent = "날짜를 다시 확인해주세요";
                 updatePreviewDates('날짜를 다시 확인해주세요');
@@ -191,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             travelPeriodElement.textContent = `${diffInDays}박 ${diffInDays + 1}일`;
             updatePreviewDates(`${startDate.replace(/-/g, '.')} ~ ${endDate.replace(/-/g, '.')}`);
         } else {
-            travelPeriodElement.textContent = '자동 계산됩니다'; // 입력이 없으면 기본 문구 표시
+            travelPeriodElement.textContent = '자동 계산됩니다';
             updatePreviewDates('날짜를 선택하세요');
         }
     }
@@ -207,10 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateTravelPeriod();
     });
 
-    // 페이지 로드 시 초기 계산
-    calculateTravelPeriod();
-
-    // ✅ 예상 비용 입력 필드에 쉼표 포맷팅 기능 추가 (수정된 코드)
+    // ✅ 예상 비용 입력 필드에 쉼표 포맷팅 기능 추가
     estimatedCostInput.addEventListener('input', (e) => {
         const cleanedValue = e.target.value.replace(/[^0-9]/g, '');
         const formattedValue = cleanedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -219,16 +254,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ✅ submit 이벤트: 이미지 + 데이터 전송
     document.getElementById("travelRegistrationForm").addEventListener("submit", (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 기본 폼 제출 방지
 
-        // 폼 제출 전 최종적으로 날짜 유효성 검증
+        // 중복 제출 방지 - 이미 제출 중이면 무시
+        if (isSubmitting) {
+            console.log("이미 제출 중입니다. 요청이 무시됩니다.");
+            return false;
+        }
+
         if (!validateDates()) {
             endDateInput.focus();
             return;
         }
 
         // ⭐ 태그 선택 여부 유효성 검사 추가
-        if (selectedTags.size === 0) {
+        if (selectedTagValues.size === 0) { // Set을 selectedTagValues로 변경
             alert('여행과 관련된 태그를 하나 이상 선택해주세요.');
             tagSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
             tagSection.style.outline = '2px solid #007bff';
@@ -237,15 +277,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 2000);
             return;
         }
-
+        
+        // 제출 상태를 true로 설정
+        isSubmitting = true;
+        // 폼 제출 전에 남아있는 이미지 ID 업데이트
+        updateRemainImageIds();
+        
         // 유효성 검사를 모두 통과하면 폼 제출
         const form = e.target;
         
+        // 중복 제출 방지
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton.disabled) {
+            return; // 이미 제출 중이면 무시
+        }
+        submitButton.disabled = true;
+        submitButton.textContent = '수정 중...';
+        
         // ⭐ 예상 비용 필드의 값에서 쉼표 제거 후 전송
-        const estimatedCostValue = estimatedCostInput.value.replace(/,/g, '');
+        estimatedCostInput.value = estimatedCostInput.value.replace(/,/g, '');
         
         const formData = new FormData(form);
-        formData.set('estimatedCost', estimatedCostValue); // 쉼표가 제거된 값으로 덮어쓰기
 
         fetch(form.action, {
             method: "POST",
@@ -253,11 +305,26 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(res => res.text())
         .then(msg => {
-            alert(msg);
+            if (msg.includes("수정 완료")) {
+                alert("수정 성공!");
+                // 상세 페이지로 리다이렉트
+                const travelId = document.querySelector('input[name="id"]').value;
+                window.location.href = `/schedule/detail?id=${travelId}`;
+            } else {
+                alert("수정 실패: " + msg);
+                // 버튼 상태 복구
+                submitButton.disabled = false;
+                submitButton.textContent = '수정하기';
+                isSubmitting = false; // 제출 상태 초기화
+            }
         })
         .catch(err => {
             console.error(err);
-            alert("업로드 실패!");
+            alert("수정 실패!");
+            // 버튼 상태 복구
+            submitButton.disabled = false;
+            submitButton.textContent = '수정하기';
+            isSubmitting = false; // 제출 상태 초기화
         });
     });
 
@@ -265,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ⭐⭐ 미리보기 업데이트 함수들 ⭐⭐
     // ----------------------------------------------------
     
-    // 여행 제목 및 설명 미리보기 업데이트
+    // 여행 제목 및 설명 미리보기 업데이트 ... (생략) ...
     function updatePreviewText(e) {
         const targetId = e.target.id;
         const value = e.target.value;
@@ -278,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('title').addEventListener('input', updatePreviewText);
     document.getElementById('content').addEventListener('input', updatePreviewText);
 
-    // 지역 미리보기 업데이트
+    // 지역 미리보기 업데이트 ... (생략) ...
     function updatePreviewRegion() {
         const locationSelect = document.getElementById('location');
         const selectedOption = locationSelect.options[locationSelect.selectedIndex];
@@ -291,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
         previewDates.textContent = text;
     }
 
-    // 참가자 미리보기 업데이트
+    // 참가자 미리보기 업데이트 ... (생략) ...
     function updatePreviewParticipants() {
         const maxParticipants = document.getElementById('maxParticipants').value;
         if (maxParticipants) {
@@ -302,23 +369,59 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('maxParticipants').addEventListener('change', updatePreviewParticipants);
 
-    // 태그 미리보기 업데이트
+    // 태그 미리보기 업데이트 (selectedTagValues Set을 사용하도록 수정)
     function updatePreviewTags() {
         previewTags.innerHTML = ''; // 기존 태그 제거
-        if (selectedTags.size === 0) {
+        if (selectedTagValues.size === 0) { // Set을 selectedTagValues로 변경
             previewTags.innerHTML = '<span class="badge bg-secondary me-1">태그</span>';
         } else {
-            selectedTags.forEach(tag => {
+            selectedTagValues.forEach(tagValue => {
+                // 저장된 값(value)을 사용하여 해당 태그 아이템을 찾아 이름(name)을 가져옵니다.
+                const tagItem = document.querySelector(`.tag-item[data-tag="${tagValue}"]`);
+                const tagName = tagItem ? tagItem.textContent.trim() : tagValue; // 혹시 못 찾을 경우를 대비
+
                 const tagSpan = document.createElement('span');
                 tagSpan.className = 'badge bg-primary me-1';
-                tagSpan.textContent = tag.name;
+                tagSpan.textContent = tagName;
                 previewTags.appendChild(tagSpan);
             });
         }
     }
-    updatePreviewTags(); // 초기 로드 시 한 번 실행
+
+    // ----------------------------------------------------
+    // 🌟🌟 초기화 호출 부분 🌟🌟
+    // ----------------------------------------------------
+    // 페이지 로드 시 초기 태그 상태를 설정합니다. (⭐ 새로 추가된 부분)
+    initializeSelectedTags();
 
     // 페이지 로드 시 초기 미리보기 상태 설정
+    calculateTravelPeriod();
     updatePreviewRegion();
     updatePreviewParticipants();
+    // updatePreviewTags()는 initializeSelectedTags()에서 이미 호출됩니다.
+
+    // ⭐ 서버에서 렌더링된 이미지의 X버튼에 삭제 이벤트 추가
+    document.querySelectorAll('.remove-image').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const imgDiv = btn.parentElement;
+            const imgId = imgDiv.dataset.id; // 서버에 저장된 이미지 ID
+            let deletedIds = deletedImageIdsInput.value ? deletedImageIdsInput.value.split(',') : [];
+            deletedIds.push(imgId);
+            deletedImageIdsInput.value = deletedIds.join(',');
+
+            imgDiv.remove();
+            updateImgOrder();
+            updateRemainImageIds(); // 남아있는 이미지 ID 업데이트
+        });
+    });
+
+    // 폼 제출 전에 남길 이미지 id를 모두 hidden에 저장
+    function updateRemainImageIds() {
+        const remainIds = [];
+        document.querySelectorAll('.uploaded-image').forEach(div => {
+            if (div.dataset.id) remainIds.push(div.dataset.id);
+        });
+        remainImageIdsInput.value = remainIds.join(',');
+    }
+
 });

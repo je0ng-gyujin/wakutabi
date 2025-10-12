@@ -1,8 +1,6 @@
 package com.wakutabi.controller;
 
-import com.wakutabi.mapper.TravelDeadlineMapper;
 import com.wakutabi.service.TravelDeadlineService;
-import com.wakutabi.service.TravelJoinRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

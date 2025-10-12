@@ -3,6 +3,7 @@ package com.wakutabi.configure;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,7 +36,10 @@ public class SecurityConfig {
 				// HTTP 요청에 대한 접근 규칙을 설정합니다.
 				.authorizeHttpRequests(auth -> auth
 						// "/schedule/create" 경로에 대한 요청은 인증된 사용자만 접근할 수 있습니다.
-						.requestMatchers("/schedule/create").authenticated()
+						.requestMatchers("/schedule/search").permitAll()
+						.requestMatchers("/schedule/*").authenticated()
+						.requestMatchers("/profile").authenticated()
+						.requestMatchers("/travels/*").authenticated()
 						// "/adm/"으로 시작하는 모든 요청은 "ADMIN" 역할을 가진 사용자만 접근할 수 있습니다.
 						.requestMatchers("/adm/**").hasRole("ADMIN")
 						// 그 외 모든 요청은 허용합니다. (인증 없이 접근 가능)
@@ -44,7 +48,7 @@ public class SecurityConfig {
 				// 폼 기반 로그인 설정을 시작합니다.
 				.formLogin(login -> login
 						// 로그인 페이지의 URL을 "/user/login"으로 지정합니다.
-						.loginPage("/user/login")
+						.loginPage("/login")
 						// 로그인 처리를 수행할 URL을 "/login"으로 지정합니다.
 						.loginProcessingUrl("/login")
 						// 로그인 성공 시 실행될 핸들러를 지정합니다.
@@ -53,10 +57,12 @@ public class SecurityConfig {
 						.failureHandler((request, response, exception) -> {
 							String errorMessage;
 
-							if(exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException){
+							if (exception instanceof DisabledException) {
+								errorMessage = exception.getMessage(); // "이메일 인증이 완료되지 않은 계정입니다." 등 근데 작동을 안함
+							} else if(exception instanceof UsernameNotFoundException || exception instanceof BadCredentialsException){
 								errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
 							} else {
-								errorMessage = "로그에 실패했습니다. 다시 시도해주세요";
+								errorMessage = "로그인에 실패했습니다. 다시 시도해주세요";
 							}
 							// 로그인 실패 원인 저장
 							request.getSession().setAttribute("errorMessage", errorMessage);
@@ -86,7 +92,7 @@ public class SecurityConfig {
 								response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 							} else {
 								// 일반적인 웹 요청이라면, 로그인 페이지로 리다이렉트합니다.
-								response.sendRedirect("/user/login?required=true");
+								response.sendRedirect("/login?required=true");
 							}
 						}))
 

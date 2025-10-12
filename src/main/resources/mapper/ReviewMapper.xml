@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wakutabi.mapper.ReviewMapper">
+
+    <insert id="insertTravleReview" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        trip_review
+        (rating, title, content, is_public, created_at, updated_at)
+        VALUES
+        (#{rating}, #{title}, #{content}, #{isPublic}, NOW(), NOW())
+    </insert>
+
+    <insert id="insertTravleReviewImage">
+        INSERT INTO
+        trip_review_image
+        (review_id, image_path)
+        VALUES
+        (#{reviewId}, #{fileName})
+    </insert>
+
+    <insert id="insertUserReview">
+        INSERT INTO
+        trip_review_user
+        (review_id, reviewed_user_id, rating)
+        VALUES
+        (#{reviewId}, #{reviewedUserId}, #{rating})
+    </insert>
+
+</mapper>

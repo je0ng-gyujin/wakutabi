@@ -22,41 +22,35 @@
 	</select>
 	
     <select id="findRegisteredTripsByHostId" resultMap="TripListDtoMap">
-    SELECT
+        SELECT
         t.id AS trip_id,
         t.title,
         t.location,
         t.start_date,
         t.end_date,
         (
-            SELECT tai.image_path
-            FROM trip_article_image tai
-            WHERE tai.trip_article_id = t.id
-            ORDER BY tai.order_number ASC, tai.id ASC
-            LIMIT 1
+        SELECT tai.image_path
+        FROM trip_article_image tai
+        WHERE tai.trip_article_id = t.id
+        ORDER BY tai.order_number ASC, tai.id ASC
+        LIMIT 1
         ) AS main_image_path,
         t.status,
-        t.maxParticipants, (
-            SELECT
-                COUNT(cp.id)
-            FROM
-                chat_room cr
-            JOIN
-                chat_participants cp ON cr.id = cp.chat_room_id
-            WHERE
-                cr.trip_article_id = t.id
-                AND cp.status = 'ACTIVE'
+        t.maxParticipants,
+        (
+        SELECT COUNT(cp.id)
+        FROM chat_room cr
+        JOIN chat_participants cp ON cr.id = cp.chat_room_id
+        WHERE cr.trip_article_id = t.id
+        AND cp.status = 'ACTIVE'
         ) AS current_participants_count
-    FROM
-        trip_article t
-    WHERE
-        t.host_user_id = #{hostId}
+        FROM trip_article t
+        WHERE t.host_user_id = #{userId}
         AND t.deleted_at IS NULL
-    ORDER BY
-        t.created_at DESC
-</select>
+        ORDER BY t.created_at DESC
+    </select>
 
-<select id="findJoinRequestsByTripId" resultType="com.wakutabi.domain.TripJoinRequestDto">
+    <select id="findJoinRequestsByTripId" resultType="com.wakutabi.domain.TripJoinRequestDto">
     SELECT
         tjr.id AS requestId, tjr.trip_article_id,
         tjr.applicant_user_id,

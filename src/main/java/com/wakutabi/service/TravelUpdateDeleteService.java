@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class TravelUpdateDeleteService {
 
     private final TravelUpdateDeleteMapper travelupdatedeletemapper;
-    
+
     public boolean updateTravelArticle(TravelEditDto dto) {
         int updateRows = travelupdatedeletemapper.updateTravelArticle(dto);
         return updateRows > 0;
@@ -33,5 +33,10 @@ public class TravelUpdateDeleteService {
         int deleteRows = travelupdatedeletemapper.deleteTravelArticle(id, hostUserId);
         
         return deleteRows > 0;
+    }
+    // 여행 취소
+    public boolean canceledTravelArticle(Long id){
+        int result = travelupdatedeletemapper.canceledTravelArticle(id);
+        return result > 0;
     }
 }

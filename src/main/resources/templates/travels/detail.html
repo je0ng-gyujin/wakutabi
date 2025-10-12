@@ -5,11 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/travel_review.css}" />
+    <link rel="stylesheet" th:href="@{/css/travel_detail.css}" />
     <title>여행 상세</title>
     <script defer th:src="@{/js/travel_detail.js}"></script>
     <meta name="_csrf">
     <meta name="_csrf_header">
+
 </head>
 <body>
 <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
@@ -42,12 +43,14 @@
                             <div class="d-flex justify-content-between">
                                 <h4 class="card-title fw-bold mb-3">여행 정보</h4>
                                 <div th:if="${isOwner}">
-                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}"
-                                       class="btn btn-sm btn-outline-secondary">수정</a>
-                                    <button id="deleteBtn" 
-       										class="btn btn-sm btn-outline-danger" 
-        										th:data-id="${travel.id}">
-    												삭제
+                                    <a th:href="@{'/schedule/edit?id=' + ${travel.id}}" id="editBtn"
+                                       class="btn btn-sm btn-outline-secondary" th:data-id="${travel.id}"
+                                        th:data-status="${travel.status}">수정</a>
+                                    <button id="canceledBtn" class="btn btn-sm btn-outline-warning"
+                                            th:data-id="${travel.id}" th:data-status="${travel.status}">취소
+                                    </button>
+                                    <button id="deleteBtn" class="btn btn-sm btn-outline-danger" 
+                                            th:data-id="${travel.id}">삭제
 									</button>
                                 </div>
                             </div>
@@ -57,58 +60,75 @@
 
                             <!-- 여행 세부 정보 -->
                             <div class="row text-center mb-3">
-                                <div class="col-6 col-md-3 mb-2">
+    
+                                <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-calendar me-1"></i> <strong>일정</strong>
                                     </span>
                                     <p class="mb-0 mt-1 fs-6"
-                                       th:text="${#temporals.format(travel.startDate, 'yyyy. MM. dd')} + ' 부터'"></p>
-                                    <p class="mb-0 mt-1"
-                                       th:text="${#temporals.format(travel.endDate, 'yyyy. MM. dd')} + ' 까지'"></p>
+                                       th:utext="${#temporals.format(travel.startDate, 'yyyy. MM. dd')} + '<br/>~ ' + ${#temporals.format(travel.endDate, 'yyyy. MM. dd')}">
+                                    </p>
                                 </div>
-
-                                <div class="col-6 col-md-3 mb-2">
+                            
+                                <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
-                                        <i class="bi bi-currency-dollar me-1"></i> <strong>예상 요금</strong>
+                                        <i class="bi bi-currency-yen me-1"></i> <strong>예상 요금</strong>
                                     </span>
                                     <p class="mb-0 mt-1"
                                        th:text="${#numbers.formatInteger(travel.estimatedCost, 3, 'COMMA')} + '원'"></p>
                                 </div>
-
+                            
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-person-circle me-1"></i> <strong>선호 연령</strong>
                                     </span>
                                     <p class="mb-0 mt-1" th:text="${travel.ageLimit}"></p>
                                 </div>
-
+                            
+                                <div class="col-6 col-md-2 mb-2">
+                                    <span class="badge bg-secondary-subtle text-dark">
+                                        <i class="bi bi-gender-ambiguous me-1"></i> <strong>성별 제한</strong>
+                                    </span>
+                                    <p class="mb-0 mt-1" 
+                                       th:text="${travel.genderLimit == 'n' ? '제한 없음' : (travel.genderLimit == 'm' ? '남성만' : '여성만')}">
+                                        제한 없음
+                                    </p>
+                                </div>
+                            
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-people me-1"></i> <strong>인원</strong>
                                     </span>
                                     <p class="mb-0 mt-1" th:text="'3/' + ${travel.maxParticipants} + '명'"></p>
                                 </div>
-
+                            
                                 <div class="col-6 col-md-2 mb-2">
                                     <span class="badge bg-success-subtle text-dark">
                                         <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
                                     </span>
-                                    <p class="mb-0 mt-1"
-                                       th:text="${travel.status == 'OPEN' ? '모집 중' : travel.status}"></p>
+                                    <p class="mb-0 mt-1" th:switch="${travel.status}">
+                                       <span th:case="'OPEN'">모집 중</span>
+                                        <span th:case="'MATCHED'">모집 완료</span>
+                                        <span th:case="'CLOSED'">여행 종료</span>
+                                        <span th:case="'CANCELED'">취소됨</span>
+                                        <span th:case="*">모집 중</span>
+                                    </p>
                                 </div>
                             </div>
 
                             <!-- 태그 -->
-                            <div class="mb-3 no-hover-effects">
-                                <span class="badge tag-item px-3 py-2 rounded-pill">🍜 식도락</span>
-                                <span class="badge tag-item px-3 py-2 rounded-pill">♨️ 온천</span>
-                                <span class="badge tag-item px-3 py-2 rounded-pill">🏛️ 문화</span>
+                            <div class="col-12 d-flex gap-2 mb-3" 
+                                id="travelTags"
+                                th:attr="data-tags=${#strings.listJoin(travel.tags, ',')}"
+                                style="min-height: 20px;">
+                                <span th:if="${#lists.isEmpty(travel.tags)}" class="text-muted">등록된 태그가 없습니다.</span>
                             </div>
 
                             <!-- 이미지 -->
-                            <div class="row g-2" th:if="${images != null and !#lists.isEmpty(images)}">
-                                <div class="col-4" th:each="image : ${images}">
-                                    <img th:src="${image.imagePath}" class="img-fluid rounded-3" alt="여행 이미지" />
+                            <div class="d-flex flex-nowrap overflow-auto g-2 image-gallery justify-content-center"
+                                 th:if="${images != null and !#lists.isEmpty(images)}">
+                                <div class="image-item p-1" th:each="image : ${images}">
+                                    <img th:src="${image.imagePath}" class="rounded-3" alt="여행 이미지" />
                                 </div>
                             </div>
 
@@ -117,36 +137,37 @@
                 </div>
 
                 <div class="col-lg-4">
-                        <form id="joinForm" th:action="@{/join-request}" method="post">
-                            <input type="hidden" name="tripArticleId" th:value="${travel.id}">
-                            <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
-                            <input type="hidden" name="chatRoomId" th:value="${chatRoomId}">
-                                 <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
-                                  <div class="text-center mb-3">
+                    <form id="joinForm" th:action="@{/join-request}" method="post">
+                        <input type="hidden" name="tripArticleId" th:value="${travel.id}">
+                        <input type="hidden" name="hostUserId" th:value="${travel.hostUserId}">
+                        <input type="hidden" name="chatRoomId" th:value="${chatRoomId}">
+                        <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
+                            <div class="text-center mb-3">
                             <img src="/image/testuser.jpg" alt="프로필 이미지" class="rounded-circle mb-2"
                                  style="width: 80px; height: 80px; object-fit: cover" />
                             <h5 class="mb-0">여행 작성자</h5>
                             <small class="text-muted">@김민지</small>
+                            </div>
+                            <div class="d-grid mb-3">
+                                <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
+                            </div>
+                            <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
+                            <hr />
+                            <h6 class="fw-bold mb-3">참여자 목록</h6>
+                            <ul class="list-unstyled">
+                                <li class="d-flex align-items-center mb-2">
+                                    <img src="/image/testuser.jpg" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" />
+                                    <span class="ms-2">박지훈</span>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="d-grid mb-3">
-                            
-                            <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
-                        </div>
-                        <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
-                        <hr />
-                        <h6 class="fw-bold mb-3">참여자 목록</h6>
-                        <ul class="list-unstyled">
-                            <li class="d-flex align-items-center mb-2">
-                                <img src="/image/testuser.jpg" style="width:55px; height:55px;" alt="참여자" class="participant-avatar" />
-                                <span class="ms-2">박지훈</span>
-                            </li>
-                        </ul>
-                    </div>
                     </form>
                 </div>
-
             </div>
         </div>
+        <script th:inline="javascript" th:if="${errorMessage != null}">
+            alert([[${errorMessage}]]);
+        </script>
     </div>
 </div>
 </body>

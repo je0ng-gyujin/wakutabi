@@ -15,8 +15,8 @@ public class TravelDeadlineScheduler {
 
     // 매 1분마다 실행 (cron 표현식: 초 분 시 일 월 요일)
     @Scheduled(cron = "0 * * * * *")
-    public void autoCloseExpiredArticles() {
-        int updated = travelDeadlineMapper.autoCloseExpiredArticles();
+    public void autoMatchedExpiredArticles() {
+        int updated = travelDeadlineMapper.autoMatchedExpiredArticles();
         if(updated > 0) {
             log.info("자동 처리 된 마감 여행글 수: {} ",updated);
         }

@@ -13,7 +13,7 @@
             GROUP BY chat_room_id
         ) cp
             ON cr.id = cp.chat_room_id
-        SET ta.status = 'CLOSED'
+        SET ta.status = 'MATCHED'
         WHERE ta.maxParticipants = cp.cnt
         AND ta.id = #{travelArticleId}
         AND cr.id = #{chatRoomId}
@@ -21,16 +21,15 @@
     <!-- 방장이 마감 눌렀을 때 -->
     <update id="travelDeadlineHostClick" parameterType="Long">
         UPDATE trip_article
-        SET status = 'CLOSED'
+        SET status = 'MATCHED'
         WHERE id = #{travelArticleId}
         AND status = 'OPEN'
     </update>
     <!--기간만료 자동마감 -->
-    <update id="autoCloseExpiredArticles" parameterType="Long">
+    <update id="autoMatchedExpiredArticles" parameterType="Long">
         UPDATE trip_article
-        SET status = 'CLOSED'
+        SET status = 'MATCHED'
         WHERE status = 'OPEN'
         AND NOW() >= recruit_end_date
     </update>
-
 </mapper>

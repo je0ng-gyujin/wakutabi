@@ -11,7 +11,7 @@ import com.wakutabi.domain.TripListDto;
 @Mapper
 public interface TripMapper {
 
-	List<TripListDto> findRegisteredTripsByHostId(@Param("hostId") Long hostId);
+	List<TripListDto> findRegisteredTripsByHostId(@Param("userId") Long userId);
 	
 	List<TripJoinRequestDto> findJoinRequestsByTripId(@Param("tripArticleId") Long tripArticleId);
 	

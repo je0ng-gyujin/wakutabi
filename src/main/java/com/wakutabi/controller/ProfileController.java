@@ -18,6 +18,9 @@ public class ProfileController {
     // 회원프로필 페이지
     @GetMapping("/user/profile")
     public String enterProfile(Principal principal, Model model){
+        if (principal == null) {
+            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+        }
         String username = principal.getName();
         UserUpdateDto user = userService.getUserInfo(username);
         model.addAttribute("user", user);

@@ -73,6 +73,61 @@
         
     </where>
     ORDER BY created_at DESC
+    LIMIT #{size} OFFSET #{offset}
 </select>
-	
+
+    <select id="countFilteredTravels" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM trip_article
+        <where>
+            status != 'CANCELED'
+
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+
+            <if test="query != null and query != ''">
+                AND (title LIKE CONCAT('%', #{query}, '%')
+                OR content LIKE CONCAT('%', #{query}, '%'))
+            </if>
+
+            <if test="minPrice != null and maxPrice != null">
+                AND estimated_cost BETWEEN #{minPrice} AND #{maxPrice}
+            </if>
+
+            <if test="region != null and region != ''">
+                AND location = #{region}
+            </if>
+
+            <if test="startDate != null and endDate != null">
+                AND start_date &gt;= #{startDate}
+                AND end_date &lt;= #{endDate}
+            </if>
+
+            <if test="tagsList != null and tagsList.size() > 0">
+                AND id IN (
+                SELECT trip_article_id
+                FROM trip_tag_mid_trip_article m
+                JOIN trip_tag t ON m.trip_tag_id = t.id
+                WHERE t.tag_name IN
+                <foreach collection="tagsList" item="tag" open="(" separator="," close=")">
+                    #{tag}
+                </foreach>
+                )
+            </if>
+
+            <if test="groupSize != null and groupSize.size() > 0">
+                AND (
+                <foreach collection="groupSize" item="size" separator=" OR ">
+                    <choose>
+                        <when test="size == 'small'">maxParticipants BETWEEN 2 AND 4</when>
+                        <when test="size == 'medium'">maxParticipants BETWEEN 5 AND 8</when>
+                        <when test="size == 'large'">maxParticipants >= 9</when>
+                    </choose>
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
 </mapper>

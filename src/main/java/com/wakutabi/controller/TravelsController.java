@@ -68,6 +68,8 @@ public class TravelsController {
             @RequestParam(value = "tags", required = false) List<String> tags,
             @RequestParam(value = "groupSize", required = false) List<String> groupSize,
             @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "8") int size,
             Model model) {
 
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
@@ -77,9 +79,13 @@ public class TravelsController {
                 "Received search request. Query: {}, minPrice: {}, maxPrice: {}, region: {}, startDate: {}, endDate: {}, tags: {}, groupSize: {}, status: {}",
                 query, minPrice, maxPrice, region, startDate, endDate, tags, groupSize, status); // ⬅️ 로그 추가
 
-        List<TravelEditDto> travels = travelEditService.findFilteredTravels(query, minPrice, maxPrice, region,
-                startDateTime, endDateTime, tags, groupSize, status); // ⬅️ status 파라미터 추가
+        int offset =(page -1) * size;
 
+        List<TravelEditDto> travels = travelEditService.findFilteredTravels(query, minPrice, maxPrice, region,
+                startDateTime, endDateTime, tags, groupSize, status, offset, size); // ⬅️ status 파라미터 추가
+        int totalCount = travelEditService.countFilteredTravels(query, minPrice, maxPrice, region,
+                startDateTime, endDateTime, tags, groupSize, status);
+        int totalPages = (int) Math.ceil((double) totalCount / size);
         log.info("검색 날짜 파라미터 - startDateTime: {}, endDateTime: {}", startDateTime, endDateTime);
 
         // 2. 각 여행 게시글에 대한 대표 이미지를 조회합니다.
@@ -114,6 +120,8 @@ public class TravelsController {
         model.addAttribute("tags", tags);
         model.addAttribute("groupSize", groupSize);
         model.addAttribute("status", status);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("totalPages", totalPages);
 
         return "travels/search";
     }
@@ -475,6 +483,9 @@ public class TravelsController {
     @GetMapping("/myTrips")
     public String MyTrips(Principal principal, Model model) {
 
+        if (principal == null) {
+            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+        }
         // 1. 현재 로그인된 사용자 ID를 가져옵니다.
         String stringUsername = principal.getName(); // Spring Security는 String 반환
 

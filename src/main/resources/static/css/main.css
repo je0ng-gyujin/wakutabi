@@ -78,6 +78,10 @@
 	backdrop-filter: blur(10px);
 	border-bottom: 2px solid var(--primary-color);
 }
+.navbar-nav {
+  position: relative;
+  left: 50px; /* ← 원하는 만큼 조정 */
+}
 
 .logo-text {
 	font-size: 2rem;

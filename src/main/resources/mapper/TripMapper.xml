@@ -36,7 +36,7 @@
         LIMIT 1
         ) AS main_image_path,
         t.status,
-        t.maxParticipants,
+        t.max_participants AS maxParticipants,
         (
         SELECT COUNT(cp.id)
         FROM chat_room cr

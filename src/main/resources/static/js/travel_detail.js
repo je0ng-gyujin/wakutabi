@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(msg => {
                 alert(msg);
                 if (msg.includes("완료")) {
-                    location.href = "/schedule/list";
+                    location.href = "/schedule/myTrips";
                 }
             })
             .catch(err => console.error("삭제 요청 실패", err));

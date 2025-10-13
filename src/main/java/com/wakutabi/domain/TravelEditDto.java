@@ -15,6 +15,7 @@ public class TravelEditDto {
     private Long hostUserId;
     private String location;
     private LocalDate startDate;
+    private LocalDate recruitEndDate;   // 모집종료날짜
     private LocalDate endDate;
     private Integer maxParticipants;
     private String ageLimit;

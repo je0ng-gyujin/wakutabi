@@ -42,4 +42,17 @@ public class TravelUploadDto {
             default: return location;
         }
     }
+    
+    // 연령 제한을 한글로 변환하는 메서드
+    public String getAgeLimitKorean() {
+        if (ageLimit == null || ageLimit.equalsIgnoreCase("NO")) {
+            return "제한 없음";
+        }
+        
+        // "20,30,40" 형태의 문자열을 "20대,30대,40대"로 변환
+        return ageLimit.replace("20", "20대")
+                      .replace("30", "30대")
+                      .replace("40", "40대")
+                      .replace("MX", "혼합");
+    }
 }

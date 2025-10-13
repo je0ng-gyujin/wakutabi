@@ -74,17 +74,7 @@
 	font-size: 2rem;
 	color: #ddd;
 	cursor: pointer;
-	transition: color 0.2s;
 	display: inline-block;
-}
-
-.rating-stars:hover, .rating-container input[type="radio"]:checked ~
-	.rating-stars {
-	color: #ffc107;
-}
-
-.rating-stars:hover ~ .rating-stars {
-	color: #ffc107;
 }
 
 /* 개별 이미지 아이템 (모든 경우에 150px 고정 너비 적용) */
@@ -105,18 +95,8 @@
 	width: 100% !important;
 	height: 100% !important;
 	object-fit: contain !important; /* 비율 유지, 빈 공간은 투명 */
-	transition: transform 0.3s ease;
 	border-radius: 6px;
 	}
-
-.image-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.image-item img:hover {
-    transform: scale(1.05); /* 호버 시 약간 확대 */
-}
 
 /* 이미지 갤러리 (수평 스크롤 컨테이너) */
 .image-gallery {
@@ -180,13 +160,7 @@
 	border-radius: 20px;
 	margin: 5px;
 	display: inline-block;
-	cursor: pointer;
-	transition: all 0.3s ease;
-}
-
-.tag-item:hover {
-	background: var(--primary-color);
-	color: white;
+	cursor: default;
 }
 
 .tag-item.selected {
@@ -214,4 +188,23 @@
 
 .footer-link:hover {
 	color: var(--accent-color);
+}
+
+/* 상세페이지: travel.css에서 가져온 호버 효과 무력화 */
+.tag-item:hover {
+	background: var(--secondary-color) !important;
+	color: var(--accent-color) !important;
+	transform: none !important;
+}
+
+/* 이미지 호버/포커스 시 테두리 색상 변화 제거 */
+.image-item:hover,
+.image-item:focus {
+	border-color: var(--primary-color) !important;
+	outline: none !important;
+}
+
+.image-item img:hover,
+.image-item img:focus {
+	outline: none !important;
 }

@@ -26,10 +26,10 @@
         <div th:if="${travel != null}">
             <div class="row mb-4">
                 <div class="col-12 text-center">
-                    <h1 class="mb-2" th:text="${travel.title}">여행 제목</h1>
+                    <h1 class="mb-2" th:text="${travel.title}"></h1>
                     <p class="text-muted">
                         <i class="bi bi-geo-alt-fill me-1"></i>
-                        <span th:text="${travel.locationKorean}">지역</span>
+                        <span th:text="${travel.locationKorean}"></span>
                     </p>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                                 </div>
                             </div>
 
-                            <p class="card-text text-muted" th:text="${travel.content}">여행 내용</p>
+                            <p class="card-text text-muted" th:text="${travel.content}"></p>
                             <hr />
 
                             <!-- 여행 세부 정보 -->
@@ -82,7 +82,7 @@
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-person-circle me-1"></i> <strong>선호 연령</strong>
                                     </span>
-                                    <p class="mb-0 mt-1" th:text="${travel.ageLimit}"></p>
+                                    <p class="mb-0 mt-1" th:text="${travel.ageLimitKorean}"></p>
                                 </div>
                             
                                 <div class="col-6 col-md-2 mb-2">
@@ -91,7 +91,6 @@
                                     </span>
                                     <p class="mb-0 mt-1" 
                                        th:text="${travel.genderLimit == 'n' ? '제한 없음' : (travel.genderLimit == 'm' ? '남성만' : '여성만')}">
-                                        제한 없음
                                     </p>
                                 </div>
                             
@@ -107,7 +106,7 @@
                                         <i class="bi bi-person-plus me-1"></i> <strong>상태</strong>
                                     </span>
                                     <p class="mb-0 mt-1" th:switch="${travel.status}">
-                                       <span th:case="'OPEN'">모집 중</span>
+                                        <span th:case="'OPEN'">모집 중</span>
                                         <span th:case="'MATCHED'">모집 완료</span>
                                         <span th:case="'CLOSED'">여행 종료</span>
                                         <span th:case="'CANCELED'">취소됨</span>

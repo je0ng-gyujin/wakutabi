@@ -42,21 +42,21 @@
 
     <!-- Function Grid -->
     <section class="row g-4">
-      <div class="col-lg-4 col-md-6">
-        <div class="card function-card h-100 rounded-4 border-0 shadow"
-             onclick="location.href='/schedule/create'">
-          <div class="card-body text-center p-4">
-            <div class="function-icon mb-3">📅</div>
-            <h3 class="function-title card-title text-dark mb-3">여행일정 등록</h3>
-            <p class="card-text text-muted mb-4">
-              나의 여행 계획을 공유하고<br>함께할 동행자를 찾아보세요
-            </p>
-            <a th:href="${#authentication.isAuthenticated() ? '/schedule/create' : '/login'}"
-            class="btn btn-wakutabi-primary rounded-pill">일정 만들기
-            </a>
-          </div>
-        </div>
-      </div>
+<!--      <div class="col-lg-4 col-md-6">-->
+<!--        <div class="card function-card h-100 rounded-4 border-0 shadow"-->
+<!--             onclick="location.href='/schedule/create'">-->
+<!--          <div class="card-body text-center p-4">-->
+<!--            <div class="function-icon mb-3">📅</div>-->
+<!--            <h3 class="function-title card-title text-dark mb-3">여행일정 등록</h3>-->
+<!--            <p class="card-text text-muted mb-4">-->
+<!--              나의 여행 계획을 공유하고<br>함께할 동행자를 찾아보세요-->
+<!--            </p>-->
+<!--            <a th:href="${#authentication.isAuthenticated() ? '/schedule/create' : '/login'}"-->
+<!--            class="btn btn-wakutabi-primary rounded-pill">일정 만들기-->
+<!--            </a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div class="col-lg-4 col-md-6">
         <div class="card function-card h-100 rounded-4 border-0 shadow"
@@ -91,38 +91,7 @@
 
       <div class="col-lg-4 col-md-6">
         <div class="card function-card h-100 rounded-4 border-0 shadow"
-          onclick="location.href='/regions'">
-          <div class="card-body text-center p-4">
-            <div class="function-icon mb-3">🏛️</div>
-            <h3 class="function-title card-title text-dark mb-3">지역
-              정보</h3>
-            <p class="card-text text-muted mb-4">
-              인기 관광지 정보와<br>실제 여행자들의 생생한 후기
-            </p>
-            <a href="/regions"
-              class="btn btn-wakutabi-primary rounded-pill">지역 보기</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6">
-        <div class="card function-card h-100 rounded-4 border-0 shadow"
-          onclick="location.href='/chat'">
-          <div class="card-body text-center p-4">
-            <div class="function-icon mb-3">💬</div>
-            <h3 class="function-title card-title text-dark mb-3">채팅</h3>
-            <p class="card-text text-muted mb-4">
-              매칭된 여행자들과<br>실시간으로 소통해보세요
-            </p>
-            <a href="/chat"
-              class="btn btn-wakutabi-primary rounded-pill">채팅하기</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6">
-        <div class="card function-card h-100 rounded-4 border-0 shadow"
-          onclick="location.href='/user/profile'">
+             onclick="location.href='/user/profile'">
           <div class="card-body text-center p-4">
             <div class="function-icon mb-3">👤</div>
             <h3 class="function-title card-title text-dark mb-3">마이페이지</h3>
@@ -130,10 +99,42 @@
               내 여행 기록과 평점,<br>업적을 관리해보세요
             </p>
             <a href="/user/profile"
-              class="btn btn-wakutabi-primary rounded-pill">프로필 보기</a>
+               class="btn btn-wakutabi-primary rounded-pill">프로필 보기</a>
           </div>
         </div>
       </div>
+<!--      <div class="col-lg-4 col-md-6">-->
+<!--        <div class="card function-card h-100 rounded-4 border-0 shadow"-->
+<!--          onclick="location.href='/regions'">-->
+<!--          <div class="card-body text-center p-4">-->
+<!--            <div class="function-icon mb-3">🏛️</div>-->
+<!--            <h3 class="function-title card-title text-dark mb-3">지역-->
+<!--              정보</h3>-->
+<!--            <p class="card-text text-muted mb-4">-->
+<!--              인기 관광지 정보와<br>실제 여행자들의 생생한 후기-->
+<!--            </p>-->
+<!--            <a href="/regions"-->
+<!--              class="btn btn-wakutabi-primary rounded-pill">지역 보기</a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="col-lg-4 col-md-6">-->
+<!--        <div class="card function-card h-100 rounded-4 border-0 shadow"-->
+<!--          onclick="location.href='/chat'">-->
+<!--          <div class="card-body text-center p-4">-->
+<!--            <div class="function-icon mb-3">💬</div>-->
+<!--            <h3 class="function-title card-title text-dark mb-3">채팅</h3>-->
+<!--            <p class="card-text text-muted mb-4">-->
+<!--              매칭된 여행자들과<br>실시간으로 소통해보세요-->
+<!--            </p>-->
+<!--            <a href="/chat"-->
+<!--              class="btn btn-wakutabi-primary rounded-pill">채팅하기</a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+
     </section>
   </main>
 </div>

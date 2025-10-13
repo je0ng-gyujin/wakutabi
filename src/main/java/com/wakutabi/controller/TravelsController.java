@@ -174,7 +174,13 @@ public class TravelsController {
         // 날짜 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter));
-        dto.setEndDate(LocalDate.parse(uploadDto.getEndDate(), formatter));
+        LocalDate endDate = LocalDate.parse(uploadDto.getEndDate(), formatter);
+        dto.setEndDate(endDate);
+        
+        // 모집종료날짜를 여행종료날짜와 동일하게 자동 설정
+        dto.setRecruitEndDate(endDate);
+        // 예: 여행종료 3일 전까지 모집
+        // dto.setRecruitEndDate(endDate.minusDays(3));
 
         // TravelEditDto에 태그 설정
         if (tags != null && !tags.isEmpty()) {
@@ -308,6 +314,13 @@ public class TravelsController {
                 images != null ? images.size() : 0);
             
             dto.setHostUserId(userId);
+            
+            // recruitEndDate가 null인 경우 endDate와 같게 설정
+            if (dto.getRecruitEndDate() == null && dto.getEndDate() != null) {
+                dto.setRecruitEndDate(dto.getEndDate());
+                log.info("recruitEndDate가 null이어서 endDate로 설정: {}", dto.getEndDate());
+            }
+            
             boolean isUpdated = travelUpdateDeleteService.updateTravelArticle(dto);
             
             if (!isUpdated) {

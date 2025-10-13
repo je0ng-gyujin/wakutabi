@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           })
           .catch(() => {
-            Swal.fire({
+            SwalDefault.fire({
               icon: "error",
               title: "네트워크 오류",
               text: "서버 통신 중 오류가 발생했습니다.",

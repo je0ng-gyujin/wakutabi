@@ -152,7 +152,7 @@ CREATE TABLE chat_participants (
     chat_room_id   BIGINT                              NOT NULL,                            -- 채팅방ID
     user_id        BIGINT                              NOT NULL,                            -- 채팅에 참여한 유저ID
     role           ENUM('HOST','PARTICIPANT')          NOT NULL DEFAULT 'PARTICIPANT',      -- 역할
-    status         ENUM('ACTIVE','LEFT','COMPLETED')   NOT NULL DEFAULT 'ACTIVE',           -- 참가상태
+    status         ENUM('ACTIVE','LEFT','COMPLETED','CANCELED')   NOT NULL DEFAULT 'ACTIVE',           -- 참가상태
     created_at     DATETIME                            NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
     deleted_at     DATETIME,                                                                -- 삭제일자
 

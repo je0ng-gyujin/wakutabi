@@ -61,7 +61,7 @@ public class TravelCanceledAndEndScheduler {
                         .tripArticleId(articleId)
                         .title("여행이 종료되었습니다. 리뷰를 남겨주세요!")
                         .type("TRAVEL_REVIEW_REQUEST")
-                        // .link("/review/write?tripId=" + articleId) // 링크 붙일 거면 활성화
+                        .link("/review/write?tripId=" + articleId)
                         .build();
                 try {
                     notificationService.insertNotification(reviewForEndTravel);

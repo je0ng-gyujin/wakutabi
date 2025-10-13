@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.wakutabi.domain.ReviewTravleDto;
+import com.wakutabi.domain.ReviewTravelDto;
 import com.wakutabi.domain.ReviewUserDto;
 import com.wakutabi.mapper.ReviewMapper;
 
@@ -25,7 +25,7 @@ public class ReviewService {
     private final ReviewMapper reviewMapper;
 
     @Transactional
-    public void insertReview(ReviewTravleDto reviewTravleDto) throws IOException {
+    public void insertReview(ReviewTravelDto reviewTravleDto) throws IOException {
         reviewMapper.insertTravleReview(reviewTravleDto);
 
         if (reviewTravleDto.getImageFiles() != null && !reviewTravleDto.getImageFiles().isEmpty()) {

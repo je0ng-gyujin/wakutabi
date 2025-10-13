@@ -3,12 +3,12 @@ package com.wakutabi.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.wakutabi.domain.ReviewTravleDto;
+import com.wakutabi.domain.ReviewTravelDto;
 
 @Mapper
 public interface ReviewMapper {
 
-    void insertTravleReview(ReviewTravleDto reviewTravleDto);
+    void insertTravleReview(ReviewTravelDto reviewTravleDto);
 
     void insertTravleReviewImage(@Param("reviewId") Long reviewId, @Param("fileName") String fileName);
 

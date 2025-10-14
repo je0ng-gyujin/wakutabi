@@ -9,8 +9,8 @@
 <link rel="stylesheet" th:href="@{/css/travel.css}">
 <title>여행 일정 검색</title>
 <th:block layout:fragment="head">
+  <script defer th:src="@{/js/travel.js}"></script>
 </th:block>
-<script defer th:src="@{/js/travel.js}"></script>
 </head>
 
 <body>
@@ -77,7 +77,8 @@
 			      <button class="accordion-button collapsed" type="button" 
 			              data-bs-toggle="collapse" 
 			              data-bs-target="#collapseRegion" 
-			              aria-expanded="false" aria-controls="collapseRegion">지역
+			              aria-expanded="false" aria-controls="collapseRegion">
+			        지역 <span id="selectedRegionText" class="ms-2 text-primary"></span>
 			      </button>
 			    </h2>
 			    <div id="collapseRegion" class="accordion-collapse collapse" 
@@ -181,9 +182,9 @@
 			  </div>
 			</div>
 			
-            <button class="btn btn-wakutabi-primary w-100 mb-2">필터
+            <button type="submit" class="btn btn-wakutabi-primary w-100 mb-2">필터
               적용</button>
-            <button class="btn btn-outline-secondary w-100">초기화</button>
+            <button type="button" id="resetFilters" class="btn btn-outline-secondary w-100">초기화</button>
           </div>
           </form>
         </div>

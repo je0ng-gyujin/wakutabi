@@ -1,9 +1,11 @@
 $(document).ready(function () {
-  // 🏷️ 사용 가능한 태그 동적 생성
+  // 사용 가능한 태그 동적 생성
   initializeAvailableTags();
 
-  // ✅ 태그 클릭 이벤트 (동적 생성된 태그에도 적용되도록 이벤트 위임 사용)
-  $(document).on("click", ".tag-item", function () {
+  // 태그 클릭 이벤트 (동적 생성된 태그에도 적용되도록 이벤트 위임 사용)
+  $(document).off("click", ".tag-item").on("click", ".tag-item", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     $(this).toggleClass("active");
     updateSelectedTags();
   });
@@ -192,7 +194,7 @@ $(document).ready(function () {
   const minInput = document.getElementById("minPrice");
   const maxInput = document.getElementById("maxPrice");
 
-  if (slider && typeof noUiSlider !== "undefined") {
+  if (slider && typeof noUiSlider !== "undefined" && !slider.noUiSlider) {
     noUiSlider.create(slider, {
       start: [0, 2000000],
       connect: true,
@@ -218,12 +220,14 @@ $(document).ready(function () {
 
   // 🏷️ 태그 매핑 테이블 (detail.js와 동일)
   function initializeAvailableTags() {
-    console.log("🏷️ initializeAvailableTags 함수 시작");
     const tagsContainer = document.getElementById("availableTags");
-    console.log("tagsContainer:", tagsContainer);
     
     if (!tagsContainer) {
-      console.log("❌ availableTags 컨테이너를 찾을 수 없습니다");
+      return;
+    }
+    
+    // 이미 태그가 생성되어 있으면 건너뜀 (중복 방지)
+    if (tagsContainer.children.length > 0) {
       return;
     }
 
@@ -240,11 +244,9 @@ $(document).ready(function () {
     };
 
     const raw = tagsContainer.getAttribute("data-tags");
-    console.log("data-tags 속성 값:", raw);
     
     if (raw) {
       const list = raw.split(",").map((t) => t.trim()).filter(Boolean);
-      console.log("파싱된 태그 리스트:", list);
       tagsContainer.innerHTML = "";
       
       list.forEach((key) => {
@@ -253,11 +255,7 @@ $(document).ready(function () {
         span.setAttribute("data-tag", key);
         span.textContent = tagMapping[key] || key;
         tagsContainer.appendChild(span);
-        console.log("태그 생성됨:", key, "->", tagMapping[key] || key);
       });
-      console.log("✅ 태그 생성 완료");
-    } else {
-      console.log("❌ data-tags 속성이 없거나 비어있습니다");
     }
   }
 
@@ -271,4 +269,73 @@ $(document).ready(function () {
     
     $("#tagsInput").val(selectedTags.join(","));
   }
+
+  // 🗾 지역 버튼 클릭 시 active 토글 및 regionInput 값 반영
+  $(document).on("click", ".region-item", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    // 모든 버튼에서 active 제거
+    $(".region-item").removeClass("active");
+    // 클릭한 버튼에 active 추가
+    $(this).addClass("active");
+    // hidden input에 값 반영
+    $("#regionInput").val($(this).val());
+    
+    // 선택된 지역명을 아코디언 헤더에 표시 ("지역" 텍스트를 지역명으로 대체)
+    const selectedRegionName = $(this).text();
+    $("#headingRegion button").html(selectedRegionName +
+        ' <span id="selectedRegionText" class="ms-2 text-primary"></span>');
+    
+    // 아코디언 닫기 - 강제로 닫기
+    const collapseElement = $('#collapseRegion');
+    const accordionButton = $('#headingRegion button');
+    
+    // Bootstrap collapse 이벤트 발생시키기
+    collapseElement.removeClass('show').addClass('collapse');
+    accordionButton.addClass('collapsed').attr('aria-expanded', 'false');
+  });
+
+  // 필터 폼 제출 시 태그/지역 값 최신화 보장
+  $("#filterForm").on("submit", function(e) {
+    // 태그 값 최신화
+    updateSelectedTags();
+    // 지역 값 최신화 (이미 버튼 클릭 시 반영되지만 혹시 몰라 재설정)
+    var selectedRegion = $(".region-item.active").val() || "";
+    $("#regionInput").val(selectedRegion);
+    // 폼은 그대로 제출
+  });
+  
+  // 필터 초기화 버튼 기능
+  $(document).on("click", "#resetFilters", function(e) {
+    e.preventDefault(); // 폼 제출 방지
+    e.stopPropagation();
+    
+    // 모든 태그 선택 해제
+    $(".tag-item").removeClass("active");
+    $("#tagsInput").val("");
+    
+    // 지역 선택 해제
+    $(".region-item").removeClass("active");
+    $("#regionInput").val("");
+    // 아코디언 헤더를 "지역"으로 되돌리기
+    $("#headingRegion button").html('지역 <span id="selectedRegionText" class="ms-2 text-primary"></span>');
+    
+    // 가격 초기화
+    $("#minPrice").val("");
+    $("#maxPrice").val("");
+    
+    // 날짜 초기화
+    $("#startDate").val("");
+    $("#endDate").val("");
+    
+    // 체크박스 초기화
+    $("input[type='checkbox']").prop("checked", false);
+    $("input[type='radio']").prop("checked", false);
+    
+    // 가격 슬라이더 초기화 (존재하는 경우)
+    const slider = document.getElementById("slider");
+    if (slider && slider.noUiSlider) {
+      slider.noUiSlider.set([0, 2000000]);
+    }
+  });
 });

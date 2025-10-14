@@ -33,7 +33,9 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
@@ -179,11 +181,15 @@ public class TravelsController {
     // ---------------------------------------------
     @PostMapping("/travelupload")
     @ResponseBody
-    public String uploadTravel(@RequestParam(name = "tags", required = false) String tags, TravelUploadDto uploadDto,
-            Principal principal, @ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
+    public Map<String, Object> uploadTravel(@RequestParam(name = "tags", required = false) String tags, TravelUploadDto uploadDto,
+                            Principal principal, @ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
+        Map<String, Object> result = new HashMap<>();
+    try {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
+            result.put("status", "error");
+            result.put("message", "로그인 후 이용 가능합니다.");
+            return result;
         }
 
         log.info("uploadDto: {}", uploadDto);
@@ -197,7 +203,9 @@ public class TravelsController {
                     objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class));
         } catch (IOException e) {
             log.error("이미지 순서 변환 실패", e);
-            return "이미지 순서 처리 실패";
+            result.put("status", "error");
+            result.put("message", "이미지 순서 처리 실패");
+            return result;
         }
 
         // 3. 게시글 DTO 생성 및 값 설정
@@ -216,7 +224,7 @@ public class TravelsController {
         dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter));
         LocalDate endDate = LocalDate.parse(uploadDto.getEndDate(), formatter);
         dto.setEndDate(endDate);
-        
+
         // 모집종료날짜를 여행종료날짜와 동일하게 자동 설정
         dto.setRecruitEndDate(endDate);
         // 예: 여행종료 3일 전까지 모집
@@ -257,7 +265,7 @@ public class TravelsController {
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
-                    imgDto.setImagePath(savePath.replaceFirst("C:/uploads", "/upload"));
+                    imgDto.setImagePath(savePath.replaceFirst("C:/upload", "/upload"));
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);
@@ -275,8 +283,16 @@ public class TravelsController {
 
         notificationService.insertNotification(noticeDto);
 
-        return "등록 완료! 생성된 글 ID: " + dto.getId();
-
+        result.put("status", "success");
+        result.put("message", "등록 완료! 생성된 글 ID: " + dto.getId());
+        result.put("redirectUrl", "/myTrips");
+        return result;
+    } catch (Exception e) {
+        log.error("여행 등록 중 오류 발생", e);
+        result.put("status", "error");
+        result.put("message", "여행 등록 중 오류가 발생했습니다.");
+        return result;
+    }
     }
 
     // ---------------------------------------------

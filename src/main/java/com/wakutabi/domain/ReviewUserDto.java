@@ -14,8 +14,9 @@ public class ReviewUserDto {
     
     @NotNull
     private Long reviewedUserId;
-
     @NotNull
     private int userRating;
+    private String username;       // 유저 이름
+    private String imagePath;
 
 }

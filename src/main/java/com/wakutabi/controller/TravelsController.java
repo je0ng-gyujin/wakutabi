@@ -2,6 +2,7 @@ package com.wakutabi.controller;
 
 import java.util.Arrays;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.domain.RequestStatusDto;
@@ -243,7 +244,7 @@ public class TravelsController {
 
                 if (!file.isEmpty()) {
                     // 업로드 폴더 보장
-                    String uploadDir = "C:/uploads/";
+                    String uploadDir = FilePathConfig.getUploadPath();
                     File dir = new File(uploadDir);
                     if (!dir.exists()) {
                         dir.mkdirs();

@@ -55,9 +55,8 @@ public class TravelsController {
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
     private final TravelDeadlineService travelDeadlineService; // 추가
     private final TravelUpdateDeleteMapper travelUpdateDeleteMapper;
-
     private final ChatService chatService;
-
+    private final ChatParticipantsService chatParticipantsService;
     private final TripService tripService;
     
     // 중복 요청 방지를 위한 캐시
@@ -274,6 +273,8 @@ public class TravelsController {
                 }
             }
         }
+        // 여행 등록시 채팅방 만들기, 채팅방에 호스트 넣기
+        chatService.setChatRoom(dto.getId(), dto.getHostUserId());
 
         // 6. 등록 된 여행에 대한 알림 테이블 저장
         NotificationDto noticeDto = new NotificationDto();

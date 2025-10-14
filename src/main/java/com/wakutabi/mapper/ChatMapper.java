@@ -9,7 +9,8 @@ import com.wakutabi.domain.ChatRoomDto;
 
 @Mapper
 public interface ChatMapper {
-	
+	// 여행 등록시 채팅방 만들기
+	int setChatRoom(ChatRoomDto chatRoom);
 	List<ChatRoomDto> findChatRoomsByUserId(@Param("userId") Long userId);
 	List<ChatMsgDto> findChatMsgByRoomId(@Param("roomId") Long roomId);
 	

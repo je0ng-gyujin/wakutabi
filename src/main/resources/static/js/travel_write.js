@@ -331,7 +331,7 @@
                 selectedTags.forEach((tagName, tagValue) => {
                     const tagSpan = document.createElement('span');
                     tagSpan.className = 'badge bg-primary me-1';
-                    tagSpan.textContent = tag.name;
+                    tagSpan.textContent = tagName;
                     previewTags.appendChild(tagSpan);
                 });
             }

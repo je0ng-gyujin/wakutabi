@@ -1,5 +1,6 @@
 package com.wakutabi.controller;
 
+import java.util.Arrays;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.ImageOrderDto;
@@ -41,6 +42,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class TravelsController {
 
+    // (검색 메서드에 사용) 사용 가능한 태그 목록 상수
+    private static final List<String> AVAILABLE_TAGS = Arrays.asList(
+        "foodie", "activity", "nature", "otaku", "shopping", 
+        "smallGroup", "largeGroup", "indoor", "outdoor"
+    );
+
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
@@ -56,6 +63,24 @@ public class TravelsController {
     private static final long REQUEST_TIMEOUT = 5000; // 5초
 
     private final NotificationService notificationService;
+
+    /**
+     * 영어 태그를 한글로 번역하는 메서드
+     */
+    private String translateTag(String tag) {
+        return switch (tag) {
+            case "foodie" -> "🍜 식도락";
+            case "activity" -> "🏃 액티비티";
+            case "nature" -> "🌲 자연";
+            case "otaku" -> "🎮 오타쿠";
+            case "shopping" -> "🛍️ 쇼핑";
+            case "smallGroup" -> "👤 소수팟";
+            case "largeGroup" -> "👥 다인팟";
+            case "indoor" -> "🏠 실내파";
+            case "outdoor" -> "🌞 실외파";
+            default -> tag; // 매핑되지 않은 태그는 원래 값 그대로
+        };
+    }
 
     // 검색
     @GetMapping("/search")
@@ -110,12 +135,26 @@ public class TravelsController {
             }
         }
 
-        // 3. 모델에 검색 결과와 필터 파라미터들을 다시 담아서 뷰로 전달합니다.
+        // 3. 각 여행의 태그를 한글로 변환
+        if (travels != null) {
+            for (TravelEditDto travel : travels) {
+                if (travel.getTags() != null) {
+                    List<String> translatedTags = travel.getTags().stream()
+                        .map(this::translateTag)
+                        .toList();
+                    travel.setTags(translatedTags);
+                }
+            }
+        }
+
+        // 4. 모델에 검색 결과와 필터 파라미터들을 다시 담아서 뷰로 전달합니다.
         model.addAttribute("travels", travels);
         model.addAttribute("query", query);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("region", region);
+        model.addAttribute("availableTags", AVAILABLE_TAGS);
+        model.addAttribute("totalCount", totalCount);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("tags", tags);

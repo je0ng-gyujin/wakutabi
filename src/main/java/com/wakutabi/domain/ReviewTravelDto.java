@@ -1,5 +1,6 @@
 package com.wakutabi.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -10,7 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class ReviewTravleDto {
+public class ReviewTravelDto {
 
     private Long id;
     
@@ -20,19 +21,22 @@ public class ReviewTravleDto {
      * @NotBlank: null이 아니고, 공백이 아닌지 검사 (문자열에만 사용)
      * @Size: 문자열의 길이를 제한
      */
-
+    private Long tripId;
     @NotNull(message = "별점을 선택해주세요.")
     private int rating;
 
     @NotBlank(message = "제목을 입력해주세요.")
     @Size(max = 50, message = "제목은 최대 50자까지 입력 가능합니다.")
     private String title;
-
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String location;
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
     @NotNull(message = "공개 여부를 선택해주세요.")
     private Boolean isPublic;
+
 
     /** 
      * MultipartFile: 스프링에서 파일 업로드를 처리하기 위한 인터페이스

@@ -21,6 +21,9 @@
         <p class="text-truncate mb-1" th:text="${notice.title}">알 수 없는 알림입니다.</p>
         <div th:switch="${notice.type}" class="text-secondary-emphasis text-truncate mb-1">
           <th:block th:case="'TRAVEL_UPLOADED'">여행 등록이 완료되었습니다.</th:block>
+          <th:block th:case="'TRAVEL_REVIEW_REQUEST'">리뷰를 작성해주세요</th:block>
+          <th:block th:case="'TRAVEL_CANCELED'">여행이 취소되었습니다.</th:block>
+
           <th:block th:case="'TRAVEL_REQUEST'">
             여행 참가 신청이 왔습니다.
             <div style="text-align:center; margin-top:8px;">

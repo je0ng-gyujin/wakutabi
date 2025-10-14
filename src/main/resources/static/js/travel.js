@@ -1,7 +1,11 @@
 $(document).ready(function () {
-  // ✅ 태그 클릭 이벤트
-  $(".tag-item").on("click", function () {
+  // 🏷️ 사용 가능한 태그 동적 생성
+  initializeAvailableTags();
+
+  // ✅ 태그 클릭 이벤트 (동적 생성된 태그에도 적용되도록 이벤트 위임 사용)
+  $(document).on("click", ".tag-item", function () {
     $(this).toggleClass("active");
+    updateSelectedTags();
   });
 
   // ✅ 체크박스·셀렉트 변경 시 필터 업데이트 (존재할 때만)
@@ -210,5 +214,61 @@ $(document).ready(function () {
         slider.noUiSlider.set([null, this.value || 2000000]);
       });
     }
+  }
+
+  // 🏷️ 태그 매핑 테이블 (detail.js와 동일)
+  function initializeAvailableTags() {
+    console.log("🏷️ initializeAvailableTags 함수 시작");
+    const tagsContainer = document.getElementById("availableTags");
+    console.log("tagsContainer:", tagsContainer);
+    
+    if (!tagsContainer) {
+      console.log("❌ availableTags 컨테이너를 찾을 수 없습니다");
+      return;
+    }
+
+    const tagMapping = {
+      foodie: "🍜 식도락",
+      activity: "🏃 액티비티", 
+      nature: "🌲 자연",
+      otaku: "🎮 오타쿠",
+      shopping: "🛍️ 쇼핑",
+      smallGroup: "👤 소수팟",
+      largeGroup: "👥 다인팟",
+      indoor: "🏠 실내파",
+      outdoor: "🌞 실외파",
+    };
+
+    const raw = tagsContainer.getAttribute("data-tags");
+    console.log("data-tags 속성 값:", raw);
+    
+    if (raw) {
+      const list = raw.split(",").map((t) => t.trim()).filter(Boolean);
+      console.log("파싱된 태그 리스트:", list);
+      tagsContainer.innerHTML = "";
+      
+      list.forEach((key) => {
+        const span = document.createElement("span");
+        span.className = "badge tag-item px-3 py-2 rounded-pill";
+        span.setAttribute("data-tag", key);
+        span.textContent = tagMapping[key] || key;
+        tagsContainer.appendChild(span);
+        console.log("태그 생성됨:", key, "->", tagMapping[key] || key);
+      });
+      console.log("✅ 태그 생성 완료");
+    } else {
+      console.log("❌ data-tags 속성이 없거나 비어있습니다");
+    }
+  }
+
+  // 선택된 태그들을 hidden input에 업데이트
+  function updateSelectedTags() {
+    const selectedTags = $(".tag-item.active")
+      .map(function () {
+        return $(this).data("tag");
+      })
+      .get();
+    
+    $("#tagsInput").val(selectedTags.join(","));
   }
 });

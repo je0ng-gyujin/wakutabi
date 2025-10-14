@@ -130,16 +130,10 @@
 			<!-- Quick Filter Tags -->
 			<h5 class="mb-3">주요 태그</h5>
 			<input type="hidden" id="tagsInput" name="tags">
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="foodie">🍜 식도락</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="activity">🏃 액티비티</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="nature">🌲 자연</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="otaku">🎮 오타쿠</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="shopping">🛍️ 쇼핑</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="smallGroup">👤 소수팟</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="largeGroup">👥 다인팟</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="indoor">🏠 실내파</span>
-                  <span class="badge tag-item px-3 py-2 rounded-pill" data-tag="outdoor">🌞 실외파</span>
+                <div id="availableTags" 
+                     th:attr="data-tags=${#strings.listJoin(availableTags, ',')}"
+                     class="d-flex flex-wrap gap-2 mb-3">
+                  <!-- JavaScript로 동적 생성됩니다 -->
                 </div>
             <!-- 참가인원 필터 -->
             <div class="mb-4">
@@ -200,7 +194,9 @@
           <div
             class="d-flex justify-content-between align-items-center mb-4">
             <div>
-              <span class="search-result-count">총 24개</span>의 여행 일정을
+              <span class="search-result-count"
+                    th:with="count=${totalCount != null ? totalCount : (totalElements != null ? totalElements : #lists.size(travels))}"
+                    th:text="'총 ' + ${count} + '개'"></span>의 여행 일정을
               찾았습니다
             </div>
             <div class="d-flex gap-2">

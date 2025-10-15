@@ -11,7 +11,7 @@
 
     </th:block>
     <link rel="stylesheet" th:href="@{/css/travel_edit.css}">
-    <script defer th:src="@{/js/travel_write.js}"></script>
+        <script src="/js/travel_write.js?v=1.6"></script>
 </head>
 
 <body>
@@ -79,18 +79,23 @@
                                 </h5>
                             
                                 <div class="row">
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-3 mb-3">
                                         <label for="startDate" class="form-label fw-bold">출발일 *</label>
                                         <input id="startDate" name="startDate" type="date" class="form-control"
                                                required>
                                     <div id="startDateError" class="text-danger" style="font-size: 0.8em; margin-top: 5px;"></div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-3 mb-3">
                                         <label for="endDate" class="form-label fw-bold">귀국일 *</label>
                                         <input id="endDate" name="endDate" type="date" class="form-control" required>
                                         <div id="endDateError" class="text-danger" style="font-size: 0.8em; margin-top: 5px;"></div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="recruitEndDate" class="form-label fw-bold">모집종료일 *</label>
+                                        <input id="recruitEndDate" name="recruitEndDate" type="date" class="form-control" required>
+                                        <div id="recruitEndDateError" class="text-danger" style="font-size: 0.8em; margin-top: 5px;"></div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
                                         <label class="form-label fw-bold">여행 기간</label>
                                         <span class="form-control" id="travelPeriod">자동 계산됩니다</span>
                                     </div>

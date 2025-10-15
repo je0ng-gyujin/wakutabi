@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.mapper.TravelImageMapper;
 
@@ -37,9 +38,9 @@ public class TravelImageService {
         List<TravelImageDto> existingImages = travelImageMapper.findByTripArticleId(tripArticleId);
         for (TravelImageDto img : existingImages) {
             travelImageMapper.deleteImageById(img.getId());
-            // 파일 시스템에서 삭제 (실제 경로에 맞게 수정)
+            // 파일 시스템에서 삭제
             if (img.getImagePath() != null) {
-                File file = new File("C:/uploads/" + img.getImagePath().replace("/upload/", ""));
+                File file = new File(FilePathConfig.getUploadPath() + img.getImagePath().replace("/upload/", ""));
                 if (file.exists())
                     file.delete();
             }
@@ -48,7 +49,7 @@ public class TravelImageService {
         if (newImages != null) {
             for (MultipartFile file : newImages) {
                 if (!file.isEmpty()) {
-                    String uploadDir = "C:/uploads/";
+                    String uploadDir = FilePathConfig.getUploadPath();
                     File dir = new File(uploadDir);
                     if (!dir.exists())
                         dir.mkdirs();
@@ -56,7 +57,7 @@ public class TravelImageService {
                     file.transferTo(new File(savePath));
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(tripArticleId);
-                    imgDto.setImagePath(savePath.replaceFirst("C:/uploads", "/upload"));
+                    imgDto.setImagePath(savePath.replace(FilePathConfig.getUploadPath(), "/upload/"));
                     imgDto.setOrderNumber(0); // 필요시 순서값 추가
                     travelImageMapper.insertTravelImage(imgDto);
                 }
@@ -70,7 +71,7 @@ public class TravelImageService {
         boolean fileDeleted = false;
         boolean dbDeleted = false;
         if (img != null && img.getImagePath() != null) {
-            File file = new File("C:/uploads" + img.getImagePath().replace("/upload", ""));
+            File file = new File(FilePathConfig.getUploadPath() + img.getImagePath().replace("/upload/", ""));
             if (file.exists()) {
                 fileDeleted = file.delete();
                 if (!fileDeleted) {
@@ -88,7 +89,7 @@ public class TravelImageService {
         if (newImages != null) {
             for (MultipartFile file : newImages) {
                 if (!file.isEmpty()) {
-                    String uploadDir = "C:/uploads/";
+                    String uploadDir = FilePathConfig.getUploadPath();
                     File dir = new File(uploadDir);
                     if (!dir.exists())
                         dir.mkdirs();
@@ -96,7 +97,7 @@ public class TravelImageService {
                     file.transferTo(new File(savePath));
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(tripArticleId);
-                    imgDto.setImagePath(savePath.replaceFirst("C:/uploads", "/upload"));
+                    imgDto.setImagePath(savePath.replace(FilePathConfig.getUploadPath(), "/upload/"));
                     imgDto.setOrderNumber(0); // 필요시 순서값 추가
                     travelImageMapper.insertTravelImage(imgDto);
                 }

@@ -220,12 +220,37 @@ public class TravelsController {
 
         // 날짜 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter));
+        LocalDate startDate = LocalDate.parse(uploadDto.getStartDate(), formatter);
         LocalDate endDate = LocalDate.parse(uploadDto.getEndDate(), formatter);
+        
+        dto.setStartDate(startDate);
         dto.setEndDate(endDate);
 
-        // 모집종료날짜를 여행종료날짜와 동일하게 자동 설정
-        dto.setRecruitEndDate(endDate);
+        // 모집종료날짜 처리 - 입력받은 값이 있으면 사용, 없으면 여행종료날짜와 동일하게 설정
+        LocalDate recruitEndDate;
+        if (uploadDto.getRecruitEndDate() != null && !uploadDto.getRecruitEndDate().isEmpty()) {
+            recruitEndDate = LocalDate.parse(uploadDto.getRecruitEndDate(), formatter);
+            
+            log.info("유효성 검사 - 모집종료일: {}, 출발일: {}, 오늘: {}", recruitEndDate, startDate, LocalDate.now());
+            
+            // 모집종료일 유효성 검사
+            if (recruitEndDate.isBefore(LocalDate.now())) {
+                log.warn("모집종료일이 오늘보다 이전: {} < {}", recruitEndDate, LocalDate.now());
+                result.put("status", "error");
+                result.put("message", "모집종료일은 오늘 이후로 선택해주세요.");
+                return result;
+            }
+            if (!recruitEndDate.isBefore(startDate)) {  // 수정: 모집종료일이 출발일과 같거나 늦으면 에러
+                log.warn("모집종료일이 출발일과 같거나 이후: {} >= {}", recruitEndDate, startDate);
+                result.put("status", "error");
+                result.put("message", "모집종료일은 출발일 이전으로 선택해주세요.");
+                return result;
+            }
+            
+            dto.setRecruitEndDate(recruitEndDate);
+        } else {
+            dto.setRecruitEndDate(endDate);  // 기본값: 여행종료일과 동일
+        }
         // 예: 여행종료 3일 전까지 모집
         // dto.setRecruitEndDate(endDate.minusDays(3));
 
@@ -371,6 +396,16 @@ public class TravelsController {
                 images != null ? images.size() : 0);
             
             dto.setHostUserId(userId);
+            
+            // 날짜 유효성 검사
+            if (dto.getRecruitEndDate() != null) {
+                if (dto.getRecruitEndDate().isBefore(LocalDate.now())) {
+                    return "모집종료일은 오늘 이후로 선택해주세요.";
+                }
+                if (dto.getStartDate() != null && !dto.getRecruitEndDate().isBefore(dto.getStartDate())) {  // 수정: 모집종료일이 출발일과 같거나 늦으면 에러
+                    return "모집종료일은 출발일 이전으로 선택해주세요.";
+                }
+            }
             
             // recruitEndDate가 null인 경우 endDate와 같게 설정
             if (dto.getRecruitEndDate() == null && dto.getEndDate() != null) {

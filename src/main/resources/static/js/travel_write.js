@@ -8,8 +8,10 @@
         // 날짜 입력 필드와 에러 메시지 요소
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
+        const recruitEndDateInput = document.getElementById('recruitEndDate');
         const startDateError = document.getElementById('startDateError');
         const endDateError = document.getElementById('endDateError');
+        const recruitEndDateError = document.getElementById('recruitEndDateError');
 
         // 예상 비용 입력 필드
         const estimatedCostInput = document.getElementById('estimatedCost');
@@ -29,6 +31,28 @@
         const previewAgeLimit = document.getElementById('previewAgeLimit');
         const previewGenderLimit = document.getElementById('previewGenderLimit');
 
+        // ⭐ 미리보기 텍스트 요소들을 한 줄로 표시되도록 스타일 적용
+        if (previewTitle) {
+            previewTitle.style.whiteSpace = 'nowrap';
+            previewTitle.style.overflow = 'hidden';
+            previewTitle.style.textOverflow = 'ellipsis';
+        }
+        if (previewDescription) {
+            previewDescription.style.whiteSpace = 'nowrap';
+            previewDescription.style.overflow = 'hidden';
+            previewDescription.style.textOverflow = 'ellipsis';
+        }
+        if (previewDates) {
+            previewDates.style.whiteSpace = 'nowrap';
+            previewDates.style.overflow = 'hidden';
+            previewDates.style.textOverflow = 'ellipsis';
+        }
+        if (previewRegion) {
+            previewRegion.style.whiteSpace = 'nowrap';
+            previewRegion.style.overflow = 'hidden';
+            previewRegion.style.textOverflow = 'ellipsis';
+        }
+
         // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
         function getTodayFormatted() {
             const today = new Date();
@@ -40,6 +64,129 @@
 
         // 페이지 로드 시 출발일의 최소 날짜를 오늘로 설정
         startDateInput.min = getTodayFormatted();
+        endDateInput.min = getTodayFormatted();
+        recruitEndDateInput.min = getTodayFormatted();
+
+        // ⭐ 날짜 유효성 검사 함수 (전역으로 노출)
+        window.validateDates = function validateDates() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let isValid = true;
+
+            // 출발일 검사
+            if (startDateInput.value) {
+                const startDate = new Date(startDateInput.value);
+                startDate.setHours(0, 0, 0, 0);
+                
+                if (startDate < today) {
+                    startDateError.textContent = '출발일은 오늘 이후로 선택해주세요.';
+                    startDateError.style.display = 'block';
+                    isValid = false;
+                } else {
+                    startDateError.style.display = 'none';
+                }
+            } else {
+                startDateError.style.display = 'none';
+            }
+
+            // 도착일 검사
+            if (endDateInput.value) {
+                const endDate = new Date(endDateInput.value);
+                endDate.setHours(0, 0, 0, 0);
+                
+                if (endDate < today) {
+                    endDateError.textContent = '도착일은 오늘 이후로 선택해주세요.';
+                    endDateError.style.display = 'block';
+                    isValid = false;
+                } else if (startDateInput.value) {
+                    const startDate = new Date(startDateInput.value);
+                    startDate.setHours(0, 0, 0, 0);
+                    
+                    if (endDate < startDate) {
+                        endDateError.textContent = '도착일은 출발일 이후로 선택해주세요.';
+                        endDateError.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        endDateError.style.display = 'none';
+                    }
+                } else {
+                    endDateError.style.display = 'none';
+                }
+            } else {
+                endDateError.style.display = 'none';
+            }
+
+            // 모집종료일 검사
+            if (recruitEndDateInput.value) {
+                const recruitEndDate = new Date(recruitEndDateInput.value);
+                recruitEndDate.setHours(0, 0, 0, 0);
+                
+                if (recruitEndDate < today) {
+                    recruitEndDateError.textContent = '모집종료일은 오늘 이후로 선택해주세요.';
+                    recruitEndDateError.style.display = 'block';
+                    isValid = false;
+                } else if (startDateInput.value) {
+                    const startDate = new Date(startDateInput.value);
+                    startDate.setHours(0, 0, 0, 0);
+                    
+                    if (recruitEndDate >= startDate) {  // 수정: 모집종료일이 출발일과 같거나 늦으면 에러
+                        recruitEndDateError.textContent = '모집종료일은 출발일 이전으로 선택해주세요.';
+                        recruitEndDateError.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        recruitEndDateError.style.display = 'none';
+                    }
+                } else {
+                    recruitEndDateError.style.display = 'none';
+                }
+            } else {
+                recruitEndDateError.style.display = 'none';
+            }
+
+            return isValid;
+        }; // window.validateDates 함수의 끝
+
+        // ⭐ 날짜 입력 필드에 이벤트 리스너 추가 (여러 이벤트 추가로 실시간 검증 보장)
+        
+        if (startDateInput) {
+            startDateInput.addEventListener('change', window.validateDates);
+            startDateInput.addEventListener('input', window.validateDates);
+            startDateInput.addEventListener('blur', window.validateDates);
+            startDateInput.addEventListener('keyup', window.validateDates);
+        }
+        
+        if (endDateInput) {
+            endDateInput.addEventListener('change', window.validateDates);
+            endDateInput.addEventListener('input', window.validateDates);
+            endDateInput.addEventListener('blur', window.validateDates);
+            endDateInput.addEventListener('keyup', window.validateDates);
+        }
+        
+        if (recruitEndDateInput) {
+            recruitEndDateInput.addEventListener('change', window.validateDates);
+            recruitEndDateInput.addEventListener('input', window.validateDates);
+            recruitEndDateInput.addEventListener('blur', window.validateDates);
+            recruitEndDateInput.addEventListener('keyup', window.validateDates);
+        }
+
+        // ⭐ 추가: 주기적으로 날짜 값 변화 체크 (date picker 사용 시를 위해)
+        let lastStartDate = startDateInput.value;
+        let lastEndDate = endDateInput.value;
+        let lastRecruitEndDate = recruitEndDateInput.value;
+        
+        setInterval(() => {
+            if (startDateInput.value !== lastStartDate || 
+                endDateInput.value !== lastEndDate || 
+                recruitEndDateInput.value !== lastRecruitEndDate) {
+                
+                lastStartDate = startDateInput.value;
+                lastEndDate = endDateInput.value;
+                lastRecruitEndDate = recruitEndDateInput.value;
+                
+                window.validateDates();
+            }
+        }, 500); // 0.5초마다 체크
 
         // 이미지 업로드 클릭/드래그 이벤트
         imageUploadArea.addEventListener('click', () => imageInput.click());
@@ -116,7 +263,6 @@
                 });
             });
             orderNumberInput.value = JSON.stringify(imageOrderData);
-            console.log(orderNumberInput.value);
             // ⭐ 이미지 삭제 시 미리보기 업데이트
             if (uploadedImages.children.length > 0) {
                 previewImage.src = uploadedImages.children[0].querySelector('img').src;
@@ -222,8 +368,15 @@
             e.preventDefault();
 
             // 폼 제출 전 최종적으로 날짜 유효성 검증
-            if (!validateDates()) {
-                endDateInput.focus();
+            if (!window.validateDates()) {
+                // 첫 번째 에러가 있는 필드로 포커스 이동
+                if (startDateError.style.display === 'block') {
+                    startDateInput.focus();
+                } else if (endDateError.style.display === 'block') {
+                    endDateInput.focus();
+                } else if (recruitEndDateError.style.display === 'block') {
+                    recruitEndDateInput.focus();
+                }
                 return;
             }
 

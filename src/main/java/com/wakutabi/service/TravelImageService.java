@@ -3,6 +3,7 @@ package com.wakutabi.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class TravelImageService {
+    public void updateOrderNumber(Map<String, Object> param) {
+        travelImageMapper.updateOrderNumber(param);
+    }
     public TravelImageDto findImageById(Long id) {
         return travelImageMapper.findImageById(id);
     }

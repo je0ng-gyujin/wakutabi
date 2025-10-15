@@ -28,8 +28,6 @@
         const previewDescription = document.getElementById('previewDescription');
         const previewParticipants = document.getElementById('previewParticipants');
         const previewTags = document.getElementById('previewTags');
-        const previewAgeLimit = document.getElementById('previewAgeLimit');
-        const previewGenderLimit = document.getElementById('previewGenderLimit');
 
         // ⭐ 미리보기 텍스트 요소들을 한 줄로 표시되도록 스타일 적용
         if (previewTitle) {
@@ -207,6 +205,7 @@
 
         let imageSortable = null;
         let imageOrderData = []; // 이미지 순서와 UUID 저장
+        const imageFilesMap = new Map(); // uuid -> File 매핑 (정렬 전송용)
 
         function handleFiles(files) {
             Array.from(files).forEach(file => {
@@ -227,9 +226,16 @@
                         <button class="remove-image">×</button>
                     `;
                     uploadedImages.appendChild(imageDiv);
+                    // uuid -> File 보관 (제출 시 DOM 순서대로 재구성)
+                    imageFilesMap.set(fileUuid, file);
                     updateImgOrder(); // 이미지 추가 후 순서 업데이트
                     const removeBtn = imageDiv.querySelector('.remove-image');
                     removeBtn.addEventListener('click', () => {
+                        // 삭제 시 맵에서도 제거
+                        const uuidToRemove = imageDiv.dataset.uuid;
+                        if (uuidToRemove) {
+                            imageFilesMap.delete(uuidToRemove);
+                        }
                         imageDiv.remove();
                         updateImgOrder();
                     });
@@ -398,6 +404,21 @@
             const estimatedCostValue = estimatedCostInput.value.replace(/,/g, '');
             const formData = new FormData(form);
             formData.set('estimatedCost', estimatedCostValue); // 쉼표가 제거된 값으로 덮어쓰기
+
+            // 이미지 전송 순서를 DOM 정렬 순서에 맞춰 재구성
+            // 기존 images 항목 제거 후, imageOrderData 기준으로 append
+            try {
+                formData.delete('images');
+            } catch (_) { /* 일부 브라우저 호환용 */ }
+
+            // imageOrderData는 DOM 순서대로 채워짐이 보장되지만, 안전하게 정렬
+            const ordered = [...imageOrderData].sort((a, b) => a.order - b.order);
+            for (const item of ordered) {
+                const file = imageFilesMap.get(item.uuid);
+                if (file) {
+                    formData.append('images', file, file.name);
+                }
+            }
 
             fetch(form.action, {
                 method: "POST",

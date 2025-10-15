@@ -32,8 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewDescription = document.getElementById('previewDescription');
     const previewParticipants = document.getElementById('previewParticipants');
     const previewTags = document.getElementById('previewTags');
-    const previewAgeLimit = document.getElementById('previewAgeLimit');
-    const previewGenderLimit = document.getElementById('previewGenderLimit');
 
     // ⭐ 미리보기 텍스트 요소들을 한 줄로 표시되도록 스타일 적용
     if (previewTitle) {
@@ -208,7 +206,17 @@ document.addEventListener('DOMContentLoaded', () => {
     imageInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
     let imageSortable = null;
-    let imageOrderData = []; // 이미지 순서와 UUID 저장
+    let imageOrderData = []; // 이미지 순서와 id 저장
+
+    // 기존 이미지도 드래그 앤 드롭 가능하도록 Sortable 초기화
+    if (uploadedImages && uploadedImages.children.length > 0) {
+        imageSortable = new Sortable(uploadedImages, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            handle: 'img',
+            onEnd: () => updateImgOrder()
+        });
+    }
 
     function handleFiles(files) {
         Array.from(files).forEach(file => {
@@ -259,14 +267,17 @@ document.addEventListener('DOMContentLoaded', () => {
         imageOrderData = [];
         imgs.forEach((imgDiv, index) => {
             const order = index + 1;
-            const uuid = imgDiv.dataset.uuid;
+            const id = imgDiv.dataset.id;
             imgDiv.dataset.order = order;
-            imageOrderData.push({
-                order: order,
-                uuid: uuid
-            });
+            if (id) {
+                imageOrderData.push({
+                    id: id,
+                    order: order
+                });
+            }
         });
-        orderNumberInput.value = JSON.stringify(imageOrderData);
+    // 기존 이미지 순서 정보 JSON으로 저장
+    orderNumberInput.value = JSON.stringify(imageOrderData);
         // ⭐ 이미지 삭제 시 미리보기 업데이트
         if (uploadedImages.children.length > 0) {
             previewImage.src = uploadedImages.children[0].querySelector('img').src;
@@ -431,7 +442,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 유효성 검사를 모두 통과하면 폼 제출
         const form = e.target;
-        
         // 중복 제출 방지
         const submitButton = form.querySelector('button[type="submit"]');
         if (submitButton.disabled) {
@@ -439,12 +449,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         submitButton.disabled = true;
         submitButton.textContent = '수정 중...';
-        
-        // ⭐ 예상 비용 필드의 값에서 쉼표 제거 후 전송
+        // 예상 비용 필드의 값에서 쉼표 제거 후 전송
         estimatedCostInput.value = estimatedCostInput.value.replace(/,/g, '');
-        
+        // 기존 이미지 순서 정보 최신화
+        updateImgOrder();
         const formData = new FormData(form);
-
         fetch(form.action, {
             method: "POST",
             body: formData

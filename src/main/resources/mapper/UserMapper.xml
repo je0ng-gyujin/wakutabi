@@ -47,7 +47,8 @@
 			rating,
 			gender,
 			introduce,
-			rating
+			rating,
+			image_path
 		from users 
 		where username = #{username}
 	</select>

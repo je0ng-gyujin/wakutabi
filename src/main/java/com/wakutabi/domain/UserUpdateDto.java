@@ -1,7 +1,8 @@
 package com.wakutabi.domain;
 	
 import java.time.LocalDate;
-	
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ public class UserUpdateDto {
 	private String introduce;
 	private double rating;
 	private String imagePath;
+	private LocalDateTime createdAt;
 
 	public enum Gender{
 		MALE,

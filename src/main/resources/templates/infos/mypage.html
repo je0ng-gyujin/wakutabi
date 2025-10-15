@@ -32,9 +32,9 @@
         <div class="col-md-9">
         <div class="mb-4" >
           <img th:src="${user.imagePath != null and user.imagePath != ''} 
-              ? @{${user.imagePath}} 
-              : @{/image/member.png}" 
-              class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
+            ? @{${user.imagePath}} 
+            : @{/image/member.png}" 
+            class="img-fluid rounded-circle profile-img" alt="프로필 이미지">
           <h2 class="form-control-plaintextname" th:text="${user.nickname}">닉네임</h2>
           <p class="rating mt-2" th:text="${user.rating}">3.5</p>
 		</div>

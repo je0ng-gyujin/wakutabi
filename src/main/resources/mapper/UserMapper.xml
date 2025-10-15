@@ -48,7 +48,8 @@
 			gender,
 			introduce,
 			rating,
-			image_path
+			image_path,
+			created_at
 		from users 
 		where username = #{username}
 	</select>

@@ -220,6 +220,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleFiles(files) {
         Array.from(files).forEach(file => {
+            // ⭐ 최대 5개 이미지 제한
+            const currentImageCount = uploadedImages.querySelectorAll('.uploaded-image').length;
+            if (currentImageCount >= 5) {
+                alert('이미지는 최대 5개까지만 업로드할 수 있습니다.');
+                return;
+            }
+            
             if (!file.type.startsWith('image/')) return;
             const reader = new FileReader();
             // 기존 이미지 처리 로직 ... (생략)

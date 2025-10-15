@@ -209,6 +209,17 @@
 
         function handleFiles(files) {
             Array.from(files).forEach(file => {
+                // ⭐ 최대 5개 이미지 제한
+                const currentImageCount = uploadedImages.querySelectorAll('.uploaded-image').length;
+                if (currentImageCount >= 5) {
+                    SwalDefault.fire({
+                        icon: 'warning',
+                        title: '이미지 개수 초과',
+                        text: '이미지는 최대 5개까지만 업로드할 수 있습니다.'
+                    });
+                    return;
+                }
+                
                 if (!file.type.startsWith('image/')) return;
                 const reader = new FileReader();
                 const fileUuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {

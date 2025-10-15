@@ -261,12 +261,10 @@ public class TravelsController {
                     String savePath = uploadDir + imageOrder.getUuid() + "_" + file.getOriginalFilename();
                     file.transferTo(new File(savePath));
 
-                    // savePath를 웹 접근 경로로 변환
-                    String savePathReplace = savePath.replaceFirst(uploadDir, "/upload/");
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
-                    imgDto.setImagePath(savePathReplace);
+                    imgDto.setImagePath(savePath.replaceFirst("C:/upload", "/upload"));
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);

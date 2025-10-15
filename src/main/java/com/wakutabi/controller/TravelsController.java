@@ -545,8 +545,7 @@ public class TravelsController {
     // 6. 여행 글 수정 페이지
     // ---------------------------------------------
     @GetMapping("/edit")
-    public String travelEdit(@RequestParam("id") Long id,
-            @ModelAttribute("userId") Long userId,
+    public String travelEdit(@RequestParam("id") Long id, @ModelAttribute("userId") Long userId,
             Model model, Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/login"; // 로그인 페이지로 리다이렉트

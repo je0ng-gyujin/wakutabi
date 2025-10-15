@@ -14,13 +14,13 @@
         <result property="maxParticipants" column="maxParticipants"/>
     </resultMap>
 
-	<select id="findUserIdByUsername" resultType="java.lang.Long">
-	    SELECT id 
-	    FROM users 
-	    WHERE username = #{username} 
-	    LIMIT 1
-	</select>
-	
+    <select id="findUserIdByUsername" resultType="java.lang.Long">
+        SELECT id 
+        FROM users 
+        WHERE username = #{username} 
+        LIMIT 1
+    </select>
+
     <select id="findRegisteredTripsByHostId" resultMap="TripListDtoMap">
         SELECT
         t.id AS trip_id,

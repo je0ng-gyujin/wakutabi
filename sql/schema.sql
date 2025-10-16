@@ -139,22 +139,22 @@ CREATE TABLE user_by_user_review (
 -- [채팅 관련]
 -- 채팅방
 CREATE TABLE chat_room (
-    id                 BIGINT    AUTO_INCREMENT PRIMARY KEY,   -- 채팅방ID
-    trip_article_id    BIGINT    NOT NULL,                     -- 여행일정ID
+    id                 BIGINT    AUTO_INCREMENT PRIMARY KEY,           -- 채팅방ID
+    trip_article_id    BIGINT    NOT NULL,                             -- 여행일정ID
     created_at         DATETIME  NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- 생성일자
-    deleted_at         DATETIME,                               -- 삭제일자
+    deleted_at         DATETIME,                                       -- 삭제일자
 
     CONSTRAINT  fk_chat_room_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES  trip_article (id)
 );
 -- 채팅참가자
 CREATE TABLE chat_participants (
-    id             BIGINT                              AUTO_INCREMENT PRIMARY KEY,          -- 채팅참가자ID
-    chat_room_id   BIGINT                              NOT NULL,                            -- 채팅방ID
-    user_id        BIGINT                              NOT NULL,                            -- 채팅에 참여한 유저ID
-    role           ENUM('HOST','PARTICIPANT')          NOT NULL DEFAULT 'PARTICIPANT',      -- 역할
+    id             BIGINT                                         AUTO_INCREMENT PRIMARY KEY,          -- 채팅참가자ID
+    chat_room_id   BIGINT                                         NOT NULL,                            -- 채팅방ID
+    user_id        BIGINT                                         NOT NULL,                            -- 채팅에 참여한 유저ID
+    role           ENUM('HOST','PARTICIPANT')                     NOT NULL DEFAULT 'PARTICIPANT',      -- 역할
     status         ENUM('ACTIVE','LEFT','COMPLETED','CANCELED')   NOT NULL DEFAULT 'ACTIVE',           -- 참가상태
-    created_at     DATETIME                            NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
-    deleted_at     DATETIME,                                                                -- 삭제일자
+    created_at     DATETIME                                       NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+    deleted_at     DATETIME,                                                                           -- 삭제일자
 
     CONSTRAINT fk_chat_participants_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id),
     CONSTRAINT fk_chat_participants_user_id      FOREIGN KEY (user_id)      REFERENCES users     (id)

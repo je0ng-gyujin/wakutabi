@@ -1,24 +1,26 @@
 package com.wakutabi.configure;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-	//본인 환경에 맞게 수정 바랍니다.
-	@Value("${file.upload.path}")
-	private String uploadPath;
+    // properties에서 웹 경로(/upload/)를 주입받음
+    @Value("${uploadPath}")
+    private String webPath;
 
-	//NonNull 어노테이션 추가로 NullPointerException 방지
-	@Override
-	public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+    // properties에서 실제 파일 저장 경로(C:/uploads/)를 주입받음
+    @Value("${file.upload.path}")
+    private String filePath;
 
-		registry.addResourceHandler("/upload/**").addResourceLocations("file:C:/uploads/");
-
-
-	}
+    @Override
+    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+        // 주입받은 webPath 변수를 사용
+        registry.addResourceHandler(webPath + "**")
+                // 'file:///'는 로컬 파일 시스템의 절대 경로를 나타내는 표준 방식입니다.
+                .addResourceLocations("file:///" + filePath);
+    }
 }
+

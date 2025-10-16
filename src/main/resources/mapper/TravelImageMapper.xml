@@ -15,4 +15,18 @@
         ORDER BY order_number ASC
     </select>
 
+    <select id="findImageById" resultType="com.wakutabi.domain.TravelImageDto">
+        SELECT * FROM trip_article_image WHERE id = #{id}
+    </select>
+
+    <delete id="deleteImageById" parameterType="long">
+        DELETE FROM trip_article_image WHERE id = #{id}
+    </delete>
+
+    <update id="updateOrderNumber" parameterType="map">
+        UPDATE trip_article_image
+        SET order_number = #{orderNumber}
+        WHERE id = #{id}
+    </update>
+    
 </mapper>

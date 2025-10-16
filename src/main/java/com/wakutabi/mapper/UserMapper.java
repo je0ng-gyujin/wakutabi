@@ -4,12 +4,13 @@ import com.wakutabi.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
 
 @Mapper
 public interface UserMapper {
 		// username검색
 		int countByUsername(@Param("username") String username);
+		// 이메일 중복 검사
+		int countByEmail(String email);
 		// 회원가입처리
 		int insertUser(SignUpDto user);
 		// 로그인 처리
@@ -31,5 +32,6 @@ public interface UserMapper {
 		
 	    void updateUserVerificationStatus(@Param("username") String username, @Param("isVerified") boolean isVerified);
 	    String findVerificationTokenByUsername(@Param("username") String username);
-
+	    	
+	    
 }

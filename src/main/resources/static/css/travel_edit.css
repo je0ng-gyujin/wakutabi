@@ -162,16 +162,25 @@
 
 .uploaded-images {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-	gap: 10px;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	gap: 15px;
 	margin-top: 15px;
 }
 
 .uploaded-image {
 	position: relative;
-	aspect-ratio: 1;
+	width: 120px;
+	height: 120px;
 	border-radius: 8px;
 	overflow: hidden;
+	border: 2px solid var(--primary-color);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: transform 0.3s ease;
+}
+
+.uploaded-image:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .uploaded-image img {
@@ -217,4 +226,16 @@
 .tag-item.selected {
 	background: var(--primary-color);
 	color: white;
+}
+
+/* 여행 상세 페이지 - 여행 세부 정보 정렬 수정 */
+
+.card-body .row {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* '일정' 항목의 텍스트를 중앙 정렬하여 가독성을 높입니다. */
+.card-body .row .col-md-2 {
+    text-align: center;
 }

@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.ChatMapper">
+<!-- 여행 등록시 채팅방 만들기 -->
+  <insert id="setChatRoom" parameterType="java.lang.Long" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO chat_room (trip_article_id, created_at) VALUES (#{tripArticleId}, NOW())
+  </insert>
   <select id="findChatRoomsByUserId" parameterType="java.lang.Long" resultType="com.wakutabi.domain.ChatRoomDto">
 SELECT
     r.id AS id,
     r.trip_article_id,
     p.role,
     ta.title,
+    ta.status AS trip_status,
     latest_sender.nickname AS latest_nickname,
     latest_message.message AS latest_message,
     latest_message.created_at AS latest_message_time
@@ -56,7 +61,7 @@ LIMIT 50
   </select>
   
   <insert id="insertChatMsgWhenText" parameterType="com.wakutabi.domain.ChatMsgDto" useGeneratedKeys="true" keyProperty="id">
-INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{roomId},#{message});
+INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{roomId},#{message})
   </insert>
   
   <select id="findChatMsgByMsgId" parameterType="java.lang.Long" resultMap="chatMsgResultMap">
@@ -87,13 +92,9 @@ INSERT INTO chat_message (user_id, chat_room_id, message) VALUES (#{userId},#{ro
     <result column="nickname" property="nickname"/>
     <result column="user_image_path" property="userImagePath"/>
   </resultMap>
-  <!--    -->
-  <select id="chatRoomFindByTripArticleId" parameterType="Long" resultType="Long">
+  <!-- 여행ID로 채팅룸ID찾기 -->
+  <select id="chatRoomFindByTripArticleId" parameterType="java.lang.Long" resultType="java.lang.Long">
       SELECT id FROM chat_room WHERE trip_article_id = #{tripArticleId}
   </select>
-  <!--    -->
-  <insert id="addUserToChatParticipants" parameterType="map">
-      INSERT INTO chat_participants (chat_room_id, user_id)
-      VALUES (#{chatRoomId}, #{applicantUserId})
-  </insert>
+
 </mapper>

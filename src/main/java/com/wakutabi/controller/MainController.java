@@ -2,6 +2,7 @@ package com.wakutabi.controller;
 
 import java.util.List;
 
+import com.wakutabi.domain.SignUpDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,6 @@ import com.wakutabi.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RequiredArgsConstructor
 @Controller
 public class MainController {
@@ -24,7 +24,8 @@ public class MainController {
 	}
 
 	@GetMapping("/signup")
-	public String signupForm() {
+	public String signupForm(Model model) {
+		model.addAttribute("SignUpDto", new SignUpDto());
 		return "users/signup";
 	}
 

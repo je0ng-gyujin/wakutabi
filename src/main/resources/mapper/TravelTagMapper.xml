@@ -19,4 +19,8 @@
         VALUES (#{tagName})
     </insert>
 	
+	<delete id="deleteTripTagsByTravelId">
+		DELETE FROM trip_tag_mid_trip_article WHERE trip_article_id = #{tripArticleId}
+	</delete>
+    
 </mapper>

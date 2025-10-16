@@ -1,9 +1,11 @@
 package com.wakutabi.domain;
 	
 import java.time.LocalDate;
-	
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 	
 	@Data
 	@NoArgsConstructor
@@ -17,11 +19,28 @@ import lombok.NoArgsConstructor;
 		private Boolean isPublic;
 		private String introduce;
 		private double rating;
+		private String imagePath;
 
-		public enum Gender{
-			MALE,
-			FEMALE,
-			OTHER,
-			NONE
-		}  
+
+@Data
+@NoArgsConstructor
+public class UserUpdateDto {
+	private Long id;
+	private String username; 
+	private String nickname;
+	private String email;
+	private LocalDate birth;
+	public Gender gender;
+	private Boolean isPublic;
+	private String introduce;
+	private double rating;
+	private String imagePath;
+	private LocalDateTime createdAt;
+
+	public enum Gender{
+		MALE,
+		FEMALE,
+		OTHER,
+		NONE
+	}
 }

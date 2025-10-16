@@ -1,11 +1,8 @@
 package com.wakutabi.controller;
 
 import com.wakutabi.domain.TravelJoinRequestDto;
-import com.wakutabi.service.ChatService;
-import com.wakutabi.service.NotificationService;
+import com.wakutabi.service.*;
 import com.wakutabi.domain.NotificationDto;
-import com.wakutabi.service.TravelJoinRequestService;
-import com.wakutabi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +22,7 @@ public class NotificationController {
     private final UserService userService;
     private final TravelJoinRequestService travelJoinRequestService;
     private final ChatService chatService;
+    private final ChatParticipantsService chatParticipantsService;
 
     @GetMapping("/read")
     public RedirectView markAsReadAndRedirect(@ModelAttribute("userId") Long userId, @RequestParam("id") Long notificationId, Principal principal) {
@@ -70,7 +68,7 @@ public class NotificationController {
         travelJoinRequestService.changeStatusToAccepted(statusToAccepted);
         // 채팅 참가자로 넣기
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(tripArticleId);
-        chatService.addUserToChatParticipants(chatRoomId, applicantUserId);
+        chatParticipantsService.addUserToChatParticipants(chatRoomId, applicantUserId);
         // 여행참가수락알림DTO 생성
         NotificationDto sendRequestAnswer = NotificationDto.builder()
                 .userId(applicantUserId)

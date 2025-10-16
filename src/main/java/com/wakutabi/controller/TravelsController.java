@@ -1,6 +1,8 @@
 package com.wakutabi.controller;
 
 import java.util.Arrays;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.ImageOrderDto;
@@ -34,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -369,6 +372,7 @@ public class TravelsController {
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @RequestParam(value = "deletedImageIds", required = false) String deletedImageIds,
             @RequestParam(value = "remainImageIds", required = false) String remainImageIds,
+            @RequestParam(value = "orderNumber", required = false) String imageOrdersJson,
             Principal principal, RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
@@ -426,7 +430,6 @@ public class TravelsController {
             // 1. 삭제/유지 이미지 관리
             List<Long> remainIds = parseIdList(remainImageIds);
             List<Long> deleteIds = parseIdList(deletedImageIds);
-            
             log.info("이미지 관리 - 남길 이미지 ID: {}, 삭제할 이미지 ID: {}", remainIds, deleteIds);
 
             List<TravelImageDto> allImages = travelImageService.findImagesByTripArticleId(dto.getId());
@@ -438,10 +441,36 @@ public class TravelsController {
                 }
             }
 
-            // 2. 새 이미지 업로드 (추가) - remainImageIds에 포함되지 않은 새 파일만 업로드
+            // 2. 기존 이미지 순서 업데이트 (imageOrdersJson)
+            if (imageOrdersJson != null && !imageOrdersJson.isEmpty()) {
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    List<Map<String, Object>> imageOrders = mapper.readValue(imageOrdersJson, new TypeReference<List<Map<String, Object>>>() {});
+                    for (Map<String, Object> item : imageOrders) {
+                        Long id = null;
+                        Integer order = null;
+                        if (item.get("id") != null) {
+                            id = Long.valueOf(item.get("id").toString());
+                        }
+                        if (item.get("order") != null) {
+                            order = Integer.valueOf(item.get("order").toString());
+                        }
+                        if (id != null && order != null) {
+                            Map<String, Object> param = new HashMap<>();
+                            param.put("id", id);
+                            param.put("orderNumber", order);
+                            travelImageService.updateOrderNumber(param);
+                        }
+                    }
+                } catch (Exception ex) {
+                    log.error("이미지 순서 업데이트 파싱 오류", ex);
+                }
+            }
+
+            // 3. 새 이미지 업로드 (추가) - remainImageIds에 포함되지 않은 새 파일만 업로드
             if (images != null && !images.isEmpty()) {
                 int actualImageCount = 0;
-                List<MultipartFile> newImages = new java.util.ArrayList<>();
+                List<MultipartFile> newImages = new ArrayList<>();
                 for (MultipartFile file : images) {
                     if (!file.isEmpty()) {
                         // remainImageIds에 포함된 파일명과 비교하여 중복 추가 방지
@@ -488,7 +517,7 @@ public class TravelsController {
 
     // 문자열로 된 ID 리스트를 Long 리스트로 변환하는 헬퍼 메서드
     private List<Long> parseIdList(String ids) {
-        List<Long> result = new java.util.ArrayList<>();
+        List<Long> result = new ArrayList<>();
         if (ids != null && !ids.isEmpty()) {
             for (String idStr : ids.split(",")) {
                 idStr = idStr.trim();

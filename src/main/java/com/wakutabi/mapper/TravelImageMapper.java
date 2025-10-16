@@ -1,6 +1,7 @@
 package com.wakutabi.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,6 +10,7 @@ import com.wakutabi.domain.TravelImageDto;
 
 @Mapper
 public interface TravelImageMapper {
+    void updateOrderNumber(Map<String, Object> param);
 
     void insertTravelImage(TravelImageDto travelImageDto);
 

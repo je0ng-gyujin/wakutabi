@@ -1,15 +1,21 @@
 package com.wakutabi.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.UUID;
 
 import com.wakutabi.domain.*;
 import com.wakutabi.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -19,6 +25,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UserController {
 
 	private final UserService userService;
+	// 1. properties의 실제 저장 경로(C:/uploads/)를 주입받습니다.
+    @Value("${file.upload.path}")
+    private String uploadPath;
+
+    // 2. properties의 웹 접근 경로(/upload/)를 주입받습니다.
+    @Value("${uploadPath}")
+    private String webPath;
 
 	@PostMapping("/signup")
 	public String signRegister(@Valid SignUpDto user, BindingResult bindingResult,
@@ -95,10 +108,37 @@ public class UserController {
         model.addAttribute("user", user);
         return "infos/info";
     }
-    // 회원정보 수정 처리
+ 
     @PostMapping("/update")
-    public String userInfoUpdate(UserUpdateDto user){
-       userService.userInfoUpdate(user);
+    public String userInfoUpdate(
+            UserUpdateDto user,
+            @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
+
+        // --- 파일 처리 로직 시작 ---
+        if (profileImage != null && !profileImage.isEmpty()) {
+            
+            // 업로드 디렉토리가 없으면 생성합니다.
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            String originalFilename = profileImage.getOriginalFilename();
+            // 3. 고유한 파일 이름 생성
+            String storedFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+            
+            // 4. 물리적인 경로에 파일을 저장합니다.
+            File saveFile = new File(uploadPath, storedFilename);
+            profileImage.transferTo(saveFile);
+
+            // 5. DB에는 웹 접근 경로를 저장합니다.
+            // 예: "/upload/고유한이름_파일.jpg"
+            user.setImagePath(webPath + storedFilename);
+        }
+        // --- 파일 처리 로직 끝 ---
+
+        userService.userInfoUpdate(user);
+
         return "redirect:/user/mypage";
     }
     // 문의 내역

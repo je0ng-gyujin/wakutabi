@@ -31,8 +31,8 @@
 
         <!-- 메인 컨텐츠 -->
         <div class="col-md-9">
-            <form method="post" th:action="@{/user/update}">
-                <input type="hidden" name="userId" value="1">
+            <form method="post" th:action="@{/user/update}" enctype="multipart/form-data">
+                <input type="hidden" name="id" th:value="${user.id}">
                 <!-- 프로필 이미지 업로드 영역 -->
 				<div class="mb-4 text-center position-relative d-inline-block">
 				    <!-- 이미지 태그 -->

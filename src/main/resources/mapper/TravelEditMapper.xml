@@ -60,9 +60,9 @@
             AND (
                 <foreach collection="groupSize" item="size" separator=" OR ">
                     <choose>
-                        <when test="size == 'small'">maxParticipants BETWEEN 2 AND 4</when>
-                        <when test="size == 'medium'">maxParticipants BETWEEN 5 AND 8</when>
-                        <when test="size == 'large'">maxParticipants >= 9</when>
+                        <when test="size == 'small'">max_participants BETWEEN 2 AND 4</when>
+                        <when test="size == 'medium'">max_participants BETWEEN 5 AND 8</when>
+                        <when test="size == 'large'">max_participants >= 9</when>
                     </choose>
                 </foreach>
             )

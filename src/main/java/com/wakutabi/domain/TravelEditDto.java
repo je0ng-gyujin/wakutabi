@@ -68,5 +68,33 @@ public class TravelEditDto {
                     .replace("30", "30대")
                     .replace("40", "40대")
                     .replace("MX", "혼합");
+
+    private int currentParticipants;
+    
+ // 신청 취소 버튼 활성화를 위해 반드시 필요한 필드입니다.
+    private Long joinRequestId; // <--- 이 줄을 추가
+
+    // ... (applicationStatus, maxParticipants 등 기존 필드들) ...
+    
+    // Getter 및 Setter도 추가해야 합니다. (Lombok을 사용한다면 @Getter, @Setter가 자동으로 처리)
+
+    public Long getJoinRequestId() {
+        return joinRequestId;
+    }
+
+    public void setJoinRequestId(Long joinRequestId) {
+        this.joinRequestId = joinRequestId;
+    }
+ // 추가해야 할 필드 (MyBatis 쿼리에서 NULL AS applicationStatus로 반환하는 값)
+    private String applicationStatus; 
+
+    // Getter와 Setter (Lombok을 사용한다면 @Getter, @Setter가 잘 적용되어 있는지 확인)
+    public String getApplicationStatus() {
+        return applicationStatus;
+    }
+
+    public void setApplicationStatus(String applicationStatus) {
+        this.applicationStatus = applicationStatus;
+
     }
 }

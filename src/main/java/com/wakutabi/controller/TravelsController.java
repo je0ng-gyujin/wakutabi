@@ -13,6 +13,7 @@ import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
 import com.wakutabi.domain.TravelUploadDto;
 
+
 import com.wakutabi.mapper.TravelUpdateDeleteMapper;
 import com.wakutabi.service.*;
 
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/schedule")
@@ -396,6 +399,7 @@ public class TravelsController {
             @RequestParam(value = "orderNumber", required = false) String imageOrdersJson,
             Principal principal, RedirectAttributes redirectAttributes) {
 
+
         if (principal == null) {
             return "로그인 후 이용 가능합니다.";
         }
@@ -648,38 +652,9 @@ public class TravelsController {
         return "travels/edit";
     }
 
-    // ...
-    @GetMapping("/myTrips")
-    public String MyTrips(Principal principal, Model model) {
-
-        if (principal == null) {
-            return "redirect:/login"; // 로그인 페이지로 리다이렉트
-        }
-        // 1. 현재 로그인된 사용자 ID를 가져옵니다.
-        String stringUsername = principal.getName(); // Spring Security는 String 반환
-
-        // 2. ⭐ Long 타입의 사용자 PK를 조회하는 로직을 사용 ⭐
-        Long currentUserId = tripService.findUserIdByUsername(stringUsername); // 👈 새 메서드 호출
-
-        if (currentUserId == null) {
-            log.error("로그인된 사용자 이름으로 DB PK를 찾을 수 없습니다: {}", stringUsername);
-            return "redirect:/login"; // 인증 문제로 간주하고 로그인 페이지로 리다이렉트
-        }
-
-        // 3. 사용자가 등록한 여행 목록을 서비스 계층에서 조회합니다.
-        List<TripListDto> registeredTrips = tripService.getRegisteredTrips(currentUserId);
-
-        model.addAttribute("registeredTrips", registeredTrips);
-
-        // (선택) 사용자가 신청한 여행 목록도 필요하다면 여기서 추가합니다.
-        // List<TripDto> appliedTrips = tripService.getAppliedTrips(currentUserId);
-        // model.addAttribute("appliedTrips", appliedTrips);
-
-        // myTrips.html 템플릿 반환
-        return "travels/myTrips";
-    }
-
-    // ⭐ 수정된 신청자 목록 조회 API ⭐
+	
+	
+ // ⭐ 수정된 신청자 목록 조회 API ⭐
     @GetMapping("/api/schedule/{tripArticleId}/applicants")
     @ResponseBody
     public List<TripJoinRequestDto> getApplicants(@PathVariable("tripArticleId") Long tripArticleId) {
@@ -687,37 +662,130 @@ public class TravelsController {
         return tripService.getPendingJoinRequests(tripArticleId);
     }
 
-    // ⭐ 수정된 신청 수락/거절 처리 API ⭐
+ // ⭐ 수정된 신청 수락/거절 처리 API ⭐
     @PutMapping("/api/request/{requestId}/status")
     @ResponseBody
     public ResponseEntity<?> updateJoinRequestStatus(
-            // ⭐ 이 부분 수정 ⭐
             @PathVariable("requestId") Long requestId,
             @RequestBody RequestStatusDto requestStatusDto,
             Principal principal) {
 
-        // 1. 현재 로그인된 사용자 ID를 Long으로 가져옵니다.
         Long currentUserId;
+        if (principal == null || principal.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 401 명시
+        }
+        
         try {
             // principal.getName()이 ID(Long)를 반환한다는 가정 하에 Long으로 파싱
-            currentUserId = Long.parseLong(principal.getName());
-        } catch (Exception e) {
+            currentUserId = Long.parseLong(principal.getName()); // ⬅️ 중복 파싱 제거, 하나만 남김
+        } catch (NumberFormatException e) {
             return ResponseEntity.status(401).body("인증된 사용자 정보를 찾을 수 없습니다.");
         }
 
         try {
-            // 2. 서비스 로직 호출
-            tripService.processJoinRequest(requestId, requestStatusDto.getStatus(), currentUserId);
-
-            // 3. 성공 응답 반환
-            return ResponseEntity.ok().build();
-
+            String status = requestStatusDto.getStatus().toUpperCase(); // 상태를 대문자로 통일
+            
+            // 요청 상태에 따라 로직 분기 (CANCELED는 신청자 취소/나가는 로직, 나머지는 호스트 수락/거절 로직)
+            if ("CANCELED".equals(status)) { 
+                tripService.cancelJoinRequest(requestId, currentUserId); 
+            
+            } else if ("ACCEPT".equals(status) || "REJECT".equals(status)) {
+                tripService.processJoinRequest(requestId, status, currentUserId);
+            } else {
+                return ResponseEntity.badRequest().body("유효하지 않은 상태 값입니다.");
+            }
+            
+            // 모든 처리 성공 시 응답 반환
+            return ResponseEntity.ok().build(); 
+            
         } catch (IllegalArgumentException | IllegalStateException e) {
-            log.warn("신청 처리 오류: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            // 유효하지 않은 요청 데이터나 상태(400)
+            log.warn("신청 처리 오류 (400): {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage()); 
+        } catch (RuntimeException e) { 
+            // 기타 런타임 오류 (500)
+            log.error("신청 처리 중 오류 발생 (500): {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(e.getMessage()); 
+        } catch (Exception e) { 
+            // 예상치 못한 서버 내부 오류 (500)
+            log.error("신청 처리 중 알 수 없는 오류 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("서버 내부 오류가 발생했습니다."); 
+        }
+    }
+    @PutMapping("/api/trip/article/{tripArticleId}/status")
+    @ResponseBody
+    public ResponseEntity<?> updateTripStatus(
+            // ⭐ 경로 변수가 tripArticleId 임에 유의 ⭐
+            @PathVariable("tripArticleId") Long tripArticleId, 
+            // RequestStatusDto를 재활용하여 status 값만 받습니다.
+            @RequestBody RequestStatusDto requestStatusDto, 
+            Principal principal) {
+        
+        Long currentUserId;
+        try {
+            currentUserId = Long.parseLong(principal.getName()); 
         } catch (Exception e) {
-            log.error("신청 처리 중 오류 발생: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).body("신청 처리 중 서버 오류가 발생했습니다.");
+            return ResponseEntity.status(401).body("인증된 사용자 정보를 찾을 수 없습니다.");
+        }
+        
+        try {
+            String newStatus = requestStatusDto.getStatus();
+            
+            // ⭐ 서비스 로직 호출 (단순화된 형태) ⭐
+            // Service에서 권한 검증과 상태 값 검증(OPEN/CLOSED)을 모두 처리합니다.
+            tripService.updateTripStatus(tripArticleId, newStatus, currentUserId);
+            
+            // 성공 응답 반환
+            return ResponseEntity.ok().body(newStatus.toUpperCase() + "로 상태 변경 완료."); 
+            
+        } catch (IllegalArgumentException e) {
+            // 유효하지 않은 상태 값(OPEN/CLOSED가 아님) 또는 ID 오류 등 (HTTP 400 Bad Request)
+            log.warn("여행 상태 변경 오류 (400): {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage()); 
+        } catch (RuntimeException e) { 
+            // 권한 없음(호스트 불일치) 또는 DB 업데이트 실패 등 (HTTP 500 Internal Server Error)
+            // 호스트 불일치와 같은 에러는 403 Forbidden으로 반환하는 것이 더 정확할 수 있으나, 기존 패턴 유지를 위해 500으로 처리합니다.
+            log.error("여행 상태 변경 중 오류 발생 (500): {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(e.getMessage()); 
+        } catch (Exception e) {
+            // 기타 예상치 못한 오류
+            log.error("여행 상태 변경 중 알 수 없는 오류 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알 수 없는 서버 오류가 발생했습니다.");
+        }
+    }
+    @PutMapping("/api/trip/article/{tripArticleId}/article-status")
+    public ResponseEntity<String> updateTripArticleStatus(
+        @PathVariable Long tripArticleId,
+        @RequestBody Map<String, String> statusUpdate, // { "status": "OPEN" } 또는 { "status": "CLOSED" }
+        Principal principal) {
+        
+        // 1. 현재 로그인된 사용자 ID를 가져옵니다. (호스트 권한 검증에 사용)
+        // Long currentHostId = tripService.findUserIdByUsername(principal.getName()); // 기존 메서드 사용 가정
+        Long currentHostId;
+        try {
+            currentHostId = tripService.findUserIdByUsername(principal.getName());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        
+        String newStatus = statusUpdate.get("status").toUpperCase();
+        
+        try {
+            tripService.updateTripArticleStatus(tripArticleId, newStatus, currentHostId);
+            
+            String message = (newStatus.equals("OPEN") ? "모집이 다시 시작되었습니다." : "모집이 마감되었습니다.");
+            return ResponseEntity.ok(message); // 성공 메시지 반환
+            
+        } catch (IllegalArgumentException e) {
+            log.warn("상태 변경 오류 (400): {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (RuntimeException e) {
+            // 권한 없음 또는 게시글 ID 오류
+            log.error("상태 변경 오류 (500): {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

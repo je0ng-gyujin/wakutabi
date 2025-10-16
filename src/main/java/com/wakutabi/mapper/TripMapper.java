@@ -11,7 +11,7 @@ import com.wakutabi.domain.TripListDto;
 @Mapper
 public interface TripMapper {
 
-	List<TripListDto> findRegisteredTripsByHostId(@Param("userId") Long userId);
+	List<TripListDto> findRegisteredTripsByHostId(@Param("hostId") Long userId);
 	
 	List<TripJoinRequestDto> findJoinRequestsByTripId(@Param("tripArticleId") Long tripArticleId);
 	
@@ -28,5 +28,17 @@ public interface TripMapper {
     
     // 4. 채팅방 참가자 추가
     int addChatParticipant(@Param("chatRoomId") Long chatRoomId, @Param("userId") Long userId);
+    
+    // 5. 채팅방 참가자 제거
+    int removeChatParticipant(@Param("chatRoomId") Long chatRoomId, @Param("userId") Long userId);
+    
+    // 사용자의 신청 상태 및 여행 상세 정보를 포함하는 리스트를 조회합니다.
+    List<TripListDto> selectAppliedTrips(@Param("userId") Long userId); 
+    
+    // 호스트 ID로 여행 게시글 작성자 ID를 조회 (권한 검증용)
+    Long findHostIdByTripArticleId(@Param("tripArticleId") Long tripArticleId); // <-- 추가
+    
+    //여행 게시글 상태 업데이트 (OPEN <-> CLOSED)
+    int updateTripArticleStatus(@Param("tripArticleId") Long tripArticleId, @Param("status") String status,@Param("hostUserId") Long hostUserId	);
 }
 

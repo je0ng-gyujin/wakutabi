@@ -20,6 +20,7 @@ public class TripJoinRequestDto {
     private int age;                  // 신청자 나이 (서비스에서 계산 필요)
     private String introduce;         // 신청자 자기소개
     
+    
     // 기타 필요한 정보 (선택 사항)
     // private List<String> userTags; // 신청자의 관심 태그
 }

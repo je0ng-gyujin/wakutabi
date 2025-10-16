@@ -32,5 +32,6 @@ public interface UserMapper {
 		
 	    void updateUserVerificationStatus(@Param("username") String username, @Param("isVerified") boolean isVerified);
 	    String findVerificationTokenByUsername(@Param("username") String username);
-
+	    	
+	    
 }

@@ -18,7 +18,7 @@
   
   <select id="findNotificationsById" parameterType="java.lang.Long" resultType="com.wakutabi.domain.NotificationDto">
     select * from system_notification
-    where user_id = #{userId} order by is_read asc, created_at desc
+    where user_id = #{userId} AND (expired_at IS NULL OR expired_at > NOW()) order by created_at desc
   </select>
 
   <select id="findNotificationById" parameterType="java.lang.Long" resultType="com.wakutabi.domain.NotificationDto">

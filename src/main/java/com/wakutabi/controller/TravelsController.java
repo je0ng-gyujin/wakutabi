@@ -1,6 +1,10 @@
 package com.wakutabi.controller;
 
+import java.util.Arrays;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.domain.ParticipantDto;
@@ -32,8 +36,11 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -43,14 +50,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TravelsController {
 
+    // (검색 메서드에 사용) 사용 가능한 태그 목록 상수
+    private static final List<String> AVAILABLE_TAGS = Arrays.asList(
+        "foodie", "activity", "nature", "otaku", "shopping", 
+        "smallGroup", "largeGroup", "indoor", "outdoor"
+    );
+
     private final TravelEditService travelEditService;
     private final TravelImageService travelImageService;
     private final TravelUpdateDeleteService travelUpdateDeleteService; // ⬅️ 추가
     private final TravelDeadlineService travelDeadlineService; // 추가
     private final TravelUpdateDeleteMapper travelUpdateDeleteMapper;
-
     private final ChatService chatService;
-
+    private final ChatParticipantsService chatParticipantsService;
     private final TripService tripService;
     
     // 중복 요청 방지를 위한 캐시
@@ -58,6 +70,24 @@ public class TravelsController {
     private static final long REQUEST_TIMEOUT = 5000; // 5초
 
     private final NotificationService notificationService;
+
+    /**
+     * 영어 태그를 한글로 번역하는 메서드
+     */
+    private String translateTag(String tag) {
+        return switch (tag) {
+            case "foodie" -> "🍜 식도락";
+            case "activity" -> "🏃 액티비티";
+            case "nature" -> "🌲 자연";
+            case "otaku" -> "🎮 오타쿠";
+            case "shopping" -> "🛍️ 쇼핑";
+            case "smallGroup" -> "👤 소수팟";
+            case "largeGroup" -> "👥 다인팟";
+            case "indoor" -> "🏠 실내파";
+            case "outdoor" -> "🌞 실외파";
+            default -> tag; // 매핑되지 않은 태그는 원래 값 그대로
+        };
+    }
 
     // 검색
     @GetMapping("/search")
@@ -112,12 +142,26 @@ public class TravelsController {
             }
         }
 
-        // 3. 모델에 검색 결과와 필터 파라미터들을 다시 담아서 뷰로 전달합니다.
+        // 3. 각 여행의 태그를 한글로 변환
+        if (travels != null) {
+            for (TravelEditDto travel : travels) {
+                if (travel.getTags() != null) {
+                    List<String> translatedTags = travel.getTags().stream()
+                        .map(this::translateTag)
+                        .toList();
+                    travel.setTags(translatedTags);
+                }
+            }
+        }
+
+        // 4. 모델에 검색 결과와 필터 파라미터들을 다시 담아서 뷰로 전달합니다.
         model.addAttribute("travels", travels);
         model.addAttribute("query", query);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("region", region);
+        model.addAttribute("availableTags", AVAILABLE_TAGS);
+        model.addAttribute("totalCount", totalCount);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("tags", tags);
@@ -142,11 +186,15 @@ public class TravelsController {
     // ---------------------------------------------
     @PostMapping("/travelupload")
     @ResponseBody
-    public String uploadTravel(@RequestParam(name = "tags", required = false) String tags, TravelUploadDto uploadDto,
-            Principal principal, @ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
+    public Map<String, Object> uploadTravel(@RequestParam(name = "tags", required = false) String tags, TravelUploadDto uploadDto,
+                            Principal principal, @ModelAttribute("userId") Long userId) throws IllegalStateException, IOException {
+        Map<String, Object> result = new HashMap<>();
+    try {
         // 1. 사용자 인증 및 기본 데이터 유효성 검사
         if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
+            result.put("status", "error");
+            result.put("message", "로그인 후 이용 가능합니다.");
+            return result;
         }
 
         log.info("uploadDto: {}", uploadDto);
@@ -160,7 +208,9 @@ public class TravelsController {
                     objectMapper.getTypeFactory().constructCollectionType(List.class, ImageOrderDto.class));
         } catch (IOException e) {
             log.error("이미지 순서 변환 실패", e);
-            return "이미지 순서 처리 실패";
+            result.put("status", "error");
+            result.put("message", "이미지 순서 처리 실패");
+            return result;
         }
 
         // 3. 게시글 DTO 생성 및 값 설정
@@ -176,12 +226,37 @@ public class TravelsController {
 
         // 날짜 변환
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        dto.setStartDate(LocalDate.parse(uploadDto.getStartDate(), formatter));
+        LocalDate startDate = LocalDate.parse(uploadDto.getStartDate(), formatter);
         LocalDate endDate = LocalDate.parse(uploadDto.getEndDate(), formatter);
-        dto.setEndDate(endDate);
         
-        // 모집종료날짜를 여행종료날짜와 동일하게 자동 설정
-        dto.setRecruitEndDate(endDate);
+        dto.setStartDate(startDate);
+        dto.setEndDate(endDate);
+
+        // 모집종료날짜 처리 - 입력받은 값이 있으면 사용, 없으면 여행종료날짜와 동일하게 설정
+        LocalDate recruitEndDate;
+        if (uploadDto.getRecruitEndDate() != null && !uploadDto.getRecruitEndDate().isEmpty()) {
+            recruitEndDate = LocalDate.parse(uploadDto.getRecruitEndDate(), formatter);
+            
+            log.info("유효성 검사 - 모집종료일: {}, 출발일: {}, 오늘: {}", recruitEndDate, startDate, LocalDate.now());
+            
+            // 모집종료일 유효성 검사
+            if (recruitEndDate.isBefore(LocalDate.now())) {
+                log.warn("모집종료일이 오늘보다 이전: {} < {}", recruitEndDate, LocalDate.now());
+                result.put("status", "error");
+                result.put("message", "모집종료일은 오늘 이후로 선택해주세요.");
+                return result;
+            }
+            if (!recruitEndDate.isBefore(startDate)) {  // 수정: 모집종료일이 출발일과 같거나 늦으면 에러
+                log.warn("모집종료일이 출발일과 같거나 이후: {} >= {}", recruitEndDate, startDate);
+                result.put("status", "error");
+                result.put("message", "모집종료일은 출발일 이전으로 선택해주세요.");
+                return result;
+            }
+            
+            dto.setRecruitEndDate(recruitEndDate);
+        } else {
+            dto.setRecruitEndDate(endDate);  // 기본값: 여행종료일과 동일
+        }
         // 예: 여행종료 3일 전까지 모집
         // dto.setRecruitEndDate(endDate.minusDays(3));
 
@@ -207,7 +282,7 @@ public class TravelsController {
 
                 if (!file.isEmpty()) {
                     // 업로드 폴더 보장
-                    String uploadDir = "C:/uploads/";
+                    String uploadDir = FilePathConfig.getUploadPath();
                     File dir = new File(uploadDir);
                     if (!dir.exists()) {
                         dir.mkdirs();
@@ -220,13 +295,15 @@ public class TravelsController {
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
-                    imgDto.setImagePath(savePath.replaceFirst("C:/uploads", "/upload"));
+                    imgDto.setImagePath(savePath.replaceFirst("C:/upload", "/upload"));
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);
                 }
             }
         }
+        // 여행 등록시 채팅방 만들기, 채팅방에 호스트 넣기
+        chatService.setChatRoom(dto.getId(), dto.getHostUserId());
 
         // 6. 등록 된 여행에 대한 알림 테이블 저장
         NotificationDto noticeDto = new NotificationDto();
@@ -238,8 +315,16 @@ public class TravelsController {
 
         notificationService.insertNotification(noticeDto);
 
-        return "등록 완료! 생성된 글 ID: " + dto.getId();
-
+        result.put("status", "success");
+        result.put("message", "등록 완료! 생성된 글 ID: " + dto.getId());
+        result.put("redirectUrl", "/myTrips");
+        return result;
+    } catch (Exception e) {
+        log.error("여행 등록 중 오류 발생", e);
+        result.put("status", "error");
+        result.put("message", "여행 등록 중 오류가 발생했습니다.");
+        return result;
+    }
     }
 
     // ---------------------------------------------
@@ -303,6 +388,7 @@ public class TravelsController {
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @RequestParam(value = "deletedImageIds", required = false) String deletedImageIds,
             @RequestParam(value = "remainImageIds", required = false) String remainImageIds,
+            @RequestParam(value = "orderNumber", required = false) String imageOrdersJson,
             Principal principal, RedirectAttributes redirectAttributes) {
 
         if (principal == null) {
@@ -331,6 +417,16 @@ public class TravelsController {
             
             dto.setHostUserId(userId);
             
+            // 날짜 유효성 검사
+            if (dto.getRecruitEndDate() != null) {
+                if (dto.getRecruitEndDate().isBefore(LocalDate.now())) {
+                    return "모집종료일은 오늘 이후로 선택해주세요.";
+                }
+                if (dto.getStartDate() != null && !dto.getRecruitEndDate().isBefore(dto.getStartDate())) {  // 수정: 모집종료일이 출발일과 같거나 늦으면 에러
+                    return "모집종료일은 출발일 이전으로 선택해주세요.";
+                }
+            }
+            
             // recruitEndDate가 null인 경우 endDate와 같게 설정
             if (dto.getRecruitEndDate() == null && dto.getEndDate() != null) {
                 dto.setRecruitEndDate(dto.getEndDate());
@@ -350,7 +446,6 @@ public class TravelsController {
             // 1. 삭제/유지 이미지 관리
             List<Long> remainIds = parseIdList(remainImageIds);
             List<Long> deleteIds = parseIdList(deletedImageIds);
-            
             log.info("이미지 관리 - 남길 이미지 ID: {}, 삭제할 이미지 ID: {}", remainIds, deleteIds);
 
             List<TravelImageDto> allImages = travelImageService.findImagesByTripArticleId(dto.getId());
@@ -362,10 +457,36 @@ public class TravelsController {
                 }
             }
 
-            // 2. 새 이미지 업로드 (추가) - remainImageIds에 포함되지 않은 새 파일만 업로드
+            // 2. 기존 이미지 순서 업데이트 (imageOrdersJson)
+            if (imageOrdersJson != null && !imageOrdersJson.isEmpty()) {
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    List<Map<String, Object>> imageOrders = mapper.readValue(imageOrdersJson, new TypeReference<List<Map<String, Object>>>() {});
+                    for (Map<String, Object> item : imageOrders) {
+                        Long id = null;
+                        Integer order = null;
+                        if (item.get("id") != null) {
+                            id = Long.valueOf(item.get("id").toString());
+                        }
+                        if (item.get("order") != null) {
+                            order = Integer.valueOf(item.get("order").toString());
+                        }
+                        if (id != null && order != null) {
+                            Map<String, Object> param = new HashMap<>();
+                            param.put("id", id);
+                            param.put("orderNumber", order);
+                            travelImageService.updateOrderNumber(param);
+                        }
+                    }
+                } catch (Exception ex) {
+                    log.error("이미지 순서 업데이트 파싱 오류", ex);
+                }
+            }
+
+            // 3. 새 이미지 업로드 (추가) - remainImageIds에 포함되지 않은 새 파일만 업로드
             if (images != null && !images.isEmpty()) {
                 int actualImageCount = 0;
-                List<MultipartFile> newImages = new java.util.ArrayList<>();
+                List<MultipartFile> newImages = new ArrayList<>();
                 for (MultipartFile file : images) {
                     if (!file.isEmpty()) {
                         // remainImageIds에 포함된 파일명과 비교하여 중복 추가 방지
@@ -412,7 +533,7 @@ public class TravelsController {
 
     // 문자열로 된 ID 리스트를 Long 리스트로 변환하는 헬퍼 메서드
     private List<Long> parseIdList(String ids) {
-        List<Long> result = new java.util.ArrayList<>();
+        List<Long> result = new ArrayList<>();
         if (ids != null && !ids.isEmpty()) {
             for (String idStr : ids.split(",")) {
                 idStr = idStr.trim();
@@ -469,8 +590,7 @@ public class TravelsController {
     // 6. 여행 글 수정 페이지
     // ---------------------------------------------
     @GetMapping("/edit")
-    public String travelEdit(@RequestParam("id") Long id,
-            @ModelAttribute("userId") Long userId,
+    public String travelEdit(@RequestParam("id") Long id, @ModelAttribute("userId") Long userId,
             Model model, Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/login"; // 로그인 페이지로 리다이렉트

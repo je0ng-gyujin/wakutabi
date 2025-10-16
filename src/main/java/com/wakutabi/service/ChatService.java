@@ -15,7 +15,17 @@ import lombok.RequiredArgsConstructor;
 public class ChatService {
 	
 	private final ChatMapper chatMapper;
-	
+	private final ChatParticipantsService chatParticipantsService;
+	// 여행 등록시 채팅방 만들기, 채팅방에 호스트 넣기
+	public void setChatRoom(Long tripArticleId, Long hostId){
+		// 여행 등록시 채팅방 만들기
+		ChatRoomDto chatRoom = new ChatRoomDto();
+		chatRoom.setTripArticleId(tripArticleId);
+		chatMapper.setChatRoom(chatRoom);
+		// 채팅방에 호스트 넣기
+		Long chatRoomId = chatRoom.getId();
+		chatParticipantsService.addUserToChatHost(chatRoomId, hostId);
+	};
 	public List<ChatRoomDto> findChatRoomsByUserId(Long userId){
 		return chatMapper.findChatRoomsByUserId(userId);
 	}

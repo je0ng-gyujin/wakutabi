@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.ChatParticipantsMapper">
+    <!-- 여행 등록시 호스트 채팅 참가자 테이블에 INSERT -->
+    <insert id="addUserToChatHost" parameterType="map">
+        INSERT INTO chat_participants (chat_room_id, user_id, role)
+        VALUES (#{chatRoomId}, #{hostId}, 'HOST')
+    </insert>
     <!-- 여행수락 받은 사람들 채팅참가자 테이블에 INSERT -->
     <insert id="addUserToChatParticipants" parameterType="map">
         INSERT INTO chat_participants (chat_room_id, user_id)

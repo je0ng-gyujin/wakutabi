@@ -1,8 +1,6 @@
 package com.wakutabi.configure;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -25,3 +23,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:///" + filePath);
     }
 }
+

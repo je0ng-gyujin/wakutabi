@@ -14,6 +14,7 @@ public class TravelUploadDto {
     private String title;
     private String startDate;
     private String endDate;
+    private String recruitEndDate;  // 모집종료일자 추가
     private Integer maxParticipants;
     private String ageLimit;
     private String genderLimit;

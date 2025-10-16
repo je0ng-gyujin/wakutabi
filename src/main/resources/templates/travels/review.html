@@ -24,23 +24,29 @@
         </div>
 
         <!-- Form Container -->
+        <form th:action="@{/travels/review}" method="post"
+              enctype="multipart/form-data" id="reviewForm">
+          <input type="hidden" name="tripId" th:value="${reviewTravelDto.tripId}">
         <div class="row justify-content-center">
           <div class="col-lg-8">
             <div class="form-container rounded-4 p-4 shadow-sm">
               <!-- 여행 일정 정보 -->
               <div class="schedule-info mb-4">
-                <h5 class="mb-2">🗼 도쿄 3박4일 먹방 여행</h5>
+                <h5 class="mb-2" th:text="${reviewTravelDto.title}">🗼 도쿄 3박4일 먹방 여행</h5>
                 <p class="mb-1">
-                  <i class="bi bi-calendar-event me-2"></i>2024년 12월 20일
-                  ~ 23일
+                  <i class="bi bi-calendar-event me-2"></i>
+                  <span th:text="${#temporals.format(reviewTravelDto.startDate,'yyyy년 MM dd일')}"></span>
+                  ~
+                  <span th:text="${#temporals.format(reviewTravelDto.endDate,'dd일')}"></span>
+                </p>
+                <p th:unless="${reviewTravelDto != null}" class="text-muted">
+                  여행 일정 정보가 없습니다.
                 </p>
                 <p class="mb-0">
-                  <i class="bi bi-geo-alt me-2"></i>도쿄, 일본
+                  <i class="bi bi-geo-alt me-2"></i>
+                  <span th:text="${reviewTravelDto.location}">도쿄, 일본</span>
                 </p>
               </div>
-
-              <form method="post" name="review" action="https://httpbin.org/post"
-                enctype="multipart/form-data" id="reviewForm">
                 <!-- 전체 평점 -->
                 <div class="mb-4">
                   <p class="form-label h5">여행 평점</p>
@@ -110,25 +116,27 @@
                   <p class="form-label h6">여행자 평가</p>
                   <p class="mb-2 text-muted">&#8680; 이번 여행에 함께한
                     여행자들은 어땠나요?</p>
-                  <div class="row">
-                    <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                  <div class="row" >
+                    <th:block th:each="user, iter : ${reviewTravelDto.reviewUsers}">
                       <div class="col-md-6 mb-3">
                           <img
-                              src="/image/testuser.jpg" style="width:55px; height:55px;"
-                              alt="참여자" class="participant-avatar"> <span
-                              class="ms-2">박지훈</span>
-                          <div class="rating-container">
-                              <input type="radio" th:id="'star'+${i}+'_5'" th:name="'user'+${i}" value="5" class="d-none">
-                              <label th:for="'star'+${i}+'_5'" class="rating-stars">★</label>
-                              <input type="radio" th:id="'star'+${i}+'_4'" th:name="'user'+${i}" value="4" class="d-none">
-                              <label th:for="'star'+${i}+'_4'" class="rating-stars">★</label>
-                              <input type="radio" th:id="'star'+${i}+'_3'" th:name="'user'+${i}" value="3" class="d-none">
-                              <label th:for="'star'+${i}+'_3'" class="rating-stars">★</label>
-                              <input type="radio" th:id="'star'+${i}+'_2'" th:name="'user'+${i}" value="2" class="d-none">
-                              <label th:for="'star'+${i}+'_2'" class="rating-stars">★</label>
-                              <input type="radio" th:id="'star'+${i}+'_1'" th:name="'user'+${i}" value="1" class="d-none">
-                              <label th:for="'star'+${i}+'_1'" class="rating-stars">★</label>
-                          </div>
+                                  th:src="${user.imagePath != null ? user.imagePath : '/image/default-user.jpg'}"
+                                  style="width:55px; height:55px;"
+                              alt="참여자" class="participant-avatar">
+                        <span class="ms-2" th:text="${user.username}">박지훈</span>
+                        <!-- 별점 5개 반복 -->
+                        <div class="rating-container">
+                          <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                            <input type="radio"
+                                   th:id="|star_${iter.index}_${i}|"
+                                   th:name="|userReviews[${iter.index}].rating|"
+                                   th:value="${i}"
+                                   class="d-none">
+                            <label th:for="|star_${iter.index}_${i}|" class="rating-stars">★</label>
+                          </th:block>
+                        </div>
+                        <!-- 평가 대상 ID hidden -->
+                        <input type="hidden" th:name="|userReviews[${iter.index}].reviewedUserId|" th:value="${user.reviewedUserId}">
                       </div>
                     </th:block>
                   </div>
@@ -167,10 +175,10 @@
                   <button type="submit"
                     class="btn btn-wakutabi-primary btn-lg">후기 등록</button>
                 </div>
-              </form>
             </div>
           </div>
         </div>
+        </form>
       </div>
     </div>
   </div>

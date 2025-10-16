@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.ChatMapper">
+<!-- 여행 등록시 채팅방 만들기 -->
+  <insert id="setChatRoom" parameterType="java.lang.Long" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO chat_room (trip_article_id, created_at) VALUES (#{tripArticleId}, NOW())
+  </insert>
   <select id="findChatRoomsByUserId" parameterType="java.lang.Long" resultType="com.wakutabi.domain.ChatRoomDto">
 SELECT
     r.id AS id,

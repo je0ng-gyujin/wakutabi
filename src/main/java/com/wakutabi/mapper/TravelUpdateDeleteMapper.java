@@ -17,7 +17,7 @@ public interface TravelUpdateDeleteMapper {
     // 게시글과 연관된 이미지를 먼저 삭제하는 메서드 (자식 테이블)
     int deleteTravelImages(@Param("id") Long id);
     // 여행 일정 상태 취소(CANCELED)로 변경
-    int canceledTravelArticle(@Param("id")Long id);
+    int canceledTravelArticle(@Param("id")Long id, @Param("hostUserId") Long hostUserId);
     // 여행일정status
     String statusByTravelArticleId(@Param("id")Long id);
 }

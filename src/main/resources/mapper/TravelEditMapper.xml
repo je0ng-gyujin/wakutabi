@@ -15,8 +15,8 @@
         SELECT host_user_id from trip_article where id = #{id}
     </select>
 
- 	<select id="findById" resultType="com.wakutabi.domain.TravelEditDto">
-        SELECT * FROM trip_article WHERE id = #{id}
+    	<select id="findById" resultType="com.wakutabi.domain.TravelEditDto">
+        SELECT * FROM trip_article WHERE id = #{id} AND deleted_at IS NULL
     </select>
     
     <select id="selectTravels" resultType="com.wakutabi.domain.TravelEditDto" parameterType="map">
@@ -24,6 +24,7 @@
     FROM trip_article
     <where>
         status != 'CANCELED'
+        AND deleted_at IS NULL
         <if test="query != null and query != ''">
             AND (title LIKE CONCAT('%', #{query}, '%') OR content LIKE CONCAT('%', #{query}, '%'))
         </if>
@@ -81,6 +82,7 @@
         FROM trip_article
         <where>
             status != 'CANCELED'
+            AND deleted_at IS NULL
 
             <if test="status != null and status != ''">
                 AND status = #{status}

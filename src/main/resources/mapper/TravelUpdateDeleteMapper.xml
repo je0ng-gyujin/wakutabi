@@ -24,7 +24,7 @@
             host_user_id = #{hostUserId}
     </update>
 
-    <update id="updateTraveImage">
+    <update id="updateTravelImage">
         UPDATE
             trip_article_image
         SET
@@ -42,14 +42,18 @@
             trip_article_id = #{id}
     </delete>
 
-    <delete id="deleteTravelArticle">
-        DELETE FROM
+    <!-- 물리 삭제 대신 소프트 삭제로 전환: 상태를 CANCELED로, 삭제일시 기록 -->
+    <update id="deleteTravelArticle">
+        UPDATE
             trip_article
+        SET
+            status = 'CANCELED',
+            deleted_at = NOW()
         WHERE
             id = #{id}
         AND
             host_user_id = #{hostUserId}
-    </delete>
+    </update>
 
     <!-- 여행상태 -->
     <select id="statusByTravelArticleId" resultType="string">
@@ -61,14 +65,17 @@
             id = #{id}
     </select>
 
-    <!-- 여행일정상태 취소로 변경 -->
+    <!-- 여행일정상태 취소로 변경 (소프트 삭제: 상태 변경 + 삭제일시 기록) -->
     <update id="canceledTravelArticle">
         UPDATE
             trip_article
         SET
-            status = 'CANCELED'
+            status = 'CANCELED',
+            deleted_at = NOW()
         WHERE
             id = #{id}
+        AND
+            host_user_id = #{hostUserId}
     </update>
 
 </mapper>

@@ -8,9 +8,6 @@
     <link rel="stylesheet" th:href="@{/css/travel_detail.css}" />
     <title>여행 상세</title>
     <script defer th:src="@{/js/travel_detail.js}"></script>
-    <meta name="_csrf">
-    <meta name="_csrf_header">
-
 </head>
 <body>
 <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
@@ -47,11 +44,8 @@
                                        class="btn btn-sm btn-outline-secondary" th:data-id="${travel.id}"
                                         th:data-status="${travel.status}">수정</a>
                                     <button id="canceledBtn" class="btn btn-sm btn-outline-warning"
-                                            th:data-id="${travel.id}" th:data-status="${travel.status}">취소
+                                        th:data-id="${travel.id}" th:data-status="${travel.status}">취소
                                     </button>
-                                    <button id="deleteBtn" class="btn btn-sm btn-outline-danger" 
-                                            th:data-id="${travel.id}">삭제
-									</button>
                                 </div>
                             </div>
 

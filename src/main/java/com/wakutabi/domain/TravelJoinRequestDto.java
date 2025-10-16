@@ -1,22 +1,33 @@
 package com.wakutabi.domain;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.Data;
 
 
 @Data
-@Builder
+@NoArgsConstructor
 public class TravelJoinRequestDto{
 
     private Long id;
     private Long tripArticleId;
     private Long hostUserId;
     private Long applicantUserId;
-    private Status  status;
+    private Status status;
 
     public enum Status{
         PENDING,
         ACCEPTED,
-        REJECTED   
+        REJECTED
+    }
+
+    @Builder
+    public TravelJoinRequestDto(Long id, Long tripArticleId, Long hostUserId,
+                                Long applicantUserId, Status status) {
+        this.id = id;
+        this.tripArticleId = tripArticleId;
+        this.hostUserId = hostUserId;
+        this.applicantUserId = applicantUserId;
+        this.status = status;
     }
 }

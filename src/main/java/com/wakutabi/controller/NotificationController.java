@@ -47,7 +47,7 @@ public class NotificationController {
 
     // 호스트가 참가수락 눌렀을 때
     @PostMapping("/accept")
-    public RedirectView acceptRequest(@RequestParam Long noticeId, @ModelAttribute("userId") Long userId){
+    public RedirectView acceptRequest(@RequestParam("noticeId") Long noticeId, @ModelAttribute("userId") Long userId){
         // 알림조회
         NotificationDto notice = notificationService.findNotificationById(noticeId);
         // 알림에 저장된 hostId와 현재 로그인 유저가 같은지 검증
@@ -59,12 +59,17 @@ public class NotificationController {
         Long applicantUserId = userService.getUserId(notice.getTitle());
         Long tripArticleId = notice.getTripArticleId();
         // 여행참가수락DTO
-        TravelJoinRequestDto statusToAccepted =TravelJoinRequestDto.builder()
-                .tripArticleId(tripArticleId)
-                .hostUserId(hostUserId)
-                .applicantUserId(applicantUserId)
-                .status(TravelJoinRequestDto.Status.ACCEPTED)
-                .build();
+        TravelJoinRequestDto statusToAccepted = new TravelJoinRequestDto();
+        statusToAccepted.setTripArticleId(tripArticleId);
+        statusToAccepted.setHostUserId(hostUserId);
+        statusToAccepted.setApplicantUserId(userId);
+        statusToAccepted.setStatus(TravelJoinRequestDto.Status.ACCEPTED);
+//        TravelJoinRequestDto statusToAccepted =TravelJoinRequestDto.builder()
+//                .tripArticleId(tripArticleId)
+//                .hostUserId(hostUserId)
+//                .applicantUserId(applicantUserId)
+//                .status(TravelJoinRequestDto.Status.ACCEPTED)
+//                .build();
         travelJoinRequestService.changeStatusToAccepted(statusToAccepted);
         // 채팅 참가자로 넣기
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(tripArticleId);

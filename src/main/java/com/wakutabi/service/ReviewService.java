@@ -24,6 +24,9 @@ public class ReviewService {
 
     private final ReviewMapper reviewMapper;
 
+    public ReviewTravelDto getTripAndParticipantsForReview(Long tripId){
+        return reviewMapper.getTripAndParticipantsForReview(tripId);
+    }
     @Transactional
     public void insertReview(ReviewTravelDto reviewTravleDto) throws IOException {
         reviewMapper.insertTravleReview(reviewTravleDto);

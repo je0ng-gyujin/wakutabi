@@ -11,7 +11,8 @@ public class ReviewUserDto {
      * reviewedUserId: 리뷰를 받는 사용자의 ID
      * userRating: 사용자가 준 별점
      */
-    
+    @NotNull
+    private Long reviewId; // 리뷰를 남긴 사람
     @NotNull
     private Long reviewedUserId;
     @NotNull

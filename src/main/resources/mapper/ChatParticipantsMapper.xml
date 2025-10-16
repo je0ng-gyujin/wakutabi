@@ -22,7 +22,7 @@
         WHERE ta.id = #{travelArticleId}
         AND cp.created_at &lt;=  ta.recruit_end_date
         AND (cp.deleted_at IS NULL OR cp.deleted_at > ta.recruit_end_date)
-        AND cp.status = 'ACTIVE'
+        AND cp.status = 'COMPLETED'
     </select>
     <!-- 여행 취소된 채팅 참가자들 상태 '취소' 변경 -->
     <update id="updateStatusToCanceled">

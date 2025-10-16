@@ -2,28 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wakutabi.mapper.ReviewMapper">
 
+    <!-- 리뷰에 쓰일 여행내용과 참가자들 ResultMap에 반환-->
+    <select id="getTripAndParticipantsForReview" resultMap="ReviewTravelResultMap">
+        SELECT
+            ta.id AS tripId,
+            ta.start_date AS startDate,
+            ta.end_date AS endDate,
+            ta.location,
+            cp.user_id AS reviewedUserId,
+            u.username,
+            u.imagePath
+        FROM trip_article ta
+        JOIN chat_room cr
+            ON ta.id = cr.trip_article_id
+        JOIN chat_participants cp
+            ON cr.id = cp.chat_room_id
+        JOIN users u
+            ON cp.user_id = u.id
+        WHERE ta.id = #{tripId} AND cp.status = 'COMPLETED'
+    </select>
+    <resultMap id="ReviewTravelResultMap" type="ReviewTravelDto">
+        <id property="tripId" column="tripId"/>
+        <result property="startDate" column="startDate"/>
+        <result property="endDate" column="endDate"/>
+        <result property="location" column="location"/>
+        <collection property="reviewUsers" ofType="ReviewUserDto">
+            <result property="reviewedUserId" column="reviewedUserId"/>
+            <result property="username" column="username"/>
+            <result property="imagePath" column="imagePath"/>
+        </collection>
+    </resultMap>
+    <!-- 여행리뷰 DB에 저장 -->
     <insert id="insertTravleReview" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO
-        trip_review
-        (rating, title, content, is_public, created_at, updated_at)
+        trip_reviews
+        (rating, title, content, is_public, created_at)
         VALUES
-        (#{rating}, #{title}, #{content}, #{isPublic}, NOW(), NOW())
+        (#{rating}, #{title}, #{content}, #{isPublic}, NOW())
     </insert>
-
+    <!-- 여행사진 DB에 저장 -->
     <insert id="insertTravleReviewImage">
         INSERT INTO
-        trip_review_image
+        trip_reviews_image
         (review_id, image_path)
         VALUES
         (#{reviewId}, #{fileName})
     </insert>
-
+    <!-- 참가자리뷰 DB에 저장 -->
     <insert id="insertUserReview">
         INSERT INTO
-        trip_review_user
-        (review_id, reviewed_user_id, rating)
+        user_by_user_review
+        (user_id, reviewed_user_id, rating)
         VALUES
-        (#{reviewId}, #{reviewedUserId}, #{rating})
+        (#{reviewId}, #{reviewedUserId}, #{userRating})
     </insert>
-
 </mapper>

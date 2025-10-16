@@ -118,7 +118,8 @@
                     여행자들은 어땠나요?</p>
                   <div class="row" >
                     <th:block th:each="user, iter : ${reviewTravelDto.reviewUsers}">
-                      <div class="col-md-6 mb-3">
+                      <!-- 로그인한 사용자의 ID가 다른 경우만 표시 -->
+                      <div class="col-md-6 mb-3" th:if="${user.reviewedUserId} != ${userId}">
                           <img
                                   th:src="${user.imagePath != null ? user.imagePath : '/image/default-user.jpg'}"
                                   style="width:55px; height:55px;"
@@ -129,7 +130,7 @@
                           <th:block th:each="i : ${#numbers.sequence(1,5)}">
                             <input type="radio"
                                    th:id="|star_${iter.index}_${i}|"
-                                   th:name="|userReviews[${iter.index}].rating|"
+                                   th:name="|userReviews[${iter.index}].userRating|"
                                    th:value="${i}"
                                    class="d-none">
                             <label th:for="|star_${iter.index}_${i}|" class="rating-stars">★</label>
@@ -137,6 +138,7 @@
                         </div>
                         <!-- 평가 대상 ID hidden -->
                         <input type="hidden" th:name="|userReviews[${iter.index}].reviewedUserId|" th:value="${user.reviewedUserId}">
+                        <input type="hidden" th:name="|userReviews[${iter.index}].reviewId|" th:value="${userId}">
                       </div>
                     </th:block>
                   </div>
@@ -154,13 +156,13 @@
                   <label class="form-label h6">공개 설정</label>
                   <div class="form-check">
                     <input class="form-check-input" type="radio"
-                      name="ispublic" id="public" value="true"
+                      name="isPublic" id="public" value="true"
                       checked> <label class="form-check-label"
                       for="public"> 전체 공개 - 모든 사용자가 볼 수 있습니다 </label>
                   </div>
                   <div class="form-check">
                     <input class="form-check-input" type="radio"
-                      name="ispublic" id="members" value="false">
+                      name="isPublic" id="members" value="false">
                     <label class="form-check-label" for="members">
                       동행자만 공개 - 함께 여행한 사람들만 볼 수 있습니다 </label>
                   </div>

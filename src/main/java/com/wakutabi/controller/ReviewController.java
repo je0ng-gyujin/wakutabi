@@ -1,5 +1,6 @@
 package com.wakutabi.controller;
 
+import com.wakutabi.domain.ReviewUserDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.service.TravelEditService;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import com.wakutabi.service.ReviewService;
 
 import jakarta.validation.Valid;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/travels")
 @RequiredArgsConstructor
@@ -29,29 +32,23 @@ public class ReviewController {
 
     // 리뷰 작성 폼
     @GetMapping("/review")
-    public String reviewForm(@RequestParam("tripId")Long tripId, Model model) {
+    public String reviewForm(@RequestParam("tripId")Long tripId, Model model,
+                             @ModelAttribute("userId")Long userId) {
         //tripId로 리뷰 대상 여행 정보 조회
-        TravelEditDto travel = travelEditService.findTravelById(tripId);
-        if(travel == null){
+        ReviewTravelDto reviewTravelDto = reviewService.getTripAndParticipantsForReview(tripId);
+        if(reviewTravelDto == null || reviewTravelDto.getTripId() == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 여행을 찾을 수 없습니다.");
         }
-        // DTO 초기화
-        ReviewTravelDto reviewTravelDto = new ReviewTravelDto();
-        reviewTravelDto.setTripId(tripId);
-
+        model.addAttribute("userId", userId);
         // ReviewTravleDto 객체를 모델에 추가하여 폼에서 사용
         model.addAttribute("reviewTravelDto", reviewTravelDto);
-        // TravleEditDto 객체를 모델에 추가하여 폼에서 사용
-        model.addAttribute("travel", travel);
-        // TODO: 나중에 비즈니스 로직을 구현하여 동행자 목록을 가져올 예정입니다.
-        // model.addAttribute("participants", participantList);
         return "travels/review";
     }
 
     // 리뷰 작성 처리
     @PostMapping("/review")
     public String reviewWrite(@Valid @ModelAttribute("reviewTravelDto") ReviewTravelDto reviewTravelDto,
-                                BindingResult bindingResult,
+                                BindingResult bindingResult, @ModelAttribute("userId")Long userId,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             log.warn("유효성 검사 실패: {}", bindingResult.getAllErrors());
@@ -59,6 +56,11 @@ public class ReviewController {
         }
 
         try {
+            if(reviewTravelDto.getReviewUsers() != null){
+                for(ReviewUserDto dto : reviewTravelDto.getReviewUsers()){
+                   dto.setReviewId(userId);
+                }
+            }
             reviewService.insertReview(reviewTravelDto);
             redirectAttributes.addFlashAttribute("successMessage", "후기가 성공적으로 저장되었습니다.");
             return "redirect:/travels/success"; // 리뷰 작성 후 메인 페이지로 리다이렉트

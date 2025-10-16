@@ -66,27 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }).then((result) => {
         if (!result.isConfirmed) return;
 
-        const csrfMeta = document.querySelector('meta[name="_csrf"]');
-        const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
-
-        if (!csrfMeta || !csrfHeaderMeta) {
-          SwalDefault.fire({
-            icon: "error",
-            title: "보안 설정 오류",
-            text: "취소를 진행할 수 없습니다. 잠시 후 다시 시도해주세요.",
-            confirmButtonText: "확인",
-          });
-          return;
-        }
-
-        const token = csrfMeta.getAttribute("content");
-        const header = csrfHeaderMeta.getAttribute("content");
-
         fetch(`/schedule/travelCanceled?id=${tripId}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            [header]: token,
           },
           body: JSON.stringify({ id: tripId }),
         })
@@ -99,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
               confirmButtonText: "확인",
             }).then(() => {
               if (msg.includes("완료")) {
-                location.href = `/schedule/detail?id=${tripId}`;
+                location.href = "/schedule/myTrips";
               }
             });
           })
@@ -130,27 +113,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }).then((result) => {
         if (!result.isConfirmed) return;
 
-        const csrfMeta = document.querySelector('meta[name="_csrf"]');
-        const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
-
-        if (!csrfMeta || !csrfHeaderMeta) {
-          SwalDefault.fire({
-            icon: "error",
-            title: "보안 설정 오류",
-            text: "삭제를 진행할 수 없습니다. 잠시 후 다시 시도해주세요.",
-            confirmButtonText: "확인",
-          });
-          return;
-        }
-
-        const token = csrfMeta.getAttribute("content");
-        const header = csrfHeaderMeta.getAttribute("content");
-
         fetch("/schedule/traveldelete", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            [header]: token,
           },
           body: JSON.stringify({ id: tripId }),
         })

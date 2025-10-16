@@ -346,6 +346,11 @@ public class TravelsController {
             isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
         }
 
+        // CANCELED(소프트 삭제) 글은 작성자 본인만 접근 가능하도록 제한
+        if ("CANCELED".equalsIgnoreCase(travel.getStatus()) && !isOwner) {
+            return "redirect:/error";
+        }
+
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
         // 조회한 게시글 정보를 모델에 담아 HTML로 전달
         model.addAttribute("travel", travel);
@@ -544,29 +549,44 @@ public class TravelsController {
         }
 
         Long hostUserId = userId; // Get the hostUserId from the authenticated user
-        boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
+    boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
 
         return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
     }
     // ...
     @PatchMapping("/travelCanceled")
     @ResponseBody
-    public String canceledTravel(@RequestParam("id")Long id, Principal principal,
-                                 RedirectAttributes redirectAttributes){
-        if(principal == null){
-            return "redirect:/login";
-        }
-        // 여행일정 status 상태 가져오기
-        String status = travelUpdateDeleteMapper.statusByTravelArticleId(id);
-        // 여행 상태가 MATCHED, CLOSED, CANCELED 면
-        if(status.equalsIgnoreCase("MATCHED") ||
-           status.equalsIgnoreCase("CLOSED")){
-            // js로 errorMessage 보내기
-            return "해당 여행은 ["+status+"] 상태로 취소할 수 없습니다.";
-        }
-        boolean isCanceled = travelUpdateDeleteService.canceledTravelArticle(id);
+    public String canceledTravel(@RequestParam("id")Long id, Principal principal){
+        try {
+            if(principal == null){
+                return "로그인이 필요합니다.";
+            }
+            
+            // Principal에서 username을 가져와 userId 조회
+            String username = principal.getName();
+            Long hostUserId = tripService.findUserIdByUsername(username);
+            
+            if(hostUserId == null){
+                log.error("사용자 정보 조회 실패 - username: {}", username);
+                return "사용자 정보를 찾을 수 없습니다.";
+            }
+            
+            // 여행일정 status 상태 가져오기
+            String status = travelUpdateDeleteMapper.statusByTravelArticleId(id);
+            
+            // 여행 상태가 MATCHED, CLOSED, CANCELED 면
+            if(status != null && (status.equalsIgnoreCase("MATCHED") ||
+               status.equalsIgnoreCase("CLOSED"))){
+                return "해당 여행은 ["+status+"] 상태로 취소할 수 없습니다.";
+            }
+            
+            boolean isCanceled = travelUpdateDeleteService.canceledTravelArticle(id, hostUserId);
 
-        return isCanceled ? "여행이 취소 완료되었습니다." : "여행 취소 도중 오류가 발생했습니다.";
+            return isCanceled ? "여행이 취소 완료되었습니다." : "여행 취소 도중 오류가 발생했습니다.";
+        } catch (Exception e) {
+            log.error("여행 취소 중 예외 발생 - tripId: {}, error: {}", id, e.getMessage(), e);
+            return "여행 취소 중 오류가 발생했습니다: " + e.getMessage();
+        }
     }
     // TravelsController.java
     // ...

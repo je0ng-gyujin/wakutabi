@@ -14,7 +14,7 @@
         ) cp
             ON cr.id = cp.chat_room_id
         SET ta.status = 'MATCHED'
-        WHERE ta.maxParticipants = cp.cnt
+        WHERE ta.max_participants = cp.cnt
         AND ta.id = #{travelArticleId}
         AND cr.id = #{chatRoomId}
     </update>

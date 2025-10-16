@@ -24,6 +24,71 @@ $(document).ready(
 					updateSearch();
 				});
 
+				// ⭐ 여행 상태 변경 버튼 이벤트 리스너 추가 ⭐
+				$('.js-update-status').on('click', function(e) {
+				    e.preventDefault();
+				    const button = $(this);
+				    const tripArticleId = button.data('trip-id');
+				    const currentStatus = button.data('current-status');
+				    
+				    // 현재 상태에 따라 다음 상태와 메시지를 결정
+				    let newStatus = '';
+				    let confirmMessage = '';
+				    
+				    if (currentStatus === 'OPEN') {
+				        newStatus = 'CLOSED';
+				        confirmMessage = '모집을 마감하시겠습니까?';
+				    } else if (currentStatus === 'CLOSED') {
+				        newStatus = 'OPEN';
+				        confirmMessage = '모집을 다시 시작하시겠습니까?';
+				    } else {
+				        alert('현재 상태(' + currentStatus + ')에서는 상태를 변경할 수 없습니다.');
+				        return;
+				    }
+				    
+				    if (!confirm(confirmMessage)) {
+				        return; // 사용자가 취소하면 종료
+				    }
+				    
+				    // 버튼 비활성화 및 로딩 표시
+				    button.prop('disabled', true).text('처리 중...');
+
+				    // API 호출 (PUT /api/trip/article/{tripArticleId}/status)
+				    $.ajax({
+				        url: `/api/trip/article/${tripArticleId}/article-status`,
+				        type: 'PUT',
+				        contentType: 'application/json',
+				        data: JSON.stringify({ status: newStatus }), // 새 상태를 JSON 형태로 전송
+				        
+				        success: function(response) {
+				            alert(response); // 서버에서 보낸 성공 메시지
+				            
+				            // ⭐ 화면 UI 업데이트 ⭐
+				            button.data('current-status', newStatus); // 데이터 속성 업데이트
+				            
+				            if (newStatus === 'CLOSED') {
+				                button.removeClass('btn-success').addClass('btn-danger');
+				                button.text('모집 다시 시작');
+				            } else { // newStatus === 'OPEN'
+				                button.removeClass('btn-danger').addClass('btn-success');
+				                button.text('모집 마감');
+				            }
+				            button.prop('disabled', false); // 버튼 다시 활성화
+				        },
+				        
+				        error: function(xhr) {
+				            console.error("상태 변경 실패:", xhr);
+				            // 오류 메시지를 서버 응답에서 가져오거나 기본 메시지 사용
+				            const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : xhr.responseText;
+				            alert('상태 변경 중 오류가 발생했습니다: ' + errorMessage);
+				            
+				            // 실패 시 버튼을 원래 상태로 복구
+				            const originalText = currentStatus === 'OPEN' ? '모집 마감' : '모집 다시 시작';
+				            button.prop('disabled', false).text(originalText);
+				        }
+				    });
+				});
+				
 			function updateSearch() {
 				// 선택된 태그들
 				var selectedTags = [];
@@ -325,6 +390,123 @@ $(document).ready(
 
 							       container.html(finalHtml);
 							   }
+							   // 1. 버튼 클릭 이벤트 핸들러 추가
+							   $(document).on('click', '.js-participant-toggle', function(e) {
+							       e.preventDefault();
+							       
+							       // 버튼 대신 클릭된 영역에서 trip ID를 가져옵니다.
+							       const tripArticleId = $(this).data('trip-id'); 
+							       
+							       // 참여자 목록 컨테이너를 선택합니다.
+							       const container = $(`#participants-container-${tripArticleId}`); 
+
+							       // 현재 열려있는지 확인하고 닫거나 엽니다.
+							       if (container.is(':visible')) {
+							           container.slideUp(200);
+							       } else {
+							           // 이미 구현한 참여자 목록 가져오기 함수를 호출합니다.
+							           fetchParticipants(tripArticleId, container);
+							       }
+							   });
+
+							   // 2. 참여자 목록을 가져오는 함수 정의
+							   function fetchParticipants(tripArticleId, container) {
+							       // 로딩 스피너 표시 및 아코디언 열기
+							       container.html('<div class="p-3 text-center"><i class="bi bi-arrow-clockwise spin me-2"></i> 로딩 중...</div>')
+							                .slideDown(200);
+
+							       $.ajax({
+							           url: `/api/schedule/${tripArticleId}/participants`, // ⭐ 새로운 API 엔드포인트
+							           type: 'GET',
+							           success: function(participants) {
+							               renderParticipantsList(participants, container);
+							           },
+							           error: function(xhr) {
+							               container.html('<div class="p-3 text-center text-danger">참여자 목록을 불러오는데 실패했습니다.</div>');
+							               console.error("참여자 목록 로딩 오류:", xhr);
+							           }
+							       });
+							   }
+
+							   // 3. 참여자 목록을 HTML로 렌더링하는 함수 정의
+							   function renderParticipantsList(participants, container) {
+							       let html = '';
+
+							       if (participants && participants.length > 0) {
+							           participants.forEach(participant => {
+							               // ⭐ 참여자 DTO (User DTO와 유사) 필드에 맞게 HTML 구성 ⭐
+							               html += `
+							                   <div class="participant-item card-body d-flex justify-content-between align-items-center border-bottom py-2">
+							                       <div>
+							                           <span class="fw-bold">${participant.nickname}</span> 
+							                           <span class="text-muted small">(${participant.gender} / ${participant.age}세)</span>
+							                           <span class="badge bg-secondary ms-2">${participant.role === 'HOST' ? '호스트' : '참여자'}</span>
+							                       </div>
+							                   </div>
+							               `;
+							           });
+							       } else {
+							           html = '<div class="p-3 text-center text-muted">현재 참여 중인 인원이 없습니다.</div>';
+							       }
+
+							       container.html(html);
+							   }
+
+							   // 5. 신청 취소/여행 나가기 버튼 클릭 이벤트 리스너
+							   $(document).on('click', '.btn-cancel-request', function() {
+							       const button = $(this);
+							       const requestId = button.data('request-id'); // 2단계에서 추가한 Request ID
+							       const currentStatus = button.text(); // '신청 취소' 또는 '여행 나가기'
+							       
+							       // 최종 확인 메시지
+							       if (!confirm(`정말로 ${currentStatus}하시겠습니까? 이 작업은 되돌릴 수 없습니다.`)) {
+							           return;
+							       }
+							       
+							       // 버튼 비활성화 및 텍스트 변경
+							       button.prop('disabled', true).text('처리 중...');
+
+							       // 💡 서버에 요청을 보낼 API 경로. 참가 요청 ID를 사용합니다.
+							       const apiUrl = `/schedule/api/request/${requestId}/status`; 
+							       
+							       $.ajax({
+							           url: apiUrl,
+							           type: 'PUT', // 상태 변경은 PUT을 사용합니다.
+							           contentType: 'application/json',
+							           data: JSON.stringify({ status: 'CANCELED' }), // 상태를 CANCELED로 변경 요청
+							           
+							           // Spring Security 사용 시 CSRF 토큰을 헤더에 포함해야 합니다.
+							           // beforeSend: function(xhr) {
+							           //     xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="_csrf"]').attr('content'));
+							           // },
+							           
+							           success: function(response) {
+							               alert(`${currentStatus}가 성공적으로 처리되었습니다.`);
+							               
+							               // 6. 성공 후, 카드 상태 업데이트 및 버튼 제거
+							               const card = button.closest('.schedule-card');
+							               
+							               // 뱃지 상태를 REJECTED (거절)과 비슷한 색상으로 변경하거나 '취소됨'으로 표시
+							               const statusBadge = card.find('.badge.ms-2');
+							               statusBadge.removeClass('bg-warning bg-success text-dark').addClass('bg-secondary');
+							               statusBadge.text('취소됨');
+							               
+							               // 버튼 제거
+							               button.fadeOut(300, function() {
+							                   $(this).remove();
+							               });
+							               
+							               // (Optional) 현재 참여 인원 수를 -1 업데이트하는 로직 추가 (참여 확정 상태였을 경우)
+							               // 이는 서버에서 응답 시 'CANCELED' 이전 상태를 알려줘야 더 정확합니다.
+							           },
+							           error: function(xhr, status, error) {
+							               console.error("취소 처리 실패:", error);
+							               alert(`취소 처리 중 오류가 발생했습니다: ${xhr.responseJSON ? xhr.responseJSON.message : '서버 오류'}`);
+							               // 실패 시 버튼을 다시 활성화 및 텍스트 복구
+							               button.prop('disabled', false).text(currentStatus);
+							           }
+							       });
+							   });
 		});
 		
 		document.querySelectorAll('.region-item').forEach(item => {

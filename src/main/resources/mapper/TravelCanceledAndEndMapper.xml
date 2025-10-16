@@ -6,7 +6,7 @@
         SELECT id
         FROM trip_article
         WHERE status IN ('OPEN','MATCHED')
-        AND NOW() >= end_date
+        AND NOW() >= recruit_end_date
     </select>
     <!-- 현재 CANCELED 여행 ID 찾기 -->
     <select id="findCanceledArticleIds" resultType="long">

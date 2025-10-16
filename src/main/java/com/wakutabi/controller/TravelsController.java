@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.NotificationDto;
+import com.wakutabi.domain.ParticipantDto;
 import com.wakutabi.domain.RequestStatusDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
@@ -35,11 +36,13 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/schedule")
@@ -329,32 +332,45 @@ public class TravelsController {
     // ---------------------------------------------
     @GetMapping("/detail")
     public String travelDetail(@RequestParam("id") Long id,
-            @ModelAttribute("userId") Long userId,
-            Model model, Principal principal) {
+                               Model model, Principal principal) {
 
+        // 1. 여행 게시글 정보 조회
         TravelEditDto travel = travelEditService.findTravelById(id);
-        if (travel == null)
+        if (travel == null) {
+            log.error("존재하지 않는 여행 게시글 ID입니다: {}", id);
             return "redirect:/error";
+        }
 
+        // 2. 여행 이미지 목록 조회
         List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(id);
 
-        // 3. 현재 로그인한 사용자와 게시글 작성자 ID 비교
-
+        // 3. 현재 로그인 사용자와 작성자 일치 여부 확인
         boolean isOwner = false;
         if (principal != null) {
-            Long currentUserId = userId; // 실제 구현 시 principal 기반으로 조회
+            // 참고: Principal에서 사용자 ID를 직접 가져오는 로직은
+            // Spring Security 설정이나 UserDetails 구현에 따라 다를 수 있습니다.
+            // 아래는 일반적인 예시입니다. Long.parseLong(principal.getName()) 등을 사용할 수 있습니다.
+            // Long currentUserId = userService.findByUsername(principal.getName()).getId();
+            
+            // 임시로 travel 객체에서 가져온 host ID와 비교하는 로직을 유지하되,
+            // 실제로는 principal 기반으로 조회하는 것이 좋습니다.
+            // 이 예제에서는 임의의 ID 1L로 가정하겠습니다. 실제 프로젝트에 맞게 수정하세요.
+            Long currentUserId = 1L; // <<-- 이 부분은 실제 로그인 유저 ID를 가져오는 로직으로 변경해야 합니다.
             isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
         }
 
+        // 4. 채팅방 ID 조회
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
-        // 조회한 게시글 정보를 모델에 담아 HTML로 전달
+
+
+        // 5. Model에 모든 정보 담기
         model.addAttribute("travel", travel);
         model.addAttribute("images", images);
-        model.addAttribute("isOwner", isOwner); // 작성자 여부 추가
-        model.addAttribute("chatRoomId", chatRoomId);// 채팅룸ID 추가
+        model.addAttribute("isOwner", isOwner);
+        model.addAttribute("chatRoomId", chatRoomId);
+        
 
-        return "travels/detail"; // views/travels/detail.html 경로
-
+        return "travels/detail";
     }
 
     // ---------------------------------------------

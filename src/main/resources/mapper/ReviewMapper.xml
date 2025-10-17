@@ -32,6 +32,12 @@
             <result property="imagePath" column="imagePath"/>
         </collection>
     </resultMap>
+    <!-- 중복 작성 방지를 위한 리뷰 갯수 카운트 확인 -->
+    <select id="countExistingReview" parameterType="map">
+        SELECT count(*)
+        FROM trip_reviews
+        WHERE user_id = #{userId} AND trip_article_id = #{tripId}
+    </select>
     <!-- 여행리뷰 DB에 저장 -->
     <insert id="insertTravleReview"  parameterType="com.wakutabi.domain.ReviewTravelDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO

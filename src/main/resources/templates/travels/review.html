@@ -8,6 +8,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" th:href="@{/css/travel_review.css}" />
 <title>index</title>
+<script th:inline="javascript">
+    window.alreadyReviewed = [[${alreadyReviewed}]];
+</script>
 <script defer th:src="@{/js/travel_review.js}"></script>
 </head>
 <body>

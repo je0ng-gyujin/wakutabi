@@ -26,6 +26,10 @@ public class ReviewService {
 
     private final ReviewMapper reviewMapper;
 
+    public int countExistingReview(Long userId, Long tripId){
+        return reviewMapper.countExistingReview(userId, tripId);
+    }
+
     public ReviewTravelDto getTripAndParticipantsForReview(Long tripId){
         return reviewMapper.getTripAndParticipantsForReview(tripId);
     }
@@ -33,8 +37,7 @@ public class ReviewService {
     public void insertReview(ReviewTravelDto reviewTravleDto) throws IOException {
         String uploadPath = FilePathConfig.getUploadPath();
         reviewMapper.insertTravleReview(reviewTravleDto);
-
-        // ✅ 2. 이미지 업로드 및 DB 저장
+        // 업로드 및 DB 저장
         List<MultipartFile> imageFiles = reviewTravleDto.getImageFiles();
         if (imageFiles != null && !imageFiles.isEmpty()) {
             File uploadDir = new File(uploadPath);
@@ -53,7 +56,7 @@ public class ReviewService {
                 reviewMapper.insertTravleReviewImage(reviewTravleDto.getId(), fileName);
             }
         }
-
+        // 여행리뷰DTO안에 있는 사용자리뷰DTO안에 데이터가 있다면 실행
         if (reviewTravleDto.getReviewUsers() != null && !reviewTravleDto.getReviewUsers().isEmpty()) {
             for (ReviewUserDto user : reviewTravleDto.getReviewUsers()) {
                 // 본인 자신 제외

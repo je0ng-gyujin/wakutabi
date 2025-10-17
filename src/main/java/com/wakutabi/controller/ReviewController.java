@@ -33,7 +33,10 @@ public class ReviewController {
     // 리뷰 작성 폼
     @GetMapping("/review")
     public String reviewForm(@RequestParam("tripId")Long tripId, Model model,
-                             @ModelAttribute("userId")Long userId) {
+                             @ModelAttribute("userId")Long userId,
+                             RedirectAttributes redirectAttributes) {
+        int count = reviewService.countExistingReview(userId, tripId);
+        model.addAttribute("alreadyReviewed", count > 0); // JS로 넘길 플래그
         //tripId로 리뷰 대상 여행 정보 조회
         ReviewTravelDto reviewTravelDto = reviewService.getTripAndParticipantsForReview(tripId);
         if(reviewTravelDto == null || reviewTravelDto.getTripId() == null){
@@ -64,17 +67,12 @@ public class ReviewController {
             }
             reviewService.insertReview(reviewTravelDto);
             redirectAttributes.addFlashAttribute("successMessage", "후기가 성공적으로 저장되었습니다.");
-            return "redirect:/schedule/myTrips"; // 리뷰 작성 후 메인 페이지로 리다이렉트
+            return "redirect:/schedule/detail?id="+reviewTravelDto.getTripId(); // 리뷰 작성 후 메인 페이지로 리다이렉트
         } catch (Exception e) {
             log.error("후기 저장 중 오류가 발생하였습니다.", e);
             redirectAttributes.addFlashAttribute("errorMessage", "리뷰 저장 중 오류가 발생했습니다. 다시 시도해주세요.");
-            return "redirect:/travels/review?tripId="+reviewTravelDto.getTripId();
+            return "redirect:/travels/review";
         }
-    }
-
-    @GetMapping("/success")
-    public String reviewSuccess() {
-        return "travels/success";
     }
 
 }

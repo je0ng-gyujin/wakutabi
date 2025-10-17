@@ -70,6 +70,22 @@
 	display: inline-block;
 }
 
+.rating-container[data-category="user"] {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.rating-container[data-category="user"] .user-rating-text {
+  position: absolute;
+  margin-left: 60px;
+  left: 120px; /* 별 오른쪽 위치 조절 */
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 100px;
+  text-align: left;
+}
+
 .rating-stars {
 	font-size: 2rem;
 	color: #ddd;

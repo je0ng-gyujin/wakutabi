@@ -18,4 +18,6 @@ public interface ChatParticipantsMapper {
 	int updateStatusToCanceled(@Param("list") List<Long> canceledTripIds);
 	// 여행 취소, 종료되면 참가자 상태 '완료'로 변경
 	int updateStatusToCompleted(@Param("list") List<Long> endedTripIds);
+	// 여행별 ACTIVE 참가자 수 반환
+	int countActiveParticipantsByTripArticleId(@Param("tripArticleId") Long tripArticleId);
 }

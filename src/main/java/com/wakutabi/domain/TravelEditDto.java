@@ -17,6 +17,7 @@ public class TravelEditDto {
     private LocalDate startDate;
     private LocalDate recruitEndDate;   // 모집종료날짜
     private LocalDate endDate;
+    private int currentParticipants;    // 현재 참가자 수(호스트 포함)
     private Integer maxParticipants;
     private String ageLimit;
     private String genderLimit;
@@ -29,7 +30,6 @@ public class TravelEditDto {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
     private String mainImagePath;
- // TravelEditDto.java 에 List<String> tags 추가
     private List<String> tags;
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }

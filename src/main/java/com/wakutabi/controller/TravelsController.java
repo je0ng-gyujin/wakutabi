@@ -367,6 +367,9 @@ public class TravelsController {
         // 4. 채팅방 ID 조회
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
 
+        // 5. 채팅 참가자 수 조회하여 DTO에 세팅
+        travel.setCurrentParticipants(chatService.getCurrentParticipants(travel.getId()));
+
 
         // 5. Model에 모든 정보 담기
         model.addAttribute("travel", travel);

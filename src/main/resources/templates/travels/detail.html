@@ -101,7 +101,7 @@
                                     <span class="badge bg-secondary-subtle text-dark">
                                         <i class="bi bi-people me-1"></i> <strong>인원</strong>
                                     </span>
-                                    <p class="mb-0 mt-1" th:text="'3/' + ${travel.maxParticipants} + '명'"></p>
+                                    <p class="mb-0 mt-1" th:text="${travel.currentParticipants} + '/' + ${travel.maxParticipants} + '명'"></p>
                                 </div>
                             
                                 <div class="col mb-2">

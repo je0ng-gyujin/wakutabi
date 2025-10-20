@@ -105,6 +105,25 @@
 	<select id="findVerificationTokenByUsername" resultType="String">
     select verification_token from users where username = #{username}
 	</select>
-	
+<!-- 아이디찾기 이메일방식 -->	
+<select id="findUsernameByEmail" resultType="string">
+    SELECT username
+    FROM users
+    WHERE email = #{email}
+</select>
+
+<select id="existsByEmail" resultType="boolean">
+    SELECT COUNT(*) > 0
+    FROM users
+    WHERE email = #{email}
+</select>
+
+<!-- 비밀번호찾기 이메일방식 -->
+
+<update id="updatePasswordByEmail">
+    UPDATE users
+    SET password = #{hashedPassword}
+    WHERE email = #{email}
+</update>
 
 </mapper>

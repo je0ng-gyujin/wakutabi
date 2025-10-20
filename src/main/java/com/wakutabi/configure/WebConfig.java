@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${uploadPath}")
     private String webPath;
 
-    // properties에서 실제 파일 저장 경로(C:/uploads/)를 주입받음
+    // properties에서 실제 파일 저장 경로(C:/upload/)를 주입받음
     @Value("${file.upload.path}")
     private String filePath;
 

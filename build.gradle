@@ -19,61 +19,41 @@ repositories {
 }
 
 dependencies {
+	// Spring Boot Starters
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-validation' // 중복 제거
+	implementation 'org.springframework.boot:spring-boot-starter-mail'       // 중복 제거
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// MyBatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+
+	// Thymeleaf Extras
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// 이메일 발송을 위한 Spring Boot Starter Mail 의존성
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-	/**
-	 * @author 정규진
-	 * @description 웹소켓 기능 구현을 위한 웹소켓 스타터 의존성 추가
-	 */
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	/**
-	 * @author 정규진
-	 * @description Jackson 라이브러리가 Java 8의 날짜/시간 타입을 인식하고 처리할 수 있도록 jackson-datatype-jsr310 모듈을 프로젝트에 추가
-	 */
+	// Jackson for Java 8+ Time
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    // Lombok을 사용하고 있다면, 이메일 관련 클래스에도 적용 가능
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    
-    // 테스트 관련 의존성
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// Author: 탁영복
-	// Description: Lombok 추가
-	/**
-	 * @author 탁영복
-	 * @description lombok 라이브러리 의존성 추가 및 테스트 환경 설정
-	 */
+	// Lombok (하나로 통합)
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-	// Author: 김민규
-	// Description: Validation 추가
-	/**
-	 * @author 김민규
-	 * @description Validation(유효성) 라이브러리 의존성 추가
-	 */
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Development & Runtime
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 
+	// Test Dependencies (중복 제거)
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 찾기 결과</title>
+    
+    <link rel="stylesheet" th:href="@{/css/find-id-result.css}">
+</head>
+<body>
+
+    <div class="result-container">
+        
+        <h2>아이디 찾기 결과</h2>
+
+        <div th:if="${foundUsername}" class="result-success">
+            <p>찾으시는 아이디는 <strong th:text="${foundUsername}"></strong> 입니다.</p>
+        </div>
+    
+        <div th:if="${errorMessage}" class="result-error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <div class="result-actions">
+            
+            <a th:if="${foundUsername}" th:href="@{/login}" class="btn-primary">로그인하기</a>
+            
+            <a th:if="${errorMessage}" th:href="@{/user/find-id}" class="btn-secondary">아이디 다시 찾기</a>
+        </div>
+
+    </div> </body>
+</html>

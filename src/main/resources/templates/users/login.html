@@ -12,6 +12,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" th:href="@{/css/member.css}">
   <style>
+    /* [수정] 아이디/비밀번호 찾기 링크 정렬용 CSS 추가 */
+    .find-links {
+      display: flex;
+      justify-content: center; /* 링크들을 가운데 정렬 */
+      align-items: center;
+      margin-top: 15px; /* 위쪽 체크박스와의 간격 */
+      gap: 10px; /* 링크 사이의 기본 간격 */
+    }
+    
+    .find-links a {
+      font-size: 14px;
+      color: #555; /* 너무 튀지 않게 색상 조절 */
+    }
+
+    /* [수정] 첫 번째 링크(회원가입)를 제외한 나머지 링크들 앞에 세로선(|) 추가 */
+    .find-links a:not(:first-child)::before {
+      content: "|";
+      margin-right: 10px;
+      color: #ccc; /* 세로선 색상 */
+    }
     
   </style>
 </th:block>
@@ -29,6 +49,11 @@
       <div th:if="${param.error}">
         <p th:text="${session.errorMessage}" class="alert alert-danger"></p>
       </div>
+      
+      <div th:if="${successMessage}" class="alert alert-success">
+          <p th:text="${successMessage}" style="margin: 0;"></p>
+      </div>
+      
       <input type="text" class="form-control" name="username" placeholder="아이디 입력">
       <input type="password" class="form-control" name="password" placeholder="패스워드 입력">
 
@@ -37,13 +62,17 @@
           <input type="checkbox" class="form-check-input" id="keepLogin">
           <label class="form-check-label" for="keepLogin">로그인 상태 유지</label>
       </div>
-      <a href="/signup" class="link-custom">회원가입</a>
-      <a href="#" class="link-custom">아이디/비밀번호 찾기</a>
+      
+      <div class="find-links">
+        <a href="/signup" class="link-custom">회원가입</a>
+        <a href="/user/find-id" class="link-custom">아이디찾기</a>
+        <a href="/user/find-pw" class="link-custom">비밀번호찾기</a>
+      </div>
+      
     </form>
   </div>
 </th:block>
 <footer>
-  <!--  <p>Copyright © 2025 Wakutabi Co.,Ltd. All Rights Reserved.</p>-->
-</footer>
+  </footer>
 </body>
 </html>

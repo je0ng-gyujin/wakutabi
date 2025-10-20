@@ -1,0 +1,162 @@
+@charset "UTF-8";
+
+/* Noto Sans KR 폰트 import */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600&display=swap');
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    /* 파란색 그라데이션 */
+    background: linear-gradient(to bottom, #ffffff, #e6f0ff);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 폼을 감싸는 카드 */
+.find-pw-container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 480px;
+    box-sizing: border-box;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    font-size: 26px;
+    margin-top: 0;
+    margin-bottom: 25px;
+    /* 파란색 하단 테두리 */
+    border-bottom: 3px solid #60B5FF;
+    padding-bottom: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 각 폼 그룹 사이의 간격 */
+}
+
+/* 라벨 + 인풋을 묶는 그룹 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 라벨과 인풋 사이의 간격 */
+}
+
+label {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* 이메일 인풋 + 인증버튼을 묶는 그룹 */
+.input-group {
+    display: flex;
+    gap: 10px; /* 인풋과 버튼 사이의 간격 */
+}
+
+input[type="email"],
+input[type="text"],
+input[type="password"] { /* 비밀번호 인풋 추가 */
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    flex-grow: 1; /* .input-group 에서 인풋이 남은 공간을 차지 */
+    width: 100%; /* 기본 너비 */
+}
+
+/* .input-group 안의 이메일 인풋만 너비 자동 조절 */
+.input-group input[type="email"] {
+    flex-grow: 1;
+}
+
+
+input:focus {
+    outline: none;
+    border-color: #60B5FF;
+    box-shadow: 0 0 5px rgba(96, 181, 255, 0.5);
+}
+
+/* 모든 버튼의 기본 스타일 */
+button {
+    padding: 12px 20px;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* "인증번호 받기" 버튼 (파란색) */
+#sendCodeButton {
+    background-color: #60B5FF;
+}
+
+#sendCodeButton:hover {
+    background-color: #1E73BE;
+}
+
+/* "비밀번호 변경" 버튼 (활성화 시 파란색) */
+button[type="submit"] {
+    background-color: #60B5FF;
+    font-size: 18px;
+    padding: 14px;
+}
+
+button[type="submit"]:hover {
+    background-color: #1E73BE;
+}
+
+/* 비활성화 시 스타일 */
+button[type="submit"]:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+}
+
+/* 메시지 텍스트 스타일 */
+#emailMessage, #passwordMessage {
+    font-size: 14px;
+    color: #d9534f; /* 에러 텍스트 (빨간색) */
+    margin: 0;
+    height: 1.2em; /* 공간 미리 확보 (레이아웃 밀림 방지) */
+}
+
+#timer {
+    font-size: 14px;
+    color: #1E73BE; /* 테마의 진한 파란색 */
+    font-weight: 600;
+    margin: 0;
+}
+
+/* 서버 에러 메시지 (하단) */
+.alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.alert-danger p {
+    margin: 0;
+}

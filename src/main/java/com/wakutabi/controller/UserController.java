@@ -3,14 +3,21 @@ package com.wakutabi.controller;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.wakutabi.domain.*;
 import com.wakutabi.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,15 +33,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/user")
 public class UserController {
 
-	private final UserService userService;
-	// 1. properties의 실제 저장 경로(C:/uploads/)를 주입받습니다.
+	@Autowired
+	private UserService userService;
+	private final JavaMailSender mailSender;//이메일로인증
+	// 1. properties의 실제 저장 경로(C:/upload/)를 주입받습니다.
     @Value("${file.upload.path}")
     private String uploadPath;
 
     // 2. properties의 웹 접근 경로(/upload/)를 주입받습니다.
     @Value("${uploadPath}")
     private String webPath;
-
+    
+    private Map<String, String> codeStorage = new HashMap<>(); // 실제로는 Redis 추천
+    
+    
 	@PostMapping("/signup")
 	public String signRegister(@Valid SignUpDto user, BindingResult bindingResult,
                                Model model) {
@@ -205,4 +217,85 @@ public class UserController {
     public String enterSurvey() {
     	return "infos/survey";
     }
+    
+    
+    
+    // 1. 아이디 찾기 페이지
+    @GetMapping("/find-id")
+    public String findIdForm() {
+        return "users/find-id"; // find-id.html (이메일 입력 폼)
+    }
+
+    // 2. [아이디 찾기] 인증번호 발송
+    // AJAX로 요청하는 것을 권장 (ResponseEntity 사용)
+    @PostMapping("/find-id/send-code")
+    @ResponseBody // JSON/Text 응답
+    public ResponseEntity<String> sendCodeForFindId(@RequestParam("email") String email, HttpSession session) {
+        boolean isSent = userService.sendVerificationCodeForFindId(email, session);
+        
+        if (isSent) {
+            return ResponseEntity.ok("인증번호가 발송되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("가입되지 않은 이메일입니다.");
+        }
+    }
+
+    // 3. [아이디 찾기] 인증번호 확인 및 결과
+    @PostMapping("/find-id/verify")
+    public String verifyCodeAndFindId(@RequestParam("email") String email,
+                                      @RequestParam("code") String code,
+                                      HttpSession session,
+                                      Model model) {
+        
+        String foundUsername = userService.verifyCodeAndFindUsername(email, code, session);
+
+        if (foundUsername != null) {
+            model.addAttribute("foundUsername", foundUsername);
+        } else {
+            model.addAttribute("errorMessage", "인증에 실패했습니다. 다시 시도해주세요.");
+        }
+        
+        return "users/find-id-result"; // 결과 페이지
+    }
+    
+    
+ // 1. 비밀번호 찾기 페이지
+    @GetMapping("/find-pw")
+    public String findPwForm() {
+        return "users/find-pw"; // find-pw.html (이메일 입력 폼)
+    }
+
+    // 2. [비밀번호 찾기] 인증번호 발송
+    @PostMapping("/find-pw/send-code")
+    @ResponseBody
+    public ResponseEntity<String> sendCodeForResetPw(@RequestParam("email") String email, HttpSession session) {
+        boolean isSent = userService.sendVerificationCodeForResetPw(email, session);
+        
+        if (isSent) {
+            return ResponseEntity.ok("인증번호가 발송되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("가입되지 않은 이메일입니다.");
+        }
+    }
+
+    // 3. [비밀번호 찾기] 인증번호 확인 및 비밀번호 재설정
+    @PostMapping("/find-pw/reset")
+    public String verifyCodeAndResetPw(@RequestParam("email") String email,
+                                       @RequestParam("code") String code,
+                                       @RequestParam("newPassword") String newPassword,
+                                       HttpSession session,
+                                       Model model,
+                                       RedirectAttributes rttr) {
+        
+        boolean isReset = userService.verifyCodeAndResetPassword(email, code, newPassword, session);
+
+        if (isReset) {
+            rttr.addFlashAttribute("successMessage", "비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.");
+            return "redirect:/login"; // 로그인 페이지로 리다이렉트
+        } else {
+            model.addAttribute("errorMessage", "인증에 실패했거나 시간이 만료되었습니다. 다시 시도해주세요.");
+            return "users/find-pw"; // 다시 비밀번호 찾기 페이지로
+        }
+    }
+    
 }

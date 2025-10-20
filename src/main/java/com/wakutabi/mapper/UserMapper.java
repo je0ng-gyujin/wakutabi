@@ -29,6 +29,13 @@ public interface UserMapper {
 		void userPasswordUpdate(UserPasswordUpdateDto userPassword);
 		// 회원 탈퇴(탈퇴이유 생기면 값 추가예정)
 		void userWithdrawal(String username);
+	
+		//아이디찾기
+		String findUsernameByEmail(@Param("email") String email);
+		//아이디찾기
+		boolean existsByEmail(@Param("email") String email);
+		//비밀번호찾기
+		void updatePasswordByEmail(@Param("email") String email, @Param("hashedPassword") String hashedPassword);
 		
 	    void updateUserVerificationStatus(@Param("username") String username, @Param("isVerified") boolean isVerified);
 	    String findVerificationTokenByUsername(@Param("username") String username);

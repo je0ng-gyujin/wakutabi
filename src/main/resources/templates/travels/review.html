@@ -27,6 +27,7 @@
         <form th:action="@{/travels/review}" method="post"
               enctype="multipart/form-data" id="reviewForm">
           <input type="hidden" name="tripId" th:value="${reviewTravelDto.tripId}">
+          <input type="hidden" name="userId" th:value="${userId}">
         <div class="row justify-content-center">
           <div class="col-lg-8">
             <div class="form-container rounded-4 p-4 shadow-sm">
@@ -51,7 +52,7 @@
                 <div class="mb-4">
                   <p class="form-label h5">여행 평점</p>
                   <div class="d-flex align-items-center gap-3">
-                    <div class="rating-container">
+                    <div class="rating-container" data-category="travel">
                       <input type="radio" id="rating5" name="rating" value="5" class="d-none">
                       <label for="rating5" class="rating-stars">★</label>
                       <input type="radio" id="rating4" name="rating" value="4" class="d-none">
@@ -106,7 +107,7 @@
                     <small class="text-muted">JPG, PNG, GIF 파일만
                       업로드 가능 (최대 5장)</small>
                   </div>
-                  <input name="image" type="file" id="imageInput" multiple
+                  <input name="imageFiles" type="file" id="imageInput" multiple
                     accept="image/*" style="display: none;">
                   <div id="imagePreview" class="mt-3"></div>
                 </div>
@@ -118,6 +119,9 @@
                     여행자들은 어땠나요?</p>
                   <div class="row" >
                     <th:block th:each="user, iter : ${reviewTravelDto.reviewUsers}">
+                      <!-- 평가 대상 ID hidden -->
+                      <input type="hidden" th:name="|reviewUsers[${iter.index}].reviewedUserId|" th:value="${user.reviewedUserId}">
+                      <input type="hidden" th:name="|reviewUsers[${iter.index}].reviewId|" th:value="${userId}">
                       <!-- 로그인한 사용자의 ID가 다른 경우만 표시 -->
                       <div class="col-md-6 mb-3" th:if="${user.reviewedUserId} != ${userId}">
                           <img
@@ -126,19 +130,16 @@
                               alt="참여자" class="participant-avatar">
                         <span class="ms-2" th:text="${user.username}">박지훈</span>
                         <!-- 별점 5개 반복 -->
-                        <div class="rating-container">
-                          <th:block th:each="i : ${#numbers.sequence(1,5)}">
+                        <div class="rating-container" data-category="user" th:data-user-id="${user.reviewedUserId}">
+                          <th:block th:each="i : ${#numbers.sequence(5,1)}">
                             <input type="radio"
-                                   th:id="|star_${iter.index}_${i}|"
-                                   th:name="|userReviews[${iter.index}].userRating|"
+                                   th:id="|u_${iter.index}_r${i}|"
+                                   th:name="|reviewUsers[${iter.index}].userRating|"
                                    th:value="${i}"
                                    class="d-none">
-                            <label th:for="|star_${iter.index}_${i}|" class="rating-stars">★</label>
+                            <label th:for="|u_${iter.index}_r${i}|" class="rating-stars" th:attr="data-value=${i}">★</label>
                           </th:block>
                         </div>
-                        <!-- 평가 대상 ID hidden -->
-                        <input type="hidden" th:name="|userReviews[${iter.index}].reviewedUserId|" th:value="${user.reviewedUserId}">
-                        <input type="hidden" th:name="|userReviews[${iter.index}].reviewId|" th:value="${userId}">
                       </div>
                     </th:block>
                   </div>

@@ -2,8 +2,10 @@ package com.wakutabi.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
+import com.wakutabi.configure.FilePathConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,31 +31,37 @@ public class ReviewService {
     }
     @Transactional
     public void insertReview(ReviewTravelDto reviewTravleDto) throws IOException {
+        String uploadPath = FilePathConfig.getUploadPath();
         reviewMapper.insertTravleReview(reviewTravleDto);
 
-        if (reviewTravleDto.getImageFiles() != null && !reviewTravleDto.getImageFiles().isEmpty()) {
-            for (MultipartFile file : reviewTravleDto.getImageFiles()) {
-                if (!file.isEmpty()) {
-                    String uuid = UUID.randomUUID().toString();
-                    String originalFilename = file.getOriginalFilename();
-                    String fileName = uuid + "_" + originalFilename;
+        // ✅ 2. 이미지 업로드 및 DB 저장
+        List<MultipartFile> imageFiles = reviewTravleDto.getImageFiles();
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+                throw new IOException("업로드 폴더 생성 실패: " + uploadPath);
+            }
 
-                    File saveFile = new File(uploadPath, fileName);
+            for (MultipartFile file : imageFiles) {
+                if (file.isEmpty()) continue;
 
-                    if (!saveFile.getParentFile().exists()) {
-                        saveFile.getParentFile().mkdirs();
-                    }
+                String uuid = UUID.randomUUID().toString();
+                String fileName = uuid + "_" + file.getOriginalFilename();
+                File saveFile = new File(uploadDir, fileName);
 
-                    file.transferTo(saveFile);
-
-                    reviewMapper.insertTravleReviewImage(reviewTravleDto.getId(), fileName);
-                }
+                file.transferTo(saveFile);
+                reviewMapper.insertTravleReviewImage(reviewTravleDto.getId(), fileName);
             }
         }
 
         if (reviewTravleDto.getReviewUsers() != null && !reviewTravleDto.getReviewUsers().isEmpty()) {
             for (ReviewUserDto user : reviewTravleDto.getReviewUsers()) {
-                reviewMapper.insertUserReview(reviewTravleDto.getId(), user.getReviewedUserId(), user.getUserRating());
+                // 본인 자신 제외
+                if(user.getReviewedUserId() != null && user.getReviewId() != null &&
+                    user.getReviewId().equals(user.getReviewedUserId())) {
+                    continue;
+                }
+                reviewMapper.insertUserReview(user);
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.wakutabi.mapper;
 
+import com.wakutabi.domain.ReviewUserDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,5 +15,5 @@ public interface ReviewMapper {
     // 여행리뷰사진 DB에 저장
     void insertTravleReviewImage(@Param("reviewId") Long reviewId, @Param("fileName") String fileName);
     // 참가자리뷰내용 DB에 저장
-    void insertUserReview(@Param("reviewId") Long reviewId, @Param("reviewedUserId") Long reviewedUserId, @Param("userRating") int userRating);
+    void insertUserReview(ReviewUserDto user);
 }

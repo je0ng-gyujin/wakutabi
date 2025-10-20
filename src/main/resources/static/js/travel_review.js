@@ -1,6 +1,7 @@
 // 별점 기능
 document.querySelectorAll('.rating-container').forEach(container => {
 	const stars = container.querySelectorAll('.rating-stars');
+	const radios = container.querySelectorAll('input[type="radio"]');
 	let currentRating = 0;
 
 	stars.forEach((star, index) => {
@@ -12,12 +13,18 @@ document.querySelectorAll('.rating-container').forEach(container => {
 
 		star.addEventListener('click', () => {
 			currentRating = index + 1;
+
+			// 클릭된 라디오를 실제로 처리
+			if (radios[index]) {
+			    radios[index].checked = true;
+			}
+
 			stars.forEach((s, i) => {
 				s.classList.toggle('active', i < currentRating);
 			});
 
 			// 전체 평점의 경우 텍스트 업데이트
-			if (!container.dataset.category) {
+			if (!container.dataset.category === 'travel') {
 				const ratingTexts = ['', '최고예요', '좋아요', '괜찮아요', '그냥 그래요', '별로예요'];
 				const ratingText = container.parentElement.querySelector('.rating-text');
 				if (ratingText) {

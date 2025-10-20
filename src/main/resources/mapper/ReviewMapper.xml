@@ -33,23 +33,23 @@
         </collection>
     </resultMap>
     <!-- 여행리뷰 DB에 저장 -->
-    <insert id="insertTravleReview" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertTravleReview"  parameterType="com.wakutabi.domain.ReviewTravelDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO
         trip_reviews
-        (rating, title, content, is_public, created_at)
+        (user_id, trip_article_id, rating, title, content, is_public, created_at)
         VALUES
-        (#{rating}, #{title}, #{content}, #{isPublic}, NOW())
+        (#{userId}, #{tripId}, #{rating}, #{title}, #{content}, #{isPublic}, NOW())
     </insert>
     <!-- 여행사진 DB에 저장 -->
-    <insert id="insertTravleReviewImage">
+    <insert id="insertTravleReviewImage" >
         INSERT INTO
         trip_reviews_image
-        (review_id, image_path)
+        (trip_reviews_id, image_path)
         VALUES
         (#{reviewId}, #{fileName})
     </insert>
     <!-- 참가자리뷰 DB에 저장 -->
-    <insert id="insertUserReview">
+    <insert id="insertUserReview" parameterType="com.wakutabi.domain.ReviewUserDto">
         INSERT INTO
         user_by_user_review
         (user_id, reviewed_user_id, rating)

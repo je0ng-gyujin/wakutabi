@@ -48,22 +48,23 @@ public class ReviewController {
     // 리뷰 작성 처리
     @PostMapping("/review")
     public String reviewWrite(@Valid @ModelAttribute("reviewTravelDto") ReviewTravelDto reviewTravelDto,
-                                BindingResult bindingResult, @ModelAttribute("userId")Long userId,
+                                BindingResult bindingResult, @RequestParam("userId")Long userId, @RequestParam("tripId")Long tripId,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             log.warn("유효성 검사 실패: {}", bindingResult.getAllErrors());
             return "travels/review";
         }
-
         try {
-            if(reviewTravelDto.getReviewUsers() != null){
-                for(ReviewUserDto dto : reviewTravelDto.getReviewUsers()){
-                   dto.setReviewId(userId);
+            reviewTravelDto.setUserId(userId);
+            reviewTravelDto.setTripId(tripId);
+            if(reviewTravelDto.getReviewUsers() != null && reviewTravelDto.getReviewUsers().isEmpty()){
+                for(ReviewUserDto user: reviewTravelDto.getReviewUsers()){
+                    user.setReviewId(userId);
                 }
             }
             reviewService.insertReview(reviewTravelDto);
             redirectAttributes.addFlashAttribute("successMessage", "후기가 성공적으로 저장되었습니다.");
-            return "redirect:/travels/success"; // 리뷰 작성 후 메인 페이지로 리다이렉트
+            return "redirect:/schedule/myTrips"; // 리뷰 작성 후 메인 페이지로 리다이렉트
         } catch (Exception e) {
             log.error("후기 저장 중 오류가 발생하였습니다.", e);
             redirectAttributes.addFlashAttribute("errorMessage", "리뷰 저장 중 오류가 발생했습니다. 다시 시도해주세요.");

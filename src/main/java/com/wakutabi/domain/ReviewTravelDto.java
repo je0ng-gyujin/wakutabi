@@ -22,6 +22,7 @@ public class ReviewTravelDto {
      * @Size: 문자열의 길이를 제한
      */
     private Long tripId;
+    private Long userId;
     @NotNull(message = "별점을 선택해주세요.")
     private int rating;
 

@@ -20,10 +20,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+        // FilePathConfig에서 OS에 맞는 경로를 가져옴
+        String basePath = FilePathConfig.getUploadPath(); // ✅ 자동 감지됨
+        String webPath = "/upload/";
         // 주입받은 webPath 변수를 사용
         registry.addResourceHandler(webPath + "**")
                 // 'file:///'는 로컬 파일 시스템의 절대 경로를 나타내는 표준 방식입니다.
-                .addResourceLocations("file:///" + filePath);
+                .addResourceLocations("file:///" + basePath);
     }
 }
 

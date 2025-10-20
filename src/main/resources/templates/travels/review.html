@@ -39,7 +39,7 @@
                 <h5 class="mb-2" th:text="${reviewTravelDto.title}">🗼 도쿄 3박4일 먹방 여행</h5>
                 <p class="mb-1">
                   <i class="bi bi-calendar-event me-2"></i>
-                  <span th:text="${#temporals.format(reviewTravelDto.startDate,'yyyy년 MM dd일')}"></span>
+                  <span th:text="${#temporals.format(reviewTravelDto.startDate,'yyyy년 MM월 dd일')}"></span>
                   ~
                   <span th:text="${#temporals.format(reviewTravelDto.endDate,'dd일')}"></span>
                 </p>

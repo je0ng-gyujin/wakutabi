@@ -46,4 +46,8 @@ public class ChatService {
 	public Long chatRoomFindByTripArticleId(Long tripArticleId) {
 		return chatMapper.chatRoomFindByTripArticleId(tripArticleId);
 	}
+	// 여행별 ACTIVE 참가자 수 반환
+	public int getCurrentParticipants(Long tripArticleId) {
+		return chatParticipantsService.countActiveParticipantsByTripArticleId(tripArticleId);
+	}
 }

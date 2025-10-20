@@ -17,4 +17,8 @@ public class ChatParticipantsService {
 	public void addUserToChatParticipants(Long chatRoomId, Long applicantUserId){
 		chatParticipantsMapper.addUserToChatParticipants(chatRoomId, applicantUserId);
 	}
+	// 여행별 ACTIVE 참가자 수 반환
+	public int countActiveParticipantsByTripArticleId(Long tripArticleId) {
+		return chatParticipantsMapper.countActiveParticipantsByTripArticleId(tripArticleId);
+	}
 }

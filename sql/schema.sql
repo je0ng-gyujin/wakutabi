@@ -1,7 +1,7 @@
 -- [사용자 관련]
 -- 사용자
 CREATE TABLE users (
-    id           BIGINT                                             AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
+    id                  BIGINT                                             AUTO_INCREMENT PRIMARY KEY,                                     -- 고유ID
     username            VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 사용자ID
     nickname            VARCHAR(20)                                 NOT NULL UNIQUE,                                                -- 닉네임(미입력 시 사용자ID)
     password            VARCHAR(256)                                NOT NULL,                                                       -- 비밀번호
@@ -9,7 +9,7 @@ CREATE TABLE users (
     birth               DATE                                        NOT NULL,                                                       -- 생일
     email               VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일
     verification_token  VARCHAR(255)                                NOT NULL UNIQUE,                                                -- 이메일 인증 토큰
-    is_verified         BOOLEAN                                     NOT NULL DEFAULT FALSE                                          -- 인증 완료
+    is_verified         BOOLEAN                                     NOT NULL DEFAULT FALSE,                                         -- 인증 완료
     image_path          VARCHAR(255),                                                                                               -- 프로필사진
     is_public           BOOLEAN                                     NOT NULL DEFAULT TRUE,                                          -- 공개여부(기본 공개)
     role                ENUM('USER','ADMIN')                        NOT NULL DEFAULT 'USER',                                        -- 사용자권한('USER': 일반사용자, 'ADMIN': 관리자)
@@ -20,13 +20,23 @@ CREATE TABLE users (
     created_at          DATETIME                                    NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- 생성일자
     updated_at          DATETIME                                             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- 수정일자
 );
-select * from users;
 -- [태그 관련]
 -- 태그
 CREATE TABLE trip_tag (
 	id	          BIGINT       AUTO_INCREMENT PRIMARY KEY,  -- 트립태그 고유ID
 	tag_name      VARCHAR(50)  NOT NULL UNIQUE              -- 태그 이름
 );
+-- 태그 insert (종류 고정)
+INSERT INTO trip_tag (tag_name) VALUES
+('foodie'),
+('activity'),
+('nature'),
+('otaku'),
+('shopping'),
+('smallGroup'),
+('largeGroup'),
+('indoor'),
+('outdoor');
 -- 사용자 태그 중간테이블
 CREATE TABLE trip_tag_mid_users (
     user_id      BIGINT   NOT NULL,         -- 사용자 고유ID
@@ -52,9 +62,9 @@ CREATE TABLE trip_article (
 	host_user_id	     BIGINT                                         NOT NULL,	                                                            -- 주최자 고유ID
 	location             VARCHAR(10)   	                                NOT NULL,	                                                            -- 지역
 	start_date	         DATETIME	                                    NOT NULL,                                                               -- 여행시작날짜
+	recruit_end_date     DATETIME                                       NOT NULL,                                                               -- 모집날짜
 	end_date	         DATETIME	                                    NOT NULL,                                                               -- 여행종료날짜
-	maxParticipants      INT                                            NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명  
-    currentParticipants  INT                                            NOT NULL DEFAULT 1,                                                     -- 현재인원수:1명 
+	max_participants      INT                                           NOT NULL DEFAULT 10,                                                    -- 최대인원수:10명  
 	age_limit	         CHAR(2)                                        NOT NULL CHECK(AGE_LIMIT IN('NO','20','30','40','MX')),                 -- 나이제한('NO':상관없음,'20':20대,'30':30대,'40':40대,'MX':혼합)
 	gender_limit	     CHAR(1)                                        NOT NULL CHECK(GENDER_LIMIT IN('N','M','F')),                           -- 성별제한('N':상관없음,'M':남자,'F':여자)
 	title	             VARCHAR(50)                                    NOT NULL,                                                               -- 제목
@@ -67,7 +77,6 @@ CREATE TABLE trip_article (
 
 	CONSTRAINT fk_trip_article_host_user_id FOREIGN KEY (host_user_id) REFERENCES users (id)
 );
-
 -- 여행등록 이미지
 CREATE TABLE trip_article_image (
 	id	                   BIGINT          AUTO_INCREMENT PRIMARY KEY,   -- 여행등록 이미지 고유ID
@@ -90,7 +99,6 @@ CREATE TABLE trip_join_request (
     CONSTRAINT fk_trip_join_request_trip_article_id   FOREIGN KEY (trip_article_id)   REFERENCES trip_article (id),
     CONSTRAINT fk_trip_join_request_host_user_id      FOREIGN KEY (host_user_id)      REFERENCES users        (id),
     CONSTRAINT fk_trip_join_request_applicant_user_id FOREIGN KEY (applicant_user_id) REFERENCES users        (id)
-
 );
 -- [여행후기 관련]
 -- 여행 리뷰
@@ -131,22 +139,22 @@ CREATE TABLE user_by_user_review (
 -- [채팅 관련]
 -- 채팅방
 CREATE TABLE chat_room (
-    id                 BIGINT    AUTO_INCREMENT PRIMARY KEY,   -- 채팅방ID
-    trip_article_id    BIGINT    NOT NULL,                     -- 여행일정ID
+    id                 BIGINT    AUTO_INCREMENT PRIMARY KEY,           -- 채팅방ID
+    trip_article_id    BIGINT    NOT NULL,                             -- 여행일정ID
     created_at         DATETIME  NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- 생성일자
-    deleted_at         DATETIME,                               -- 삭제일자
+    deleted_at         DATETIME,                                       -- 삭제일자
 
     CONSTRAINT  fk_chat_room_trip_article_id FOREIGN KEY (trip_article_id) REFERENCES  trip_article (id)
 );
 -- 채팅참가자
 CREATE TABLE chat_participants (
-    id             BIGINT                              AUTO_INCREMENT PRIMARY KEY,          -- 채팅참가자ID
-    chat_room_id   BIGINT                              NOT NULL,                            -- 채팅방ID
-    user_id        BIGINT                              NOT NULL,                            -- 채팅에 참여한 유저ID
-    role           ENUM('HOST','PARTICIPANT')          NOT NULL DEFAULT 'PARTICIPANT',      -- 역할
-    status         ENUM('ACTIVE','LEFT','COMPLETED')   NOT NULL DEFAULT 'ACTIVE',           -- 참가상태
-    created_at     DATETIME                            NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
-    deleted_at     DATETIME,                                                                -- 삭제일자
+    id             BIGINT                                         AUTO_INCREMENT PRIMARY KEY,          -- 채팅참가자ID
+    chat_room_id   BIGINT                                         NOT NULL,                            -- 채팅방ID
+    user_id        BIGINT                                         NOT NULL,                            -- 채팅에 참여한 유저ID
+    role           ENUM('HOST','PARTICIPANT')                     NOT NULL DEFAULT 'PARTICIPANT',      -- 역할
+    status         ENUM('ACTIVE','LEFT','COMPLETED','CANCELED')   NOT NULL DEFAULT 'ACTIVE',           -- 참가상태
+    created_at     DATETIME                                       NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 생성일자
+    deleted_at     DATETIME,                                                                           -- 삭제일자
 
     CONSTRAINT fk_chat_participants_chat_room_id FOREIGN KEY (chat_room_id) REFERENCES chat_room (id),
     CONSTRAINT fk_chat_participants_user_id      FOREIGN KEY (user_id)      REFERENCES users     (id)

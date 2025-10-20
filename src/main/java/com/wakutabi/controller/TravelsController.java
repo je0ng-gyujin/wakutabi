@@ -8,6 +8,8 @@ import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.ImageOrderDto;
 import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.domain.ParticipantDto;
+import com.wakutabi.mapper.ParticipantMapper;
+import com.wakutabi.mapper.UserMapper;
 import com.wakutabi.domain.RequestStatusDto;
 import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelImageDto;
@@ -64,6 +66,8 @@ public class TravelsController {
     private final ChatService chatService;
     private final ChatParticipantsService chatParticipantsService;
     private final TripService tripService;
+    private final ParticipantMapper participantMapper;
+    private final UserMapper userMapper;
     
     // 중복 요청 방지를 위한 캐시
     private final ConcurrentHashMap<String, Long> requestCache = new ConcurrentHashMap<>();
@@ -367,12 +371,33 @@ public class TravelsController {
         // 4. 채팅방 ID 조회
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
 
+        // 5. 채팅 참가자 수 조회하여 DTO에 세팅
+        travel.setCurrentParticipants(chatService.getCurrentParticipants(travel.getId()));
+
+        // 6. 작성자 정보 및 참여자 목록 조회
+        ParticipantDto author = null;
+        List<ParticipantDto> participants = new ArrayList<>();
+        try {
+            List<ParticipantDto> all = participantMapper.findParticipantsByTripId(travel.getId());
+            if (all != null && !all.isEmpty()) {
+                // 첫 번째는 호스트(작성자)로 가정
+                author = all.get(0);
+                if (all.size() > 1) {
+                    participants = all.subList(1, all.size());
+                }
+            }
+        } catch (Exception ex) {
+            log.warn("참여자 목록 조회 중 오류", ex);
+        }
+
 
         // 5. Model에 모든 정보 담기
         model.addAttribute("travel", travel);
         model.addAttribute("images", images);
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("chatRoomId", chatRoomId);
+        model.addAttribute("author", author);
+        model.addAttribute("participants", participants);
         
 
         return "travels/detail";

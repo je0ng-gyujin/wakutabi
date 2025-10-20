@@ -48,4 +48,11 @@
         )
         AND status = 'ACTIVE'
     </update>
+    <!-- 여행별 ACTIVE 참가자 수 반환 -->
+    <select id="countActiveParticipantsByTripArticleId" parameterType="java.lang.Long" resultType="int">
+        SELECT COUNT(*) FROM chat_participants cp
+        JOIN chat_room cr ON cp.chat_room_id = cr.id
+        WHERE cr.trip_article_id = #{tripArticleId}
+        AND cp.status = 'ACTIVE'
+    </select>
 </mapper>

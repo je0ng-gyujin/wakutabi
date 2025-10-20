@@ -11,15 +11,15 @@
             ta.location,
             cp.user_id AS reviewedUserId,
             u.username,
-            u.imagePath
+            u.image_path AS imagePath
         FROM trip_article ta
-        JOIN chat_room cr
+        LEFT JOIN chat_room cr
             ON ta.id = cr.trip_article_id
-        JOIN chat_participants cp
-            ON cr.id = cp.chat_room_id
-        JOIN users u
+        LEFT JOIN chat_participants cp
+            ON cr.id = cp.chat_room_id AND cp.status = 'COMPLETED'
+        LEFT JOIN users u
             ON cp.user_id = u.id
-        WHERE ta.id = #{tripId} AND cp.status = 'COMPLETED'
+        WHERE ta.id = #{tripId}
     </select>
     <resultMap id="ReviewTravelResultMap" type="ReviewTravelDto">
         <id property="tripId" column="tripId"/>

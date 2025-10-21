@@ -64,3 +64,12 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 	options.compilerArgs << "-parameters"
 }
+
+/** 
+    Author: 김민규
+    Date: 2025-10-21
+    Description: 리소스 파일 수정 시 빌드 없이 바로 반영(오직 개발 환경에서만 사용됨)
+ */
+bootRun {
+    sourceResources sourceSets.main
+}

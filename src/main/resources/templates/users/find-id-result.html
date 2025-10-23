@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+	lang="ko"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/clean}">
 <head>
+<th:block layout:fragment="head">
     <meta charset="UTF-8">
     <title>아이디 찾기 결과</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/css/find-id-result.css}">
+</th:block>
 </head>
-<body>
-
+<body class="bg-gradient-custom min-vh-100">
+<th:block layout:fragment="content">
     <div class="result-container">
         
-        <h2>아이디 찾기 결과</h2>
+        <h4>아이디 찾기 결과</h4>
 
         <div th:if="${foundUsername}" class="result-success">
             <p>찾으시는 아이디는 <strong th:text="${foundUsername}"></strong> 입니다.</p>
@@ -27,5 +33,7 @@
             <a th:if="${errorMessage}" th:href="@{/user/find-id}" class="btn-secondary">아이디 다시 찾기</a>
         </div>
 
-    </div> </body>
+    </div>
+    </th:block>
+</body>
 </html>

@@ -53,7 +53,7 @@ body {
       text-decoration: none;     /* 밑줄 제거 */
       color: #000000;            /* 검정색 글씨 */
       margin-top:auto;
-      margin: 0 20px;             /* 링크 간 간격 */
+      margin: 0 16px;             /* 링크 간 간격 */
       font-weight: 300;
       font-size:14px;
     }

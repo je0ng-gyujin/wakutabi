@@ -14,19 +14,25 @@
     @Slf4j
     @Controller
     @RequiredArgsConstructor
-    public class TravelJoinRequestController {
+    public class TravelJoinRequestController { // 여행참가신청 컨트롤러
 
         private final TravelJoinFacadeService travelJoinFacadeService;
+        private final ChatService chatService; // 채팅방 생성을 위해 채팅 서비스 주입
         // 여행참가신청
         @PostMapping("/join-request")
         @ResponseBody   // 중요! String redirect가 아니라 JSON 응답으로
         public Map<String, Object> insertTravelJoinRequestAjax(TravelJoinRequestDto travelJoinRequest,
-                                                               @RequestParam("chatRoomId")Long chatRoomId,
+                                                               @RequestParam(name = "chatRoomId", required = false)Long chatRoomId,
                                                                @ModelAttribute("userId") Long userId) {
 
             Map<String, Object> result = new HashMap<>();
 
             try {
+                if (chatRoomId == null) { // 채팅방이 없으면 새로 생성
+                    chatService.setChatRoom(travelJoinRequest.getTripArticleId(), travelJoinRequest.getHostUserId()); // 채팅방 생성
+                    chatRoomId = chatService.chatRoomFindByTripArticleId(travelJoinRequest.getTripArticleId()); // 생성된 채팅방 ID 가져오기
+                }
+
                 String message = travelJoinFacadeService.joinTravel(travelJoinRequest,chatRoomId,userId);
 
                 result.put("status", "success");

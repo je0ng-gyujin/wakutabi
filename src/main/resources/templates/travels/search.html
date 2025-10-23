@@ -351,6 +351,11 @@
              ~
             <span th:text="${#temporals.format(travel.endDate, 'yyyy년 MM월 dd일')}"></span>
           </div>
+          <div class="date-range mb-2">
+            <i class="bi bi-calendar-check me-1"></i>
+            <span>모집 마감: </span>
+            <span th:text="${#temporals.format(travel.recruitEndDate, 'yyyy년 MM월 dd일')}"></span>
+          </div>
 
           <p class="card-text text-muted mb-3" th:text="${#strings.abbreviate(travel.content, 100)}"></p>
 
@@ -366,7 +371,7 @@
               <div class="participants-info p-2 rounded"
                    th:classappend="${travel.status == 'CLOSED' ? 'participants-info-closed' : ''}">
                 <small> <i class="bi bi-people me-1"></i>
-                  <strong th:text="${travel.maxParticipants} + '명'"></strong> 참여 중
+                  <strong th:text="${travel.currentParticipants} + '/' + ${travel.maxParticipants} + '명'"></strong> 참여 중
                 </small>
               </div>
             </div>
@@ -395,7 +400,7 @@
                           <!-- 이전 버튼 -->
                           <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                               <a class="page-link"
-                                 th:href="@{/schedule/search(page=${currentPage - 1}, keyward=${query})}"
+                                 th:href="@{/schedule/search(page=${currentPage - 1}, keyward=${query}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, region=${param.region}, startDate=${param.startDate}, endDate=${param.endDate}, groupSize=${param.groupSize}, status=${param.status}, tags=${param.tags})}"
                                  aria-label="Previous">
                                   <span aria-hidden="true">이전</span>
                               </a>
@@ -406,14 +411,14 @@
                               th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
                               th:classappend="${pageNum == currentPage} ? 'active'">
                               <a class="page-link"
-                                 th:href="@{/schedule/search(page=${pageNum}, keyward=${query})}"
+                                 th:href="@{/schedule/search(page=${pageNum}, keyward=${query}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, region=${param.region}, startDate=${param.startDate}, endDate=${param.endDate}, groupSize=${param.groupSize}, status=${param.status}, tags=${param.tags})}"
                                  th:text="${pageNum}"></a>
                           </li>
 
                           <!-- 다음 버튼 -->
                           <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
                               <a class="page-link"
-                                 th:href="@{/schedule/search(page=${currentPage + 1}, keyward=${query})}"
+                                 th:href="@{/schedule/search(page=${currentPage + 1}, keyward=${query}, minPrice=${param.minPrice}, maxPrice=${param.maxPrice}, region=${param.region}, startDate=${param.startDate}, endDate=${param.endDate}, groupSize=${param.groupSize}, status=${param.status}, tags=${param.tags})}"
                                  aria-label="Next">
                                   <span aria-hidden="true">다음</span>
                               </a>

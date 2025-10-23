@@ -174,11 +174,23 @@
                                     <div class="d-flex align-items-center mb-2">
                                         <img th:src="${review.reviewerImagePath != null ? review.reviewerImagePath : '/image/tomori.jpg'}"
                                              class="rounded-circle me-2" style="width:45px; height:45px; object-fit:cover;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; width:90%">
-                                            <strong th:text="${review.nickname}">닉네임</strong>
-                                            <small class="text-muted ms-2"
+                                        <div style="display: flex; justify-content: space-between; align-items: center; width: 90%;">
+                                            <!-- 왼쪽: 닉네임 + 별점 -->
+                                            <div style="display: flex; align-items: center; gap: 15px;">
+                                                <strong th:text="${review.nickname}">닉네임</strong>
+                                                <div class="star-rating">
+                                                    <i class="bi"
+                                                       th:each="i : ${#numbers.sequence(1, 5)}"
+                                                       th:classappend="${i <= review.rating} ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"></i>
+                                                </div>
+                                            </div>
+
+                                            <!-- 오른쪽: 날짜 -->
+                                            <small class="text-muted"
                                                    th:text="${#temporals.format(review.createdAt, 'yyyy년 MM월 dd일')}"></small>
                                         </div>
+
+
                                     </div>
                                     <div class="ps-1">
                                         <p class="mb-1 fw-semibold" th:text="${review.title}">리뷰 제목</p>

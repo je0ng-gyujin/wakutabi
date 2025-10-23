@@ -117,10 +117,11 @@ public class TravelsController {
         int totalPages = (int) Math.ceil((double) totalCount / size);
         log.info("검색 날짜 파라미터 - startDateTime: {}, endDateTime: {}", startDateTime, endDateTime);
 
-        // 2. 각 여행 게시글에 대한 대표 이미지를 조회합니다.
+        // 2. 각 여행 게시글에 대한 추가 정보를 조회합니다.
         if (travels != null) {
             for (TravelEditDto travel : travels) {
                 if (travel != null && travel.getId() != null) {
+                    // 대표 이미지 조회
                     List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(travel.getId());
                     if (images != null && !images.isEmpty()) {
                         TravelImageDto mainImage = images.get(0);
@@ -132,6 +133,15 @@ public class TravelsController {
                     } else {
                         travel.setMainImagePath("/images/default.jpg");
                     }
+
+                    // 현재 참가자 수 조회(아래 상세 조회와 동일한 로직입니다.)
+                    int participantCount = chatService.getCurrentParticipants(travel.getId());
+                    if (participantCount == 0) { // 기능 미구현인 채 테스트 했을 때 만든 게시글에서 참가자 수가 0인 경우 보완책으로 호스트 1명으로 설정
+                        travel.setCurrentParticipants(1); // 호스트를 포함하여 최소 1명으로 설정
+                    } else {
+                        travel.setCurrentParticipants(participantCount); // 실제 참가자 수 설정
+                    }
+
                 } else {
                     log.warn("Null travel object found in the search result list.");
                 }
@@ -285,12 +295,17 @@ public class TravelsController {
                     }
 
                     // 파일명에 UUID를 사용하여 저장 경로 생성
-                    String savePath = uploadDir + imageOrder.getUuid() + "_" + file.getOriginalFilename();
+                    String filename = imageOrder.getUuid() + "_" + file.getOriginalFilename();
+                    String savePath = uploadDir + filename;
                     file.transferTo(new File(savePath));
+                    
+                    // 웹 접근 경로 생성
+                    String webPath = "/upload/" + filename;
+                    
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
-                    imgDto.setImagePath(savePath);
+                    imgDto.setImagePath(webPath); // 웹 경로 저장
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);
@@ -363,7 +378,12 @@ public class TravelsController {
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
 
         // 5. 채팅 참가자 수 조회하여 DTO에 세팅
-        travel.setCurrentParticipants(chatService.getCurrentParticipants(travel.getId()));
+        int participantCount = chatService.getCurrentParticipants(travel.getId());
+        if (participantCount == 0) {
+            travel.setCurrentParticipants(1); // 호스트를 포함하여 최소 1명으로 설정
+        } else {
+            travel.setCurrentParticipants(participantCount);
+        }
 
         // 6. 작성자 정보 및 참여자 목록 조회
         ParticipantDto author = null;

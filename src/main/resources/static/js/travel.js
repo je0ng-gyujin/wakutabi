@@ -11,8 +11,10 @@ $(document).ready(function () {
   });
 
   // ✅ 체크박스·셀렉트 변경 시 필터 업데이트 (존재할 때만)
-  if ($("input[type='checkbox'], select").length > 0) {
-    $("input[type='checkbox'], select").on("change", updateSearch);
+  // ✅ 체크박스·셀렉트 변경 시 필터 업데이트 (존재할 때만)
+  // groupSize 체크박스는 서버 필터링을 위해 클라이언트 측 updateSearch 호출을 제거합니다.
+  if ($("select").length > 0) {
+    $("select").on("change", updateSearch);
   }
 
   function updateSearch() {
@@ -24,8 +26,17 @@ $(document).ready(function () {
 
     const searchQuery = $("#searchInput").val() || "";
 
+    // Get selected group sizes
+    const selectedGroupSizes = $("input[name='groupSize']:checked")
+      .map(function () {
+        return $(this).val();
+      })
+      .get();
+
     $(".schedule-card").each(function () {
       const cardText = $(this).text().toLowerCase();
+      const cardGroupSize = $(this).data("group-size"); // Get the group size from data attribute
+
       const matchesQuery =
         searchQuery.length === 0 || cardText.includes(searchQuery.toLowerCase());
 
@@ -33,7 +44,12 @@ $(document).ready(function () {
         selectedTags.length === 0 ||
         selectedTags.some((tag) => cardText.includes(tag.toLowerCase()));
 
-      $(this).toggle(matchesQuery && matchesTags);
+      // Check if card's group size matches any selected group size
+      const matchesGroupSize =
+        selectedGroupSizes.length === 0 ||
+        selectedGroupSizes.includes(cardGroupSize);
+
+      $(this).toggle(matchesQuery && matchesTags && matchesGroupSize);
     });
 
     $(".search-result-count").text(
@@ -302,6 +318,24 @@ $(document).ready(function () {
     // 지역 값 최신화 (이미 버튼 클릭 시 반영되지만 혹시 몰라 재설정)
     var selectedRegion = $(".region-item.active").val() || "";
     $("#regionInput").val(selectedRegion);
+    // groupSize 값 최신화
+    const selectedGroupSizes = $("input[name='groupSize']:checked")
+      .map(function () {
+        return $(this).val();
+      })
+      .get();
+
+    // 기존 URL 파라미터 유지
+    const currentUrl = new URL(window.location.href);
+    const params = new URLSearchParams(currentUrl.search);
+
+    // groupSize 파라미터 제거 후 다시 추가
+    params.delete('groupSize');
+    selectedGroupSizes.forEach(size => params.append('groupSize', size));
+
+    // 폼 액션 URL 업데이트
+    $(this).attr('action', '/schedule/search?' + params.toString());
+
     // 폼은 그대로 제출
   });
   

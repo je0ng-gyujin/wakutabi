@@ -68,4 +68,8 @@ public class ReviewService {
             }
         }
     }
+    // 리뷰 리스트
+    public List<ReviewTravelDto> getReviewList(Long tripId){
+        return reviewMapper.getReviewList(tripId);
+    }
 }

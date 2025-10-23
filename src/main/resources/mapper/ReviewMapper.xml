@@ -62,4 +62,35 @@
         VALUES
         (#{reviewId}, #{reviewedUserId}, #{userRating})
     </insert>
+    <!-- 리뷰 불러오기 -->
+    <select id="getReviewList" resultMap="ReviewListResultMap">
+        SELECT
+            tr.id,
+            tr.rating,
+            tr.title,
+            tr.content,
+            tr.created_at AS createdAt,
+            u.nickname,
+            COALESCE(u.image_path,'/image/member.png') AS reviewerImagePath,
+            ri.image_path AS imagePath
+        FROM trip_reviews tr
+        JOIN users u
+            ON tr.user_id = u.id
+        LEFT JOIN trip_reviews_image ri
+            ON ri.trip_reviews_id = tr.id
+        WHERE trip_article_id = #{tripId}
+        ORDER BY tr.created_at DESC
+    </select>
+    <resultMap id="ReviewListResultMap" type="ReviewTravelDto">
+        <id property="id" column="id"/>
+        <result property="rating" column="rating"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="nickname" column="nickname"/>
+        <result property="reviewerImagePath" column="reviewerImagePath"/>
+        <collection property="images" javaType="ArrayList" ofType="ReviewImageDto">
+            <result property="imagePath" column="imagePath"/>
+        </collection>
+    </resultMap>
 </mapper>

@@ -5,21 +5,12 @@ import java.util.Arrays;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.configure.FilePathConfig;
-import com.wakutabi.domain.ImageOrderDto;
-import com.wakutabi.domain.NotificationDto;
-import com.wakutabi.domain.ParticipantDto;
+import com.wakutabi.domain.*;
 import com.wakutabi.mapper.ParticipantMapper;
 import com.wakutabi.mapper.UserMapper;
-import com.wakutabi.domain.RequestStatusDto;
-import com.wakutabi.domain.TravelEditDto;
-import com.wakutabi.domain.TravelImageDto;
-import com.wakutabi.domain.TravelUploadDto;
 
 import com.wakutabi.mapper.TravelUpdateDeleteMapper;
 import com.wakutabi.service.*;
-
-import com.wakutabi.domain.TripJoinRequestDto;
-import com.wakutabi.domain.TripListDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +59,7 @@ public class TravelsController {
     private final TripService tripService;
     private final ParticipantMapper participantMapper;
     private final UserMapper userMapper;
+    private final ReviewService reviewService;
     
     // 중복 요청 방지를 위한 캐시
     private final ConcurrentHashMap<String, Long> requestCache = new ConcurrentHashMap<>();
@@ -295,16 +287,10 @@ public class TravelsController {
                     // 파일명에 UUID를 사용하여 저장 경로 생성
                     String savePath = uploadDir + imageOrder.getUuid() + "_" + file.getOriginalFilename();
                     file.transferTo(new File(savePath));
-                    String savePathReplace = savePath.replaceFirst(uploadDir, "/upload/");
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
-
-                    String uploadBasePath = FilePathConfig.getUploadPath();
-                    String normalizedSavePath = savePath.replace("\\", "/"); // 윈도우 → 슬래시 통일
-                    String normalizedBasePath = uploadBasePath.replace("\\", "/");
-                    String relativePath = normalizedSavePath.replaceFirst(normalizedBasePath, "/upload/");
-                    imgDto.setImagePath(relativePath);
+                    imgDto.setImagePath(savePath);
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);
@@ -394,15 +380,17 @@ public class TravelsController {
         } catch (Exception ex) {
             log.warn("참여자 목록 조회 중 오류", ex);
         }
+        // 7. 리뷰 불러오기
+        List<ReviewTravelDto> reviews = reviewService.getReviewList(id);
 
-
-        // 5. Model에 모든 정보 담기
+        // 8. Model에 모든 정보 담기
         model.addAttribute("travel", travel);
         model.addAttribute("images", images);
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("chatRoomId", chatRoomId);
         model.addAttribute("author", author);
         model.addAttribute("participants", participants);
+        model.addAttribute("reviews", reviews);
         
 
         return "travels/detail";

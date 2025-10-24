@@ -226,7 +226,7 @@
                         <input type="hidden" name="chatRoomId" th:value="${chatRoomId}">
                         <div class="card shadow-sm rounded-4 p-4 sticky-top" style="top: 20px">
                             <div class="text-center mb-3">
-                                <a th:href="@{'/profile/my?userId=' + ${author.userId}}"
+                                <a th:href="@{'/profile/my'(userId=${author.userId})}"
                                     class="author-link align-items-center">
                                 <img th:src="${author != null && author.imagePath != null ? author.imagePath : '/image/testuser.jpg'}"
                                      alt="프로필 이미지" class="rounded-circle mb-2"
@@ -242,7 +242,7 @@
                             <h6 class="fw-bold mb-3">참여자 목록</h6>
                             <ul class="list-unstyled">
                                 <li class="d-flex align-items-center mb-2" th:each="participant : ${participants}">
-                                    <a th:href="@{'/profile/my?userId='+${participant.userId}}"
+                                    <a th:href="@{'/profile/my'(userId=${participant.userId})}"
                                        class="participant-link ms-2 d-flex align-items-center">
                                     <img th:src="${participant.imagePath != null ? participant.imagePath : '/image/testuser.jpg'}"
                                          style="width:55px; height:55px;" alt="참여자" class="participant-avatar" />

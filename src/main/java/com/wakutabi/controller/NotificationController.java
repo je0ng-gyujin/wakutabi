@@ -64,12 +64,6 @@ public class NotificationController {
         statusToAccepted.setHostUserId(hostUserId);
         statusToAccepted.setApplicantUserId(userId);
         statusToAccepted.setStatus(TravelJoinRequestDto.Status.ACCEPTED);
-//        TravelJoinRequestDto statusToAccepted =TravelJoinRequestDto.builder()
-//                .tripArticleId(tripArticleId)
-//                .hostUserId(hostUserId)
-//                .applicantUserId(applicantUserId)
-//                .status(TravelJoinRequestDto.Status.ACCEPTED)
-//                .build();
         travelJoinRequestService.changeStatusToAccepted(statusToAccepted);
         // 채팅 참가자로 넣기
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(tripArticleId);
@@ -91,7 +85,7 @@ public class NotificationController {
 
     // 호스트가 참가 거절 눌렀을 때
     @PostMapping("/reject")
-    public RedirectView rejectRequest(@RequestParam Long noticeId,@ModelAttribute("userId") Long userId){
+    public RedirectView rejectRequest(@RequestParam("noticeId") Long noticeId,@ModelAttribute("userId") Long userId){
         // 알림조회
         NotificationDto notice = notificationService.findNotificationById(noticeId);
         // 알림에 저장된 hostId와 현재 로그인 유저가 같은지 검증
@@ -103,12 +97,11 @@ public class NotificationController {
         Long applicantUserId = userService.getUserId(notice.getTitle());
         Long tripArticleId = notice.getTripArticleId();
         // 여행참가거절DTO 생성
-        TravelJoinRequestDto statusToRejected =TravelJoinRequestDto.builder()
-                .tripArticleId(tripArticleId)
-                .hostUserId(hostUserId)
-                .applicantUserId(applicantUserId)
-                .status(TravelJoinRequestDto.Status.ACCEPTED)
-                .build();
+        TravelJoinRequestDto statusToRejected = new TravelJoinRequestDto();
+        statusToRejected.setTripArticleId(tripArticleId);
+        statusToRejected.setHostUserId(hostUserId);
+        statusToRejected.setApplicantUserId(applicantUserId);
+        statusToRejected.setStatus(TravelJoinRequestDto.Status.REJECTED);
         travelJoinRequestService.changeStatusToRejected(statusToRejected);
         // 여행참가거절알림DTO 생성
         NotificationDto sendRequestAnswer = NotificationDto.builder()

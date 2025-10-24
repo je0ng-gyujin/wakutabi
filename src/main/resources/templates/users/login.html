@@ -11,29 +11,6 @@
   <title>Wakutabi Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" th:href="@{/css/member.css}">
-  <style>
-    /* [수정] 아이디/비밀번호 찾기 링크 정렬용 CSS 추가 */
-    .find-links {
-      display: flex;
-      justify-content: center; /* 링크들을 가운데 정렬 */
-      align-items: center;
-      margin-top: 15px; /* 위쪽 체크박스와의 간격 */
-      gap: 10px; /* 링크 사이의 기본 간격 */
-    }
-    
-    .find-links a {
-      font-size: 14px;
-      color: #555; /* 너무 튀지 않게 색상 조절 */
-    }
-
-    /* [수정] 첫 번째 링크(회원가입)를 제외한 나머지 링크들 앞에 세로선(|) 추가 */
-    .find-links a:not(:first-child)::before {
-      content: "|";
-      margin-right: 10px;
-      color: #ccc; /* 세로선 색상 */
-    }
-    
-  </style>
 </th:block>
 </head>
 

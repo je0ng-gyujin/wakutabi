@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+	lang="ko"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/clean}">
 <head>
+<th:block layout:fragment="head">
     <meta charset="UTF-8">
     <title>비밀번호 찾기</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/css/find-pw.css}">
     <script defer th:src="@{/js/findPw.js}"></script>
+    </th:block>
     </head>
-<body>
-
+<body class="bg-gradient-custom min-vh-100">
+<th:block layout:fragment="content">
     <div class="find-pw-container">
-        
-        <h2>비밀번호 찾기</h2>
+        <a class="navbar-brand logo-text text-decoration-none" href="/">
+	      <img src="/image/icon.png"alt="Wakutabi" height="50" class="me-2">
+	    </a>
+        <h4>비밀번호 찾기</h4>
     
         <form th:action="@{/user/find-pw/reset}" method="post" onsubmit="return validatePasswordForm()">
             
@@ -47,5 +55,6 @@
         </div>
 
     </div>
+    </th:block>
 </body>
 </html>

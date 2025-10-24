@@ -9,39 +9,25 @@ html {
 
 body {
     font-family: 'Noto Sans KR', sans-serif;
-    /* 파란색 테마 그라데이션 적용 */
-    background: linear-gradient(to bottom, #ffffff, #e6f0ff);
-    color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
 /* 결과 카드를 감싸는 컨테이너 */
 .result-container {
     background-color: #ffffff;
-    padding: 40px;
+    padding: 30px 40px;
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
     width: 100%;
     max-width: 480px;
-    box-sizing: border-box;
     text-align: center;
 }
 
-h2 {
-    text-align: center;
-    color: #333;
-    font-size: 26px;
-    margin-top: 0;
-    margin-bottom: 25px;
-    /* 파란색으로 하단 테두리 악센트 */
-    border-bottom: 3px solid #60B5FF;
-    padding-bottom: 10px;
+h4 {
+    margin-top: 20px;
+      color:#60B5FF;
 }
 
 /* 성공 메시지 */
@@ -104,3 +90,7 @@ h2 {
 .btn-secondary:hover {
     background-color: #5a6268;
 }
+
+.bg-gradient-custom {
+            background: linear-gradient(135deg, var(--background-color) 0%, var(--secondary-color) 100%) !important;
+    }

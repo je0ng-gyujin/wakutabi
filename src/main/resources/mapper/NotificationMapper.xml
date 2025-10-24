@@ -28,7 +28,7 @@
 
   <update id="updateReadStatus" parameterType="java.lang.Long">
     UPDATE system_notification
-    SET is_read = TRUE
+    SET is_read = TRUE, expired_at = NOW()
     WHERE id = #{notificationId}
   </update>
 

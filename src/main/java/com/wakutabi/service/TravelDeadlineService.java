@@ -26,5 +26,4 @@ public class TravelDeadlineService {
 	public boolean travelDeadlineHostClick(Long travelArticleId){
 		return travelDeadlineMapper.travelDeadlineHostClick(travelArticleId) > 0;
 	}
-
 }

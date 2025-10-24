@@ -593,20 +593,20 @@ public class TravelsController {
     }
 
     // ---------------------------------------------
-    @DeleteMapping("/traveldelete")
-    @ResponseBody
-    public String deleteTravel(@RequestBody TravelEditDto dto,
-            @ModelAttribute("userId") Long userId,
-            Principal principal) {
-        if (principal == null) {
-            return "로그인 후 이용 가능합니다.";
-        }
-
-        Long hostUserId = userId; // Get the hostUserId from the authenticated user
-    boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
-
-        return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
-    }
+//    @DeleteMapping("/traveldelete")
+//    @ResponseBody
+//    public String deleteTravel(@RequestBody TravelEditDto dto,
+//            @ModelAttribute("userId") Long userId,
+//            Principal principal) {
+//        if (principal == null) {
+//            return "로그인 후 이용 가능합니다.";
+//        }
+//
+//        Long hostUserId = userId; // Get the hostUserId from the authenticated user
+//    boolean isDeleted = travelUpdateDeleteService.deleteTravelArticle(dto.getId(), hostUserId);
+//
+//        return isDeleted ? "게시글 삭제 완료!" : "게시글 삭제 실패! (권한 없거나 게시글을 찾을 수 없습니다)";
+//    }
     // ...
     @PatchMapping("/travelCanceled")
     @ResponseBody
@@ -640,6 +640,42 @@ public class TravelsController {
         } catch (Exception e) {
             log.error("여행 취소 중 예외 발생 - tripId: {}, error: {}", id, e.getMessage(), e);
             return "여행 취소 중 오류가 발생했습니다: " + e.getMessage();
+        }
+    }
+
+    @PatchMapping("/travelDeadline")
+    @ResponseBody
+    public String deadlineTravel(@RequestParam("id")Long id, Principal principal){
+        try {
+            if(principal == null){
+                return "로그인이 필요합니다.";
+            }
+
+            // Principal에서 username을 가져와 userId 조회
+            String username = principal.getName();
+            Long hostUserId = tripService.findUserIdByUsername(username);
+
+            if(hostUserId == null){
+                log.error("사용자 정보 조회 실패 - username: {}", username);
+                return "사용자 정보를 찾을 수 없습니다.";
+            }
+
+            // 여행일정 status 상태 가져오기
+            String status = travelUpdateDeleteMapper.statusByTravelArticleId(id);
+
+            // 여행 상태가 MATCHED, CLOSED, CANCELED 면
+            if(status != null && (status.equalsIgnoreCase("MATCHED") ||
+                    status.equalsIgnoreCase("CLOSED") ||
+                    status.equalsIgnoreCase("CANCELED"))){
+                return "해당 여행은 ["+status+"] 상태로 마감할 수 없습니다.";
+            }
+
+            boolean isMatched = travelDeadlineService.travelDeadlineHostClick(id);
+
+            return isMatched ? "여행이 마감 완료되었습니다." : "여행 마감 도중 오류가 발생했습니다.";
+        } catch (Exception e) {
+            log.error("여행 마감 중 예외 발생 - tripId: {}, error: {}", id, e.getMessage(), e);
+            return "여행 마감 중 오류가 발생했습니다: " + e.getMessage();
         }
     }
     // TravelsController.java

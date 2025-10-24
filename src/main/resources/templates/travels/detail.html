@@ -235,9 +235,10 @@
                                 <small class="text-muted" th:text="${author != null && author.nickname != null ? '' + author.nickname : ''}"></small></a>
                             </div>
                             <div class="d-grid mb-3">
-                                <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg">참가 신청하기</button>
+                                <button id="joinBtn" type="button" class="btn btn-wakutabi-primary btn-lg"
+                                    th:data-id="${travel.id}" th:data-status="${travel.status}">참가 신청하기</button>
                             </div>
-                            <p class="text-muted text-center small">여행 참가 신청 시, 작성자에게 알림이 전송됩니다.</p>
+                            <p class="text-muted text-center small">여행 참가 신청 시,<br> 작성자에게 알림이 전송됩니다.</p>
                             <hr />
                             <h6 class="fw-bold mb-3">참여자 목록</h6>
                             <ul class="list-unstyled">

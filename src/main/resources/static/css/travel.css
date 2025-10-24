@@ -189,3 +189,17 @@
     /* 이미지가 찌그러지지 않고, 공간에 맞춰 잘리도록 설정 */
     object-fit: cover; 
 }
+
+/* 숫자 입력 필드의 스피너 버튼(위/아래 화살표) 숨기기 */
+
+/* Webkit (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}

@@ -215,6 +215,14 @@ $(document).ready(function () {
       start: [0, 2000000],
       connect: true,
       range: { min: 0, max: 2000000 },
+	  // 👇 이 부분을 추가하거나 1000으로 수정합니다.
+	      step: 1000, 
+	      // 👇 숫자 포맷팅 (선택 사항)
+	      /*format: wNumb({
+	          decimals: 0,
+	          thousand: ',',
+	          suffix: '원'
+	      })*/
     });
 
     if (minInput && maxInput) {

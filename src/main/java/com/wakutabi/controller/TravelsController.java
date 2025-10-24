@@ -98,7 +98,7 @@ public class TravelsController {
             @RequestParam(value = "groupSize", required = false) List<String> groupSize,
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "8") int size,
+            @RequestParam(value = "size", defaultValue = "4") int size,
             Model model) {
 
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;

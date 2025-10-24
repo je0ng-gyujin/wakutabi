@@ -179,6 +179,17 @@
     transition: all 0.15s ease-in-out;
 }
 
+.author-link {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.author-link:hover {
+    opacity: 0.8;
+    transform: scale(1.02);
+    transition: all 0.15s ease-in-out;
+}
+
 .schedule-info {
 	background: rgba(96, 181, 255, 0.1);
 	border-left: 4px solid var(--primary-color);
@@ -225,25 +236,21 @@
   display: none;
   position: fixed;
   z-index: 9999;
-  inset:0;
-  top:13%;
-  right:22%;
-  width:65%;
-  height:70%;
-  background-color: rgba(0, 0, 0, 0.85);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70vw;   /* viewport 너비 기준 */
+  height: 70vh;  /* viewport 높이 기준 */
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
 }
 
-/* 모달 속 이미지 */
 .image-modal img {
-    border-radius: 10px;
-    box-shadow: 0 0 25px rgba(255,255,255,0.2);
-    animation: fadeIn 0.2s ease-in-out;
-    cursor: pointer;
-    object-fit: contain;   /* 비율 맞게 표시 */
-    display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 /* Fade 효과 */

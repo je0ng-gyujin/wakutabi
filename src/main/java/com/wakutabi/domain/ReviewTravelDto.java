@@ -32,20 +32,24 @@ public class ReviewTravelDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String location;
+    private String nickname;
+    private String reviewerImagePath;
+    private List<ReviewImageDto> images;
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
     @NotNull(message = "공개 여부를 선택해주세요.")
     private Boolean isPublic;
-
+    private LocalDate createdAt;
 
     /** 
      * MultipartFile: 스프링에서 파일 업로드를 처리하기 위한 인터페이스
      * List<MultipartFile>: 여러 파일을 업로드할 수 있도록 리스트로 선언
      * 유효성 어노테이션은 없으나 Controller에서 파일 개수나 크기 등을 추가로 검사할 수 있음
      */
-
+    // 사진 업로드
     private List<MultipartFile> imageFiles;
-
+    // 여행자 평가
     private List<ReviewUserDto> reviewUsers;
+
 }

@@ -99,6 +99,75 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 여행 마감
+    if (deadlineBtn) {
+      deadlineBtn.addEventListener("click", () => {
+        const tripId = canceledBtn.getAttribute("data-id");
+        const tripStatus = canceledBtn.getAttribute("data-status")?.toUpperCase();
+        const statusMap = { MATCHED: "모집완료", CLOSED: "여행종료", CANCELED: "여행취소"};
+
+        if (tripStatus === "MATCHED") {
+          SwalDefault.fire({
+            icon: "info",
+            title: "이미 마감된 여행",
+            text: "이미 마감한 여행입니다.",
+            confirmButtonText: "확인",
+          });
+          return;
+        }
+
+        if (["MATCHED", "CLOSED", "CANCELED"].includes(tripStatus)) {
+          SwalDefault.fire({
+            icon: "warning",
+            title: "마감 불가",
+            text: `해당 여행은 [${statusMap[tripStatus]}] 상태로 마감할 수 없습니다.`,
+            confirmButtonText: "확인",
+          });
+          return;
+        }
+
+        SwalDefault.fire({
+          title: "정말 마감하시겠습니까?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "네, 마감합니다",
+          cancelButtonText: "아니요",
+        }).then((result) => {
+          if (!result.isConfirmed) return;
+
+          fetch(`/schedule/traveldeadline?id=${tripId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: tripId }),
+          })
+            .then((res) => res.text())
+            .then((msg) => {
+              SwalDefault.fire({
+                icon: msg.includes("완료") ? "success" : "error",
+                title: msg.includes("완료") ? "마감 완료" : "마감 실패",
+                text: msg,
+                confirmButtonText: "확인",
+              }).then(() => {
+                if (msg.includes("완료")) {
+                  location.href = "/schedule/myTrips";
+                }
+              });
+            })
+            .catch((err) => {
+              console.error("마감 요청 실패", err);
+              SwalDefault.fire({
+                icon: "error",
+                title: "요청 실패",
+                text: "서버와의 통신 중 오류가 발생했습니다.",
+                confirmButtonText: "확인",
+              });
+            });
+        });
+      });
+    }
+
   // 🗑️ 여행 삭제
   if (deleteBtn) {
     deleteBtn.addEventListener("click", () => {
@@ -208,4 +277,21 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const images = document.querySelectorAll('.travel-image');
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImage');
+
+  images.forEach(img => {
+    img.addEventListener('click', () => {
+      modal.style.display = "flex";
+      modalImg.src = img.src;
+    });
+  });
+
+  window.closeImageModal = function() {
+    modal.style.display = "none";
+  };
 });

@@ -10,7 +10,7 @@
             SELECT
                 u.id         AS userId,
                 u.nickname,
-                u.image_path AS imagePath,
+                COALESCE(u.image_path, '/image/member.png') AS imagePath,
                 'HOST'       AS role
             FROM trip_article t
             JOIN users u ON t.host_user_id = u.id
@@ -23,7 +23,7 @@
             SELECT
                 u.id         AS userId,
                 u.nickname,
-                u.image_path AS imagePath,
+                COALESCE(u.image_path, '/image/member.png') AS imagePath,
                 cp.role
             FROM chat_participants cp
             JOIN users u ON cp.user_id = u.id

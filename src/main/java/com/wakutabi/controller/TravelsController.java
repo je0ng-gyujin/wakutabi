@@ -5,21 +5,12 @@ import java.util.Arrays;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.configure.FilePathConfig;
-import com.wakutabi.domain.ImageOrderDto;
-import com.wakutabi.domain.NotificationDto;
-import com.wakutabi.domain.ParticipantDto;
+import com.wakutabi.domain.*;
 import com.wakutabi.mapper.ParticipantMapper;
 import com.wakutabi.mapper.UserMapper;
-import com.wakutabi.domain.RequestStatusDto;
-import com.wakutabi.domain.TravelEditDto;
-import com.wakutabi.domain.TravelImageDto;
-import com.wakutabi.domain.TravelUploadDto;
 
 import com.wakutabi.mapper.TravelUpdateDeleteMapper;
 import com.wakutabi.service.*;
-
-import com.wakutabi.domain.TripJoinRequestDto;
-import com.wakutabi.domain.TripListDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,6 +59,7 @@ public class TravelsController {
     private final TripService tripService;
     private final ParticipantMapper participantMapper;
     private final UserMapper userMapper;
+    private final ReviewService reviewService;
     
     // 중복 요청 방지를 위한 캐시
     private final ConcurrentHashMap<String, Long> requestCache = new ConcurrentHashMap<>();
@@ -125,10 +117,11 @@ public class TravelsController {
         int totalPages = (int) Math.ceil((double) totalCount / size);
         log.info("검색 날짜 파라미터 - startDateTime: {}, endDateTime: {}", startDateTime, endDateTime);
 
-        // 2. 각 여행 게시글에 대한 대표 이미지를 조회합니다.
+        // 2. 각 여행 게시글에 대한 추가 정보를 조회합니다.
         if (travels != null) {
             for (TravelEditDto travel : travels) {
                 if (travel != null && travel.getId() != null) {
+                    // 대표 이미지 조회
                     List<TravelImageDto> images = travelImageService.findImagesByTripArticleId(travel.getId());
                     if (images != null && !images.isEmpty()) {
                         TravelImageDto mainImage = images.get(0);
@@ -140,6 +133,15 @@ public class TravelsController {
                     } else {
                         travel.setMainImagePath("/images/default.jpg");
                     }
+
+                    // 현재 참가자 수 조회(아래 상세 조회와 동일한 로직입니다.)
+                    int participantCount = chatService.getCurrentParticipants(travel.getId());
+                    if (participantCount == 0) { // 기능 미구현인 채 테스트 했을 때 만든 게시글에서 참가자 수가 0인 경우 보완책으로 호스트 1명으로 설정
+                        travel.setCurrentParticipants(1); // 호스트를 포함하여 최소 1명으로 설정
+                    } else {
+                        travel.setCurrentParticipants(participantCount); // 실제 참가자 수 설정
+                    }
+
                 } else {
                     log.warn("Null travel object found in the search result list.");
                 }
@@ -293,18 +295,17 @@ public class TravelsController {
                     }
 
                     // 파일명에 UUID를 사용하여 저장 경로 생성
-                    String savePath = uploadDir + imageOrder.getUuid() + "_" + file.getOriginalFilename();
+                    String filename = imageOrder.getUuid() + "_" + file.getOriginalFilename();
+                    String savePath = uploadDir + filename;
                     file.transferTo(new File(savePath));
-                    String savePathReplace = savePath.replaceFirst(uploadDir, "/upload/");
+                    
+                    // 웹 접근 경로 생성
+                    String webPath = "/upload/" + filename;
+                    
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
-
-                    String uploadBasePath = FilePathConfig.getUploadPath();
-                    String normalizedSavePath = savePath.replace("\\", "/"); // 윈도우 → 슬래시 통일
-                    String normalizedBasePath = uploadBasePath.replace("\\", "/");
-                    String relativePath = normalizedSavePath.replaceFirst(normalizedBasePath, "/upload/");
-                    imgDto.setImagePath(relativePath);
+                    imgDto.setImagePath(webPath); // 웹 경로 저장
                     imgDto.setOrderNumber(imageOrder.getOrder()); // JSON에서 받은 순서 값 사용
 
                     travelImageService.insertTravelImage(imgDto);
@@ -377,7 +378,12 @@ public class TravelsController {
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(travel.getId());
 
         // 5. 채팅 참가자 수 조회하여 DTO에 세팅
-        travel.setCurrentParticipants(chatService.getCurrentParticipants(travel.getId()));
+        int participantCount = chatService.getCurrentParticipants(travel.getId());
+        if (participantCount == 0) {
+            travel.setCurrentParticipants(1); // 호스트를 포함하여 최소 1명으로 설정
+        } else {
+            travel.setCurrentParticipants(participantCount);
+        }
 
         // 6. 작성자 정보 및 참여자 목록 조회
         ParticipantDto author = null;
@@ -394,15 +400,17 @@ public class TravelsController {
         } catch (Exception ex) {
             log.warn("참여자 목록 조회 중 오류", ex);
         }
+        // 7. 리뷰 불러오기
+        List<ReviewTravelDto> reviews = reviewService.getReviewList(id);
 
-
-        // 5. Model에 모든 정보 담기
+        // 8. Model에 모든 정보 담기
         model.addAttribute("travel", travel);
         model.addAttribute("images", images);
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("chatRoomId", chatRoomId);
         model.addAttribute("author", author);
         model.addAttribute("participants", participants);
+        model.addAttribute("reviews", reviews);
         
 
         return "travels/detail";

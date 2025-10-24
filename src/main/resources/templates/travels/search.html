@@ -1,431 +1,281 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{/layouts/base}">
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{/layouts/base}">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" th:href="@{/css/travel.css}">
-<title>여행 일정 검색</title>
-<th:block layout:fragment="head">
-  <script defer th:src="@{/js/travel.js}"></script>
-</th:block>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" th:href="@{/css/travel.css}"/>
+    <title>여행 일정 검색</title>
+    <th:block layout:fragment="head">
+        <script defer th:src="@{/js/travel.js}"></script>
+    </th:block>
 </head>
 
 <body>
-			
-  <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
-    <div class="container py-4">
-      <!-- Page Header -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <h1 class="text-center mb-2">여행 일정 검색</h1>
-          <p class="text-center text-muted">태그와 필터를 활용해 원하는 여행 일정을
-            찾아보세요</p>
-        </div>
-      </div>
-
-      <!-- Search Container -->
-      <div class="search-container rounded-4 p-2 mb-4 shadow-sm">
-      <div class="row">
-        <div class="col-12">
-          
-            <!-- Search Input -->
-            <div class="row mb-3">
-              <div class="col-12">
-              <form id="searchForm" action="/schedule/search" method="get">
-                <div class="input-group input-group-lg">
-                  <span class="input-group-text bg-white border-end-0">
-                    <i class="bi bi-search text-primary"></i>
-                  </span> <input type="text"
-                    class="form-control border-start-0 ps-0"
-                    placeholder="여행지, 키워드로 검색해보세요..." id="searchInput"
-                    name="keyward" th:value="${query}">
-                  <button class="btn btn-wakutabi-primary px-4"
-                    type="submit">
-                    <i class="bi bi-search me-2"></i>검색
-                  </button>
+    <div class="bg-gradient-custom min-vh-100" layout:fragment="content">
+        <div class="container py-4">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h1 class="text-center mb-2">여행 일정 검색</h1>
+                    <p class="text-center text-muted">태그와 필터를 활용해 원하는 여행 일정을 찾아보세요</p>
                 </div>
-                </form>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filter & Results -->
-      <div class="row">
-        <!-- Sidebar Filters -->
-        <div class="col-lg-3 mb-4">
-        <form id="filterForm" action="/schedule/search" method="get">
-          <div class="filter-section p-3 shadow-sm sticky-top">
-          <div class="price-filter">
-			  <h5 class="mb-3">가격</h5>
-			  <div id="slider" style="margin:15px;"></div>
-			  <div class="d-flex mt-2 mb-3">
-			    <input type="number" id="minPrice" name="minPrice" class="form-control me-2" placeholder="최소가격">
-			    <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="최대가격">
-			  </div>
-			</div>
-			
-            <h5 class="mb-3">상세 필터</h5>
-
-            <div class="accordion mb-4" id="regionAccordion">
-			  <div class="accordion-item">
-			    <h2 class="accordion-header" id="headingRegion">
-			      <button class="accordion-button collapsed" type="button" 
-			              data-bs-toggle="collapse" 
-			              data-bs-target="#collapseRegion" 
-			              aria-expanded="false" aria-controls="collapseRegion">
-			        지역 <span id="selectedRegionText" class="ms-2 text-primary"></span>
-			      </button>
-			    </h2>
-			    <div id="collapseRegion" class="accordion-collapse collapse" 
-			         aria-labelledby="headingRegion" data-bs-parent="#regionAccordion">
-			      <div class="accordion-body">
-			      <input type="hidden" id="regionInput" name="region">
-			        <div class="region-list">
-			          <button type="button" value="hokkaido" class="region-item">홋카이도</button>
-			          <button type="button" value="tohoku" class="region-item">도호쿠</button>
-			          <button type="button" value="kanto" class="region-item">간토</button>
-			          <button type="button" value="chubu" class="region-item">주부</button>
-			          <button type="button" value="kansai" class="region-item">간사이</button>
-			          <button type="button" value="chugoku" class="region-item">주고쿠</button>
-			          <button type="button" value="shikoku" class="region-item">시코쿠</button>
-			          <button type="button" value="kyushu" class="region-item">규슈</button>
-			          <button type="button" value="okinawa" class="region-item">오키나와</button>
-			        </div>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-
-
-            <!-- 기간 필터 -->
-            <!-- <div class="mb-4">
-                        <h6 class="mb-2 text-muted">여행 기간</h6>
-                        <select class="form-select">
-                            <option value="">전체</option>
-                            <option value="1-2">1-2일</option>
-                            <option value="3-4">3-4일</option>
-                            <option value="5-7">5-7일</option>
-                            <option value="8+">8일 이상</option>
-                        </select>
-                    </div> -->
-                    <!-- 날짜 선택 팝업 -->
-			
-                    
-            <div class="mb-4">
-              <h5 class="mb-3">여행 기간</h5>
-              <p id="selectedPeriod" class="text-primary fw-bold"></p> <!-- 선택한 기간 표시 -->
-			<div class="mb-3">
-			  <label for="startDate" class="form-label">출발일</label>
-			  <input type="date" id="startDate" name="startDate" class="form-control form-control-lg">
-			</div>
-			<div class="mb-3">
-			  <label for="endDate" class="form-label">도착일</label>
-			  <input type="date" id="endDate" name="endDate" class="form-control form-control-lg">
-			</div>
-            </div>
-			<!-- Quick Filter Tags -->
-			<h5 class="mb-3">주요 태그</h5>
-			<input type="hidden" id="tagsInput" name="tags">
-                <div id="availableTags" 
-                     th:attr="data-tags=${#strings.listJoin(availableTags, ',')}"
-                     class="d-flex flex-wrap gap-2 mb-3">
-                  <!-- JavaScript로 동적 생성됩니다 -->
-                </div>
-            <!-- 참가인원 필터 -->
-            <div class="mb-4">
-              <h5 class="mb-3">모집 인원</h5>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                  id="small" name="groupSize" value="small"> <label class="form-check-label"
-                  for="small">소수 (2-4명)</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                  id="medium-group" name="groupSize" value="medium"> <label
-                  class="form-check-label" for="medium-group">중간
-                  (5-8명)</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                  id="large" name="groupSize" value="large"> <label class="form-check-label"
-                  for="large">대규모 (9명+)</label>
-              </div>
-            </div>
-			<div class="mb-4">
-			  <h5 class="mb-3">모집 상태</h5>
-			  <div class="form-check">
-			    <input
-			      class="form-check-input"
-			      type="radio"
-			      id="statusOpen"
-			      name="status"
-			      value="OPEN"
-			      th:checked="${#strings.equals(status, 'OPEN')}"
-			    />
-			    <label class="form-check-label" for="statusOpen">모집 중인 여행</label>
-			  </div>
-			  <div class="form-check">
-			    <input
-			      class="form-check-input"
-			      type="radio"
-			      id="statusClosed"
-			      name="status"
-			      value="CLOSED"
-			      th:checked="${#strings.equals(status, 'CLOSED')}"
-			    />
-			    <label class="form-check-label" for="statusClosed">완료된 여행</label>
-			  </div>
-			</div>
-			
-            <button type="submit" class="btn btn-wakutabi-primary w-100 mb-2">필터
-              적용</button>
-            <button type="button" id="resetFilters" class="btn btn-outline-secondary w-100">초기화</button>
-          </div>
-          </form>
-        </div>
-
-        <!-- Results Section -->
-        <div class="col-lg-9">
-          <!-- Results Header -->
-          <div
-            class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <span class="search-result-count"
-                    th:with="count=${totalCount != null ? totalCount : (totalElements != null ? totalElements : #lists.size(travels))}"
-                    th:text="'총 ' + ${count} + '개'"></span>의 여행 일정을
-              찾았습니다
-            </div>
-            <div class="d-flex gap-2">
-              <select class="form-select form-select-sm"
-                style="width: auto;">
-                <option>최신순</option>
-                <option>인기순</option>
-                <option>마감임박순</option>
-                <option>평점순</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Schedule Cards -->
-          <div class="row g-4">
-            <!-- Schedule Card 1 -->
-            <!-- <div class="col-12">
-              <div class="card schedule-card border-0 shadow-sm">
-                <div class="row g-0">
-                  <div class="col-md-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=250&fit=crop"
-                      class="img-fluid rounded-start h-100 object-fit-cover"
-                      alt="도쿄">
-                  </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <div
-                        class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title mb-0">🗼 도쿄 3박4일 먹방
-                          여행</h5>
-                        <span class="badge region-badge">도쿄</span>
-                      </div>
-
-                      <div class="date-range mb-2">
-                        <i class="bi bi-calendar-event me-1"></i> 2025년 12월 중 (2~5일간)
-                      </div>
-
-                      <p class="card-text text-muted mb-3">도쿄의 숨은
-                        맛집들을 찾아다니는 진짜 먹방 여행! 현지인만 아는 라멘집부터 미슐린 레스토랑까지 함께
-                        즐겨요.</p>
-
-                      <div class="mb-3">
-                        <span class="badge schedule-tag me-1">식도락</span>
-                        <span class="badge schedule-tag me-1">현지체험</span>
-                        <span class="badge schedule-tag me-1">소수정예</span>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="participants-info p-2 rounded">
-                            <small> <i class="bi bi-people me-1"></i>
-                              <strong>3/6명</strong> 참여 중
-                            </small>
-                          </div>
+            <!-- Search Container -->
+            <div class="search-container rounded-4 p-2 mb-4 shadow-sm">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Search Input -->
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <form id="searchForm" action="/schedule/search" method="get">
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="bi bi-search text-primary"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-start-0 ps-0"
+                                        placeholder="여행지, 키워드로 검색해보세요..." id="searchInput"
+                                        name="keyward" th:value="${query}"/>
+                                        <button class="btn btn-wakutabi-primary px-4" type="submit">
+                                            <i class="bi bi-search me-2"></i>검색
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="col-md-6 text-md-end">
-                          <div
-                            class="d-flex gap-2 justify-content-md-end">
-                            <button
-                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
-                            <button
-                              class="btn btn-wakutabi-primary btn-sm">참가신청</button>
-                          </div>
-                        </div>
-                      </div>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-
-            Schedule Card 2
-            <div class="col-12">
-              <div class="card schedule-card border-0 shadow-sm">
-                <div class="row g-0">
-                  <div class="col-md-4">
-                    <img
-                      src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=250&fit=crop"
-                      class="img-fluid rounded-start h-100 object-fit-cover"
-                      alt="교토">
-                  </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <div
-                        class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title mb-0">🏛️ 교토 전통 문화 체험</h5>
-                        <span class="badge region-badge">교토</span>
-                      </div>
-
-                      <div class="date-range mb-2">
-                        <i class="bi bi-calendar-event me-1"></i> 2024년
-                        12월 중 (3일간)
-                      </div>
-
-                      <p class="card-text text-muted mb-3">교토의 전통
-                        문화를 깊이 체험하는 여행. 기모노 체험, 다도, 전통 공예 등 일본의 진짜 문화를
-                        만나보세요.</p>
-
-                      <div class="mb-3">
-                        <span class="badge schedule-tag me-1">문화</span>
-                        <span class="badge schedule-tag me-1">체험</span>
-                        <span class="badge schedule-tag me-1">전통</span>
-                      </div>
-
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="participants-info p-2 rounded">
-                            <small> <i class="bi bi-people me-1"></i>
-                              <strong>5/8명</strong> 참여 중
-                            </small>
-                          </div>
+            <!-- Filter & Results -->
+            <div class="row">
+                <!-- Sidebar Filters -->
+                <div class="col-lg-3 mb-4">
+                    <form id="filterForm" action="/schedule/search" method="get">
+                        <div class="filter-section p-3 shadow-sm sticky-top">
+                            <div class="price-filter">
+                                <h5 class="mb-3">예상 비용</h5>
+                                <div id="slider" style="margin: 15px"></div>
+                                <div class="d-flex mt-2 mb-3">
+                                    <input type="number" id="minPrice" name="minPrice" class="form-control me-2" placeholder="최소"/>
+                                    <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="최대"/>
+                                </div>
+                            </div>
+                            <h5 class="mb-3">여행 지역</h5>
+                            <div class="accordion mb-4" id="regionAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingRegion">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapseRegion"
+                                            aria-expanded="false" aria-controls="collapseRegion">
+                                            선택해주세요
+                                            <span id="selectedRegionText" class="ms-2 text-primary"></span>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseRegion" class="accordion-collapse collapse" aria-labelledby="headingRegion" data-bs-parent="#regionAccordion">
+                                        <div class="accordion-body">
+                                            <input type="hidden" id="regionInput" name="region"/>
+                                            <div class="region-list">
+                                                <button type="button" value="hokkaido" class="region-item">홋카이도</button>
+                                                <button type="button" value="tohoku" class="region-item">도호쿠</button>
+                                                <button type="button" value="kanto" class="region-item">간토</button>
+                                                <button type="button" value="chubu" class="region-item">주부</button>
+                                                <button type="button" value="kansai" class="region-item">간사이</button>
+                                                <button type="button" value="chugoku" class="region-item">주고쿠</button>
+                                                <button type="button" value="shikoku" class="region-item">시코쿠</button>
+                                                <button type="button" value="kyushu" class="region-item">규슈</button>
+                                                <button type="button" value="okinawa" class="region-item">오키나와</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h5 class="mb-3">여행 기간</h5>
+                                <p id="selectedPeriod" class="text-primary fw-bold"></p> <!-- 선택한 기간 표시 -->
+                                <div class="mb-3">
+                                    <label for="startDate" class="form-label">출발일</label>
+                                    <input type="date" id="startDate" name="startDate" class="form-control form-control-lg">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endDate" class="form-label">도착일</label>
+                                    <input type="date" id="endDate" name="endDate" class="form-control form-control-lg">
+                                </div>
+                            </div>
+                            <!-- Quick Filter Tags -->
+                            <h5 class="mb-3">여행 테마</h5>
+                            <input type="hidden" id="tagsInput" name="tags">
+                            <div id="availableTags"
+                                th:attr="data-tags=${#strings.listJoin(availableTags, ',')}"
+                                class="d-flex flex-wrap gap-2 mb-3">
+                                <!-- JavaScript로 동적 생성됩니다 -->
+                            </div>
+                            <!-- 참가인원 필터 -->
+                            <div class="mb-4">
+                                <h5 class="mb-3">여행 규모</h5>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="small" name="groupSize" value="small"
+                                            th:checked="${groupSize != null and #lists.contains(groupSize, 'small')}"/>
+                                    <label class="form-check-label" for="small">소규모 (2-4명)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="medium-group" name="groupSize" value="medium"
+                                            th:checked="${groupSize != null and #lists.contains(groupSize, 'medium')}"/>
+                                    <label class="form-check-label" for="medium-group">중규모 (5-8명)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input" type="checkbox" id="large" name="groupSize" value="large"
+                                            th:checked="${groupSize != null and #lists.contains(groupSize, 'large')}"/>
+                                    <label class="form-check-label" for="large">대규모 (9-10명)</label>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h5 class="mb-3">모집 상태</h5>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="statusOpen" name="status" value="OPEN"
+                                        th:checked="${#strings.equals(status, 'OPEN')}"/>
+                                    <label class="form-check-label" for="statusOpen">모집 중</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="statusClosed" name="status" value="CLOSED"
+                                        th:checked="${#strings.equals(status, 'CLOSED')}"/>
+                                    <label class="form-check-label" for="statusClosed">모집 완료</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-wakutabi-primary w-100 mb-2">필터 적용</button>
+                            <button type="button" id="resetFilters" class="btn btn-outline-secondary w-100">초기화</button>
                         </div>
-                        <div class="col-md-6 text-md-end">
-                          <div
-                            class="d-flex gap-2 justify-content-md-end">
-                            <button
-                              class="btn btn-wakutabi-outline btn-sm">상세보기</button>
-                            <button
-                              class="btn btn-wakutabi-primary btn-sm">참가신청</button>
-                          </div>
+                    </form>
+                </div>
+
+                <!-- Results Section -->
+                <div class="col-lg-9">
+                    <!-- Results Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <span class="search-result-count"
+                                th:with="count=${totalCount != null ? totalCount : (totalElements != null ? totalElements : #lists.size(travels))}"
+                                th:text="'총 ' + ${count} + '개'">
+                            </span>의 여행 일정을 찾았습니다
                         </div>
-                      </div>
+                        <!-- 정렬 옵션 (추후 구현 예정)
+                        <div class="d-flex gap-2">
+                            <select class="form-select form-select-sm" style="width: auto">
+                                <option>최신순</option>
+                                <option>인기순</option>
+                                <option>마감임박순</option>
+                                <option>평점순</option>
+                            </select>
+                        </div>
+                        -->
                     </div>
-                  </div>
+                    <!-- Schedule Cards -->
+                    <div class="row g-4">
+                        <div th:each="travel : ${travels}" th:if="${travel != null}" class="col-12 mb-4">
+                            <div class="card schedule-card border-0 shadow-sm">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <img th:src="${travel.mainImagePath}" class="img-fluid rounded-start h-100 object-fit-cover"
+                                            alt="여행 대표 이미지"
+                                        />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h5 class="card-title mb-0" th:text="${travel.title}"></h5>
+                                                <span class="badge region-badge"
+                                                    th:classappend="${travel.status == 'CLOSED' ? 'region-badge-closed' : ''}"
+                                                    th:text="${travel.locationKorean}">
+                                                </span>
+                                            </div>
+                                            <div class="date-range mb-2">
+                                                <i class="bi bi-calendar-event me-1"></i>
+                                                <span th:text="${#temporals.format(travel.startDate, 'yyyy년 MM월 dd일')}"></span>
+                                                ~
+                                                <span th:text="${#temporals.format(travel.endDate, 'yyyy년 MM월 dd일')}"></span>
+                                            </div>
+                                            <div class="date-range mb-2">
+                                                <i class="bi bi-calendar-check me-1"></i>
+                                                <span>모집 마감: </span>
+                                                <span th:text="${#temporals.format(travel.recruitEndDate, 'yyyy년 MM월 dd일')}"></span>
+                                            </div>
+                                            <p class="card-text text-muted mb-3"
+                                                th:text="${#strings.abbreviate(travel.content, 100)}">
+                                            </p>
+                                            <div class="mb-3">
+                                                <span th:each="tag : ${travel.tags}" class="badge schedule-tag me-1" th:text="${tag}"></span>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="participants-info p-2 rounded" th:classappend="${travel.status == 'CLOSED' ? 'participants-info-closed' : ''}">
+                                                        <small>
+                                                            <i class="bi bi-people me-1"></i>
+                                                            <strong th:text="${travel.currentParticipants} + '/' + ${travel.maxParticipants} + '명'"></strong>
+                                                            참여 중
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 text-md-end">
+                                                    <div class="d-flex gap-2 justify-content-md-end">
+                                                        <a th:href="@{/schedule/detail(id=${travel.id})}" class="btn btn-wakutabi-outline btn-sm"
+                                                            th:classappend="${travel.status == 'CLOSED' ? 'btn-wakutabi-outline-warning' : ''}">
+                                                            상세보기
+                                                        </a>
+                                                        <button class="btn btn-wakutabi-primary btn-sm"
+                                                            th:classappend="${travel.status == 'CLOSED' ? 'btn-closed' : ''}"
+                                                            th:disabled="${travel.status == 'CLOSED'}">
+                                                            참가신청
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-center mt-5">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <!-- 이전 버튼 -->
+                                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                        <a class="page-link" th:href="@{/schedule/search(page=${currentPage - 1}, keyward=${query},
+                                        minPrice=${param.minPrice}, maxPrice=${param.maxPrice},
+                                        region=${param.region}, startDate=${param.startDate}, endDate=${param.endDate},
+                                        groupSize=${param.groupSize}, status=${param.status}, tags=${param.tags})}" aria-label="Previous"
+                                        >
+                                        <span aria-hidden="true">이전</span>
+                                        </a>
+                                    </li>
+                                    <!-- 페이지 번호 반복 -->
+                                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}" th:classappend="${pageNum == currentPage} ? 'active'">
+                                        <a class="page-link" th:href="@{/schedule/search(page=${pageNum}, keyward=${query},
+                                        minPrice=${param.minPrice}, maxPrice=${param.maxPrice},
+                                        region=${param.region}, startDate=${param.startDate}, endDate=${param.endDate},
+                                        groupSize=${param.groupSize}, status=${param.status}, tags=${param.tags})}" th:text="${pageNum}"
+                                        >
+                                        </a>
+                                    </li>
+                                    <!-- 다음 버튼 -->
+                                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                        <a class="page-link" th:href="@{/schedule/search(page=${currentPage + 1}, keyward=${query},
+                                        minPrice=${param.minPrice}, maxPrice=${param.maxPrice},
+                                        region=${param.region}, startDate=${param.startDate}, endDate=${param.endDate},
+                                        groupSize=${param.groupSize}, status=${param.status}, tags=${param.tags})}" aria-label="Next"
+                                        >
+                                        <span aria-hidden="true">다음</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div> -->
-
-            <!-- Schedule Card 3 -->
-            <div th:each="travel : ${travels}" th:if="${travel != null}" class="col-12 mb-4">
-  <div class="card schedule-card border-0 shadow-sm">
-    <div class="row g-0">
-      <div class="col-md-4">
-        <img th:src="${travel.mainImagePath}"
-          class="img-fluid rounded-start h-100 object-fit-cover"
-          alt="여행 대표 이미지">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h5 class="card-title mb-0" th:text="${travel.title}"></h5>
-            <span class="badge region-badge"
-                  th:classappend="${travel.status == 'CLOSED' ? 'region-badge-closed' : ''}"
-                  th:text="${travel.locationKorean}"></span>
-          </div>
-
-          <div class="date-range mb-2">
-            <i class="bi bi-calendar-event me-1"></i>
-            <span th:text="${#temporals.format(travel.startDate, 'yyyy년 MM월 dd일')}"></span>
-             ~
-            <span th:text="${#temporals.format(travel.endDate, 'yyyy년 MM월 dd일')}"></span>
-          </div>
-
-          <p class="card-text text-muted mb-3" th:text="${#strings.abbreviate(travel.content, 100)}"></p>
-
-          <div class="mb-3">
-			  <span th:each="tag : ${travel.tags}"
-			        class="badge schedule-tag me-1"
-			        th:text="${tag}">
-			  </span>
-			</div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="participants-info p-2 rounded"
-                   th:classappend="${travel.status == 'CLOSED' ? 'participants-info-closed' : ''}">
-                <small> <i class="bi bi-people me-1"></i>
-                  <strong th:text="${travel.maxParticipants} + '명'"></strong> 참여 중
-                </small>
-              </div>
             </div>
-            <div class="col-md-6 text-md-end">
-              <div class="d-flex gap-2 justify-content-md-end">
-                <a th:href="@{/schedule/detail(id=${travel.id})}"
-                   class="btn btn-wakutabi-outline btn-sm"
-                   th:classappend="${travel.status == 'CLOSED' ? 'btn-wakutabi-outline-warning' : ''}">상세보기</a>
-                <button class="btn btn-wakutabi-primary btn-sm"
-		        th:classappend="${travel.status == 'CLOSED' ? 'btn-closed' : ''}"
-		        th:disabled="${travel.status == 'CLOSED'}">참가신청</button>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
-
-          <!-- Pagination -->
-              <!-- Pagination -->
-              <div class="d-flex justify-content-center mt-5">
-                  <nav aria-label="Page navigation">
-                      <ul class="pagination">
-                          <!-- 이전 버튼 -->
-                          <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                              <a class="page-link"
-                                 th:href="@{/schedule/search(page=${currentPage - 1}, keyward=${query})}"
-                                 aria-label="Previous">
-                                  <span aria-hidden="true">이전</span>
-                              </a>
-                          </li>
-
-                          <!-- 페이지 번호 반복 -->
-                          <li class="page-item"
-                              th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
-                              th:classappend="${pageNum == currentPage} ? 'active'">
-                              <a class="page-link"
-                                 th:href="@{/schedule/search(page=${pageNum}, keyward=${query})}"
-                                 th:text="${pageNum}"></a>
-                          </li>
-
-                          <!-- 다음 버튼 -->
-                          <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                              <a class="page-link"
-                                 th:href="@{/schedule/search(page=${currentPage + 1}, keyward=${query})}"
-                                 aria-label="Next">
-                                  <span aria-hidden="true">다음</span>
-                              </a>
-                          </li>
-                      </ul>
-                  </nav>
-              </div>
-
-          </div>
-      </div>
-    </div>
-  </div>
-  </div>
 </body>
 </html>

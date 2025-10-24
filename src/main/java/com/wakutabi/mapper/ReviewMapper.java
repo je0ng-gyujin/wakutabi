@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 
 import com.wakutabi.domain.ReviewTravelDto;
 
+import java.util.List;
+
 @Mapper
 public interface ReviewMapper {
     // 리뷰창에 띄울 여행, 참가자 정보 DTO객체에 반환
@@ -18,4 +20,6 @@ public interface ReviewMapper {
     void insertTravleReviewImage(@Param("reviewId") Long reviewId, @Param("fileName") String fileName);
     // 참가자리뷰내용 DB에 저장
     void insertUserReview(ReviewUserDto user);
+    // 리뷰리스트
+    List<ReviewTravelDto> getReviewList(@Param("tripId")Long tripId);
 }

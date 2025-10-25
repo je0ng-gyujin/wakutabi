@@ -23,6 +23,10 @@ public class TripService {
         
         return tripMapper.findRegisteredTripsByHostId(userId); 
     }
+
+    public List<TripListDto> getAppliedTrips(Long userId) {
+        return tripMapper.findAppliedTripsByUserId(userId);
+    }
     
     public Long findUserIdByUsername(String username) {
         // 실제로는 UserMapper를 사용해야 하지만, 일단 TripMapper에 정의할 예정

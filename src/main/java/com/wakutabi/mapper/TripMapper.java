@@ -28,5 +28,7 @@ public interface TripMapper {
     
     // 4. 채팅방 참가자 추가
     int addChatParticipant(@Param("chatRoomId") Long chatRoomId, @Param("userId") Long userId);
+
+    List<TripListDto> findAppliedTripsByUserId(@Param("userId") Long userId);
 }
 

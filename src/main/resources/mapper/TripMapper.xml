@@ -8,6 +8,8 @@
         <result property="location" column="location"/>
         <result property="startDate" column="start_date"/>
         <result property="endDate" column="end_date"/>
+        <result property="recruitEndDate" column="recruit_end_date"/>
+        <result property="content" column="content"/>
         <result property="mainImagePath" column="main_image_path"/>
         <result property="status" column="status"/>
         <result property="currentParticipants" column="current_participants_count"/> 
@@ -36,6 +38,8 @@
         t.location,
         t.start_date,
         t.end_date,
+        t.recruit_end_date,
+        t.content,
         (
         SELECT tai.image_path
         FROM trip_article_image tai
@@ -115,6 +119,8 @@
             t.location,
             t.start_date,
             t.end_date,
+            t.recruit_end_date,
+            t.content,
             (
                 SELECT tai.image_path
                 FROM trip_article_image tai

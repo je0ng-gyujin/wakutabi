@@ -53,15 +53,15 @@ public class TravelEditService {
             "시코쿠", "Shikoku",
             "규슈", "Kyushu",
             "오키나와", "Okinawa"
-            // 여기에 추가적인 지역 매핑을 넣으세요.
-        );
-    
+    // 여기에 추가적인 지역 매핑을 넣으세요.
+    );
+
     // 복합 검색 및 필터링 기능을 위한 메서드
     public List<TravelEditDto> findFilteredTravels(String query, Integer minPrice, Integer maxPrice,
             String region, LocalDateTime startDate, LocalDateTime endDate,
             List<String> tags, List<String> groupSize, String status, int offset, int size) {
 
-    	String translatedQuery = null;
+        String translatedQuery = null;
         if (query != null && !query.isEmpty()) {
             String lowerQuery = query.toLowerCase();
             // 쿼리가 매핑 맵에 있으면 번역된 값을 설정
@@ -69,7 +69,7 @@ public class TravelEditService {
                 translatedQuery = KOREAN_TO_ROMANIZED.get(lowerQuery);
             }
         }
-        
+
         Map<String, Object> params = new HashMap<>();
         params.put("query", query);
         params.put("translatedQuery", translatedQuery); // ⬅️ 번역된 쿼리 추가
@@ -87,42 +87,41 @@ public class TravelEditService {
         // 1️⃣ Mapper에서 여행 게시글 조회
         List<TravelEditDto> travels = travelEditmapper.selectTravels(params);
 
-        // 2️⃣ 각 여행 게시글에 대한 태그 조회 후 DTO에 세팅
-        for (TravelEditDto travel : travels) {
-            List<String> tagList = travelTagMapper.findTagsByTripArticleId(travel.getId());
-            travel.setTags(tagList);
-            
-         // 3. 맵을 매퍼로 전달
-            return travelEditmapper.selectTravels(params); // ⬅️ selectTravels 시그니처가 Map을 받도록 가정
+        // null 체크 추가
+        if (travels != null) {
+            // 2️⃣ 각 여행 게시글에 대한 태그 조회 후 DTO에 세팅
+            for (TravelEditDto travel : travels) {
+                List<String> tagList = travelTagMapper.findTagsByTripArticleId(travel.getId());
+                travel.setTags(tagList);
+            }
         }
-
-        return travels;
+        return travels; // 3️⃣ 완성된 DTO 리스트 반환
     }
 
-        public int countFilteredTravels(String query, Integer minPrice, Integer maxPrice,
-                String region, LocalDateTime startDate, LocalDateTime endDate,
-                List<String> tags, List<String> groupSize, String status) {
+    public int countFilteredTravels(String query, Integer minPrice, Integer maxPrice,
+            String region, LocalDateTime startDate, LocalDateTime endDate,
+            List<String> tags, List<String> groupSize, String status) {
 
-        	String translatedQuery = null;
-            if (query != null && !query.isEmpty()) {
-                String lowerQuery = query.toLowerCase();
-                // KOREAN_TO_ROMANIZED 맵에서 번역된 값을 가져옵니다.
-                translatedQuery = KOREAN_TO_ROMANIZED.getOrDefault(lowerQuery, null);
-            }
-            
-            Map<String, Object> params = new HashMap<>();
-            params.put("query", query);
-            params.put("translatedQuery", translatedQuery); // ⬅️ Map에 포함
-            params.put("minPrice", minPrice);
-            params.put("maxPrice", maxPrice);
-            params.put("region", region);
-            params.put("startDate", startDate);
-            params.put("endDate", endDate);
-            params.put("tagsList", tags);
-            params.put("groupSize", groupSize);
-            params.put("status", status);
+        String translatedQuery = null;
+        if (query != null && !query.isEmpty()) {
+            String lowerQuery = query.toLowerCase();
+            // KOREAN_TO_ROMANIZED 맵에서 번역된 값을 가져옵니다.
+            translatedQuery = KOREAN_TO_ROMANIZED.getOrDefault(lowerQuery, null);
+        }
 
-            return travelEditmapper.countFilteredTravels(params);
+        Map<String, Object> params = new HashMap<>();
+        params.put("query", query);
+        params.put("translatedQuery", translatedQuery); // ⬅️ Map에 포함
+        params.put("minPrice", minPrice);
+        params.put("maxPrice", maxPrice);
+        params.put("region", region);
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+        params.put("tagsList", tags);
+        params.put("groupSize", groupSize);
+        params.put("status", status);
+
+        return travelEditmapper.countFilteredTravels(params);
     }
 
     @Transactional // ⭐트랜잭션 처리를 위해 어노테이션을 붙입니다.

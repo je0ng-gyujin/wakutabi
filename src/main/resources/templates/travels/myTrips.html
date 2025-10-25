@@ -29,7 +29,7 @@
                     <!-- Schedule Cards -->
                     <div class="row g-4">
                         <!-- Schedule Card 1 -->
-                        <h3 id="my-registered-trips">등록한 여행</h3>
+                        <h3>등록한 여행</h3>
                         <section id="my-registered-trips" class="mb-5">
                             <div th:if="${#lists.isEmpty(registeredTrips)}" class="alert alert-info" role="alert">
                                 아직 등록한 여행 일정이 없습니다.
@@ -55,8 +55,13 @@
                                                         ~
                                                         <span th:text="${#temporals.format(trip.endDate, 'yyyy년 MM월 dd일')}"></span>
                                                     </div>
-                                                    <p class="card-text text-muted mb-3">
-                                                    여행 요약이나 간단한 내용이 표시될 공간입니다.
+                                                    <div class="date-range mb-2">
+                                                        <i class="bi bi-calendar-check me-1"></i>
+                                                        <span>모집 마감: </span>
+                                                        <span th:text="${#temporals.format(trip.recruitEndDate, 'yyyy년 MM월 dd일')}"></span>
+                                                    </div>
+                                                    <p class="card-text text-muted mb-3"
+                                                        th:text="${#strings.abbreviate(trip.content, 100)}">
                                                     </p>
                                                     <div class="mb-3">
                                                         <span th:each="tag : ${trip.tags}" class="badge schedule-tag me-1" th:text="${tag}"></span>
@@ -66,9 +71,8 @@
                                                             <div class="participants-info p-2 rounded">
                                                                 <div class="status-info js-participants-toggle">
                                                                     <i class="bi bi-people-fill me-1"></i>
-                                                                    <span
-                                                                    th:text="|참여 중 ${trip.currentParticipants}/${trip.maxParticipants}명|">
-                                                                    </span>
+                                                                    <strong th:text="${trip.currentParticipants} + '/' + ${trip.maxParticipants} + '명'"></strong>
+                                                                    참여 중
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -102,7 +106,7 @@
                             <i class="bi bi-arrow-down-circle me-2"></i> 여행 더보기
                         </button>
                         <!--Schedule Card 2  -->
-                        <h3 id="my-applied-trips">신청한 여행</h3>
+                        <h3>신청한 여행</h3>
                         <section id="my-applied-trips" class="mb-5">
                             <div th:if="${#lists.isEmpty(appliedTrips)}" class="alert alert-info" role="alert">
                                 아직 신청한 여행 일정이 없습니다.
@@ -129,8 +133,13 @@
                                                         ~
                                                         <span th:text="${#temporals.format(trip.endDate, 'yyyy년 MM월 dd일')}"></span>
                                                     </div>
-                                                    <p class="card-text text-muted mb-3">
-                                                    여행 요약이나 간단한 내용이 표시될 공간입니다.
+                                                    <div class="date-range mb-2">
+                                                        <i class="bi bi-calendar-check me-1"></i>
+                                                        <span>모집 마감: </span>
+                                                        <span th:text="${#temporals.format(trip.recruitEndDate, 'yyyy년 MM월 dd일')}"></span>
+                                                    </div>
+                                                    <p class="card-text text-muted mb-3"
+                                                        th:text="${#strings.abbreviate(trip.content, 100)}">
                                                     </p>
                                                     <div class="mb-3">
                                                         <span th:each="tag : ${trip.tags}" class="badge schedule-tag me-1" th:text="${tag}"></span>
@@ -140,8 +149,8 @@
                                                             <div class="participants-info p-2 rounded">
                                                                 <div class="status-info js-participants-toggle">
                                                                     <i class="bi bi-people-fill me-1"></i>
-                                                                    <span th:text="|참여 중 ${trip.currentParticipants}/${trip.maxParticipants}명|">
-                                                                    </span>
+                                                                    <strong th:text="${trip.currentParticipants} + '/' + ${trip.maxParticipants} + '명'"></strong>
+                                                                    참여 중
                                                                 </div>
                                                             </div>
                                                         </div>

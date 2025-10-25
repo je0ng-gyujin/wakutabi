@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/schedule")
@@ -349,6 +348,14 @@ public class TravelsController {
         if (travel == null) {
             log.error("존재하지 않는 여행 게시글 ID입니다: {}", id);
             return "redirect:/error";
+        }
+
+        // 태그 번역
+        if (travel.getTags() != null) {
+            List<String> translatedTags = travel.getTags().stream()
+                .map(this::translateTag)
+                .toList();
+            travel.setTags(translatedTags);
         }
 
         // 2. 여행 이미지 목록 조회
@@ -742,12 +749,51 @@ public class TravelsController {
 
         // 3. 사용자가 등록한 여행 목록을 서비스 계층에서 조회합니다.
         List<TripListDto> registeredTrips = tripService.getRegisteredTrips(currentUserId);
+        if (registeredTrips != null) {
+            for (TripListDto trip : registeredTrips) {
+                if (trip.getCurrentParticipants() == 0) {
+                    trip.setCurrentParticipants(1);
+                }
+            }
+        }
+        if (registeredTrips == null) {
+            registeredTrips = new java.util.ArrayList<>();
+        }
+        registeredTrips = registeredTrips.stream().filter(java.util.Objects::nonNull).collect(java.util.stream.Collectors.toList());
+        // 등록한 여행 태그 번역
+        registeredTrips.forEach(trip -> {
+            if (trip.getTags() != null) {
+                List<String> translatedTags = trip.getTags().stream()
+                    .map(this::translateTag)
+                    .toList();
+                trip.setTags(translatedTags);
+            }
+        });
 
         model.addAttribute("registeredTrips", registeredTrips);
 
-        // (선택) 사용자가 신청한 여행 목록도 필요하다면 여기서 추가합니다.
-        // List<TripDto> appliedTrips = tripService.getAppliedTrips(currentUserId);
-        // model.addAttribute("appliedTrips", appliedTrips);
+        List<TripListDto> appliedTrips = tripService.getAppliedTrips(currentUserId);
+        if (appliedTrips != null) {
+            for (TripListDto trip : appliedTrips) {
+                if (trip.getCurrentParticipants() == 0) {
+                    trip.setCurrentParticipants(1);
+                }
+            }
+        }
+        if (appliedTrips == null) {
+            appliedTrips = new java.util.ArrayList<>();
+        }
+        appliedTrips = appliedTrips.stream().filter(java.util.Objects::nonNull).collect(java.util.stream.Collectors.toList());
+        // 신청한 여행 태그 번역
+        appliedTrips.forEach(trip -> {
+            if (trip.getTags() != null) {
+                List<String> translatedTags = trip.getTags().stream()
+                    .map(this::translateTag)
+                    .toList();
+                trip.setTags(translatedTags);
+            }
+        });
+        model.addAttribute("appliedTrips", appliedTrips);
 
         // myTrips.html 템플릿 반환
         return "travels/myTrips";

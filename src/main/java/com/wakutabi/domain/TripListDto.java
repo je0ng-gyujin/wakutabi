@@ -1,12 +1,17 @@
 package com.wakutabi.domain;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder // Lombok의 Builder 패턴을 사용하면 객체 생성이 간편해집니다.
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor // Lombok의 Builder 패턴을 사용하면 객체 생성이 간편해집니다.
 public class TripListDto {
 
 	private Long id;
@@ -22,7 +27,7 @@ public class TripListDto {
     private int maxParticipants;     // 최대 모집 인원 수
     
     // (선택) 목록에서 태그를 보여주려면 List<String> tags를 추가할 수 있습니다.
-    // private List<String> tags;
+    private List<String> tags;
     
     // 지역명을 한글로 변환하는 메서드
     public String getLocationKorean() {

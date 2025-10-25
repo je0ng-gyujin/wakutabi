@@ -86,8 +86,8 @@ $(document).ready(function () {
     btn.addEventListener("click", showMore);
   }
 
-  initLoadMore("registeredTrips", "loadMoreRegistered", 5);
-  initLoadMore("appliedTrips", "loadMoreApplied", 5);
+  initLoadMore("my-registered-trips", "loadMoreRegistered", 5);
+  initLoadMore("my-applied-trips", "loadMoreApplied", 5);
 
   // ✅ 신청 관리 버튼 (동적 요소 대응)
   $(document).on("click", ".btn-manage", function () {

@@ -12,7 +12,15 @@
         <result property="status" column="status"/>
         <result property="currentParticipants" column="current_participants_count"/> 
         <result property="maxParticipants" column="maxParticipants"/>
+        <collection property="tags" column="trip_id" javaType="java.util.List" ofType="java.lang.String" select="findTagsByTripId"/>
     </resultMap>
+
+    <select id="findTagsByTripId" resultType="java.lang.String">
+        SELECT tt.tag_name
+        FROM trip_tag tt
+        JOIN trip_tag_mid_trip_article m ON tt.id = m.trip_tag_id
+        WHERE m.trip_article_id = #{trip_id}
+    </select>
 
     <select id="findUserIdByUsername" resultType="java.lang.Long">
         SELECT id 
@@ -100,4 +108,34 @@
     VALUES
     (#{chatRoomId}, #{userId}, 'ACTIVE')
 </insert>
+    <select id="findAppliedTripsByUserId" resultMap="TripListDtoMap">
+        SELECT
+            t.id AS trip_id,
+            t.title,
+            t.location,
+            t.start_date,
+            t.end_date,
+            (
+                SELECT tai.image_path
+                FROM trip_article_image tai
+                WHERE tai.trip_article_id = t.id
+                ORDER BY tai.order_number ASC, tai.id ASC
+                LIMIT 1
+            ) AS main_image_path,
+            t.status,
+            t.max_participants AS maxParticipants,
+            (
+                SELECT COUNT(cp.id)
+                FROM chat_room cr
+                JOIN chat_participants cp ON cr.id = cp.chat_room_id
+                WHERE cr.trip_article_id = t.id
+                AND cp.status = 'ACTIVE'
+            ) AS current_participants_count
+        FROM trip_article t
+        JOIN trip_join_request tjr ON t.id = tjr.trip_article_id
+        WHERE tjr.applicant_user_id = #{userId}
+        AND t.deleted_at IS NULL
+        ORDER BY t.created_at DESC
+    </select>
+
 </mapper>

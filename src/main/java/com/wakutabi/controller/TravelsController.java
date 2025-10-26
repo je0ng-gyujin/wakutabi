@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wakutabi.configure.FilePathConfig;
 import com.wakutabi.domain.*;
 import com.wakutabi.mapper.ParticipantMapper;
+import com.wakutabi.mapper.UserMapper;
 
 import com.wakutabi.mapper.TravelUpdateDeleteMapper;
 import com.wakutabi.service.*;
@@ -53,8 +54,10 @@ public class TravelsController {
     private final TravelDeadlineService travelDeadlineService; // 추가
     private final TravelUpdateDeleteMapper travelUpdateDeleteMapper;
     private final ChatService chatService;
+    private final ChatParticipantsService chatParticipantsService;
     private final TripService tripService;
     private final ParticipantMapper participantMapper;
+    private final UserMapper userMapper;
     private final ReviewService reviewService;
     
     // 중복 요청 방지를 위한 캐시
@@ -711,7 +714,7 @@ public class TravelsController {
         }
 
         // 2. 작성자 본인인지 확인 (실제 사용자 ID와 비교)
-        Long currentUserId = userId;
+        Long currentUserId = userId; // TODO: principal.getName()을 사용해 실제 사용자 ID 가져오기
         if (!travel.getHostUserId().equals(currentUserId)) {
             return "redirect:/access-denied"; // 권한 없으면 접근 거부 페이지로
         }

@@ -1,5 +1,6 @@
 package com.wakutabi.service;
 
+import com.wakutabi.mapper.TravelDeadlineMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class TravelUpdateDeleteService {
 
     private final TravelUpdateDeleteMapper travelupdatedeletemapper;
+    private final TravelDeadlineMapper travelDeadlineMapper;
 
     public boolean updateTravelArticle(TravelEditDto dto) {
         int updateRows = travelupdatedeletemapper.updateTravelArticle(dto);

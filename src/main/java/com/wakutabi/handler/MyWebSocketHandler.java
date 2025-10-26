@@ -1,9 +1,11 @@
 package com.wakutabi.handler;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.lang.NonNull;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -25,7 +27,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	
 	// 클라이언트가 서버에 접속을 성공했을 때 호출
 	@Override
-	public void afterConnectionEstablished(WebSocketSession session) {
+	public void afterConnectionEstablished(@NonNull WebSocketSession session) {
 		Long roomId = getRoomIdFromSession(session);
 		
 		if (roomId != null) {
@@ -50,7 +52,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	
 	// 클라이언트가 메시지를 보낼 때마다 호출
 	@Override
-	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
+	protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) throws Exception{
 		String payload = message.getPayload();
 		
 		Long roomId = sessionToRoomId.get(session.getId());
@@ -99,7 +101,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	
 	// 클라이언트 연결이 종료되었을 때 호출
 	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+	public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) throws Exception {
 		Long roomId = sessionToRoomId.remove(session.getId());
 		
 		if (roomId != null) {
@@ -117,11 +119,15 @@ public class MyWebSocketHandler extends TextWebSocketHandler{
 	// URL에서 roomId를 추출하는 헬퍼 메서드
 	private Long getRoomIdFromSession(WebSocketSession session) {
 		try {
-			String query = session.getUri().getQuery();
-			if (query != null && query.startsWith("roomId=")) {
-				String roomIdStr = query.substring("roomId=".length());
-				return Long.parseLong(roomIdStr);
-			}
+            URI uri = session.getUri();
+            // 먼저 URI 가져오기 (기존 방법은 NullPointerException 발생 가능)
+            if (uri != null) {
+                String query = uri.getQuery();
+                if (query != null && query.startsWith("roomId=")) {
+                    String roomIdStr = query.substring("roomId=".length());
+                    return Long.parseLong(roomIdStr);
+                }
+            }
 		} catch (Exception e) {
 			System.err.println("(웹소켓) roomId 파싱 중 오류 발생: " + e.getMessage());
 		}

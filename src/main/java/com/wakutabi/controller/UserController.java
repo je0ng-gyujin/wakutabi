@@ -3,8 +3,6 @@ package com.wakutabi.controller;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import com.wakutabi.domain.*;
@@ -17,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,7 +32,6 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	private final JavaMailSender mailSender;//이메일로인증
 	// 1. properties의 실제 저장 경로(C:/upload/)를 주입받습니다.
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -44,7 +40,6 @@ public class UserController {
     @Value("${uploadPath}")
     private String webPath;
     
-    private Map<String, String> codeStorage = new HashMap<>(); // 실제로는 Redis 추천
     
     
 	@PostMapping("/signup")

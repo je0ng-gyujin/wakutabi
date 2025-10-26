@@ -23,9 +23,6 @@ public class CustomUserDetailService implements UserDetailsService  {
 		LoginDto dto = userMapper.findByUsername(username);
 		System.out.println(dto.getIsVerified());
 
-		if(dto==null) {
-			throw new UsernameNotFoundException("사용자를 찾을 수 없다"+username);
-		}
 		if("EXIT".equalsIgnoreCase(dto.getStatus())){
 			System.out.println("status 값: " + dto.getStatus());
 			throw new DisabledException("탈퇴한 계정입니다.");

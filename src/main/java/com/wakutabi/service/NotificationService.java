@@ -1,9 +1,7 @@
 package com.wakutabi.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import com.wakutabi.controller.NotificationController;
 import com.wakutabi.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +9,6 @@ import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.mapper.NotificationMapper;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service

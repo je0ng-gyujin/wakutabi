@@ -1,6 +1,5 @@
 package com.wakutabi.service;
 
-import com.wakutabi.domain.NotificationDto;
 import com.wakutabi.domain.TravelJoinRequestDto;
 import com.wakutabi.mapper.TravelJoinRequestMapper;
 import lombok.RequiredArgsConstructor;

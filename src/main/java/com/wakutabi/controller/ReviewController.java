@@ -1,8 +1,6 @@
 package com.wakutabi.controller;
 
 import com.wakutabi.domain.ReviewUserDto;
-import com.wakutabi.domain.TravelEditDto;
-import com.wakutabi.service.TravelEditService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +17,6 @@ import com.wakutabi.service.ReviewService;
 
 import jakarta.validation.Valid;
 
-import java.security.Principal;
-
 @Controller
 @RequestMapping("/travels")
 @RequiredArgsConstructor
@@ -28,7 +24,6 @@ import java.security.Principal;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final TravelEditService travelEditService;
 
     // 리뷰 작성 폼
     @GetMapping("/review")

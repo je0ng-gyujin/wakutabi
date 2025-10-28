@@ -27,8 +27,4 @@ public class MainController {
 		return "users/login";
 	}
 
-	@GetMapping("/detail")
-	public String detail() {
-		return "travels/detail";
-	}
 }

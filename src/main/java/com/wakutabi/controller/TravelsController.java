@@ -347,6 +347,33 @@ public class TravelsController {
             return "redirect:/error";
         }
 
+        // 동적 상태 표시를 위한 로직 추가
+        String dbStatus = travel.getStatus();
+        LocalDate now = LocalDate.now();
+        String displayStatus = "";
+
+        if ("CANCELED".equalsIgnoreCase(dbStatus)) {
+            displayStatus = "여행 취소";
+        } else if ("CLOSED".equalsIgnoreCase(dbStatus)) {
+            displayStatus = "여행 종료";
+        } else {
+            // OPEN 또는 MATCHED 상태일 때
+            if (now.isAfter(travel.getEndDate())) {
+                displayStatus = "여행 종료";
+            } else if (now.isAfter(travel.getStartDate()) || now.isEqual(travel.getStartDate())) {
+                displayStatus = "여행 중";
+            } else if (now.isAfter(travel.getRecruitEndDate())) {
+                displayStatus = "모집 마감";
+            } else {
+                if ("MATCHED".equalsIgnoreCase(dbStatus)) {
+                    displayStatus = "매칭 완료";
+                } else {
+                    displayStatus = "모집 중";
+                }
+            }
+        }
+        travel.setDisplayStatus(displayStatus);
+
         // 태그 번역
         if (travel.getTags() != null) {
             List<String> translatedTags = travel.getTags().stream()

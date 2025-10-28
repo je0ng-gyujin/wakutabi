@@ -31,6 +31,7 @@ public class TravelEditDto {
     private LocalDateTime deletedAt;
     private String mainImagePath;
     private List<String> tags;
+    private String displayStatus; // 화면에 표시될 상태
     public List<String> getTags() { return tags; }
     public void setTags(List<String> tags) { this.tags = tags; }
     private String tag; 

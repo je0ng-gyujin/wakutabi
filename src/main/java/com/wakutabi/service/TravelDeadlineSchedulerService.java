@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TravelDeadlineScheduler {
+public class TravelDeadlineSchedulerService {
 
     private final TravelDeadlineMapper travelDeadlineMapper;
 

@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class TravelCanceledAndEndScheduler {
+public class TravelCanceledAndEndSchedulerService {
 
     private final TravelCanceledAndEndMapper travelCanceledAndEndMapper;
     private final ChatParticipantsMapper chatParticipantsMapper;

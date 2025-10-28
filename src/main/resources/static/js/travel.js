@@ -380,4 +380,52 @@ $(document).ready(function () {
       slider.noUiSlider.set([0, 2000000]);
     }
   });
+  
+  // 신청 취소 버튼 (동적 요소 대응)
+  $(document).on("click", ".cancel-application-btn", function () {
+    const tripId = $(this).data("trip-id");
+
+    Swal.fire({
+      title: '정말 신청을 취소하시겠습니까?',
+      text: "취소하면 다시 신청해야 합니다.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '네, 취소합니다',
+      cancelButtonText: '아니요'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`/join-request/cancel?tripId=${tripId}`, {
+          method: 'PATCH'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            Swal.fire(
+              '취소 완료!',
+              '여행 참가를 취소했습니다.',
+              'success'
+            ).then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire(
+              '오류',
+              data.message,
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire(
+            '오류',
+            '요청 중 오류가 발생했습니다.',
+            'error'
+          );
+        });
+      }
+    });
+  });
 });

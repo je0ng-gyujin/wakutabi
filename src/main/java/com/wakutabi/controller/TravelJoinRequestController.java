@@ -18,6 +18,8 @@
 
         private final TravelJoinFacadeService travelJoinFacadeService;
         private final ChatService chatService; // 채팅방 생성을 위해 채팅 서비스 주입
+        private final TravelJoinRequestService travelJoinRequestService;
+
         // 여행참가신청
         @PostMapping("/join-request")
         @ResponseBody   // 중요! String redirect가 아니라 JSON 응답으로
@@ -48,6 +50,22 @@
                 result.put("message", "참가 신청 중 오류가 발생했습니다.");
             }
 
+            return result;
+        }
+
+        @PatchMapping("/join-request/cancel")
+        @ResponseBody
+        public Map<String, Object> cancelTravelJoinRequest(@RequestParam("tripId") Long tripId, @ModelAttribute("userId") Long userId) {
+            log.info("Controller - cancelTravelJoinRequest: tripId={}, userId={}", tripId, userId);
+            Map<String, Object> result = new HashMap<>();
+            try {
+                travelJoinRequestService.cancelJoinRequest(tripId, userId);
+                result.put("status", "success");
+            } catch (Exception e) {
+                log.error("Error canceling join request", e);
+                result.put("status", "fail");
+                result.put("message", "신청 취소 중 오류가 발생했습니다.");
+            }
             return result;
         }
     }

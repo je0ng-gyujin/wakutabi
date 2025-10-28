@@ -55,4 +55,11 @@
         WHERE cr.trip_article_id = #{tripArticleId}
         AND cp.status = 'ACTIVE'
     </select>
+    <!-- 채팅 참가자 상태 업데이트 -->
+    <update id="updateParticipantStatus">
+        UPDATE chat_participants
+        SET status = #{status}
+        WHERE chat_room_id = #{chatRoomId}
+        AND user_id = #{userId}
+    </update>
 </mapper>

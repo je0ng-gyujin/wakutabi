@@ -29,6 +29,8 @@
             <div style="text-align:center; margin-top:8px;">
               <form th:action="@{/notifications/accept}" method="post" style="display:inline;">
                 <input type="hidden" name="noticeId" th:value="${notice.id}">
+                <input type="hidden" name="tripArticleId" th:value="${notice.tripArticleId}">
+                <input type="hidden" name="applicantUserId" th:value="${notice.userId}">
                 <button class="btn btn-success btn-sm">수락</button>
               </form>
               <form th:action="@{/notifications/reject}" method="post" style="display:inline;">

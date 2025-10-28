@@ -361,15 +361,8 @@ public class TravelsController {
         // 3. 현재 로그인 사용자와 작성자 일치 여부 확인
         boolean isOwner = false;
         if (principal != null) {
-            // 참고: Principal에서 사용자 ID를 직접 가져오는 로직은
-            // Spring Security 설정이나 UserDetails 구현에 따라 다를 수 있습니다.
-            // 아래는 일반적인 예시입니다. Long.parseLong(principal.getName()) 등을 사용할 수 있습니다.
-            // Long currentUserId = userService.findByUsername(principal.getName()).getId();
-            
-            // 임시로 travel 객체에서 가져온 host ID와 비교하는 로직을 유지하되,
-            // 실제로는 principal 기반으로 조회하는 것이 좋습니다.
-            // 이 예제에서는 임의의 ID 1L로 가정하겠습니다. 실제 프로젝트에 맞게 수정하세요.
-            Long currentUserId = 1L; // <<-- 이 부분은 실제 로그인 유저 ID를 가져오는 로직으로 변경해야 합니다.
+            String username = principal.getName();
+            Long currentUserId = tripService.findUserIdByUsername(username);
             isOwner = travel.getHostUserId() != null && travel.getHostUserId().equals(currentUserId);
         }
 

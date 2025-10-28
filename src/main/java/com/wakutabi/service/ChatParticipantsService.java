@@ -21,4 +21,9 @@ public class ChatParticipantsService {
 	public int countActiveParticipantsByTripArticleId(Long tripArticleId) {
 		return chatParticipantsMapper.countActiveParticipantsByTripArticleId(tripArticleId);
 	}
+
+	// 채팅 참가자 상태 업데이트
+    public void updateParticipantStatus(Long chatRoomId, Long userId, String status) {
+        chatParticipantsMapper.updateParticipantStatus(chatRoomId, userId, status);
+    }
 }

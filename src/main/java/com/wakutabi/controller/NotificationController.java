@@ -1,14 +1,17 @@
 package com.wakutabi.controller;
 
-import com.wakutabi.domain.TravelJoinRequestDto;
 import com.wakutabi.service.*;
 import com.wakutabi.domain.NotificationDto;
-import lombok.RequiredArgsConstructor;
+import com.wakutabi.domain.TravelJoinRequestDto;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.stereotype.Controller;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.security.Principal;
 
@@ -47,6 +50,7 @@ public class NotificationController {
 
     // 호스트가 참가수락 눌렀을 때
     @PostMapping("/accept")
+    @Transactional
     public RedirectView acceptRequest(@RequestParam("noticeId") Long noticeId, @ModelAttribute("userId") Long userId){
         // 알림조회
         NotificationDto notice = notificationService.findNotificationById(noticeId);
@@ -56,21 +60,21 @@ public class NotificationController {
             throw new AccessDeniedException("여행 작성자만 참가 수락 가능합니다");
         }
         // 참가자ID (알림 title에 username이 들어있음)
-        Long applicantUserId = userService.getUserId(notice.getTitle());
+        Long actualApplicantUserId = userService.getUserId(notice.getTitle());
         Long tripArticleId = notice.getTripArticleId();
         // 여행참가수락DTO
         TravelJoinRequestDto statusToAccepted = new TravelJoinRequestDto();
         statusToAccepted.setTripArticleId(tripArticleId);
         statusToAccepted.setHostUserId(hostUserId);
-        statusToAccepted.setApplicantUserId(userId);
+        statusToAccepted.setApplicantUserId(actualApplicantUserId); // 수정된 부분
         statusToAccepted.setStatus(TravelJoinRequestDto.Status.ACCEPTED);
         travelJoinRequestService.changeStatusToAccepted(statusToAccepted);
         // 채팅 참가자로 넣기
         Long chatRoomId = chatService.chatRoomFindByTripArticleId(tripArticleId);
-        chatParticipantsService.addUserToChatParticipants(chatRoomId, applicantUserId);
+        chatParticipantsService.addUserToChatParticipants(chatRoomId, actualApplicantUserId);
         // 여행참가수락알림DTO 생성
         NotificationDto sendRequestAnswer = NotificationDto.builder()
-                .userId(applicantUserId)
+                .userId(actualApplicantUserId)
                 .tripArticleId(tripArticleId)
                 .title("여행신청이 수락되었습니다.")
                 .type("TRAVEL_ACCEPTED")
@@ -85,6 +89,7 @@ public class NotificationController {
 
     // 호스트가 참가 거절 눌렀을 때
     @PostMapping("/reject")
+    @Transactional
     public RedirectView rejectRequest(@RequestParam("noticeId") Long noticeId,@ModelAttribute("userId") Long userId){
         // 알림조회
         NotificationDto notice = notificationService.findNotificationById(noticeId);

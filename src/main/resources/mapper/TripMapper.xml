@@ -140,6 +140,7 @@
         FROM trip_article t
         JOIN trip_join_request tjr ON t.id = tjr.trip_article_id
         WHERE tjr.applicant_user_id = #{userId}
+        AND tjr.status IN ('PENDING', 'ACCEPTED')
         AND t.deleted_at IS NULL
         ORDER BY t.created_at DESC
     </select>

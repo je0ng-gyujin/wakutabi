@@ -32,4 +32,22 @@
         WHERE status = 'OPEN'
         AND NOW() >= recruit_end_date
     </update>
+    <!-- 참가자 수에 따라 여행 상태를 업데이트 (OPEN 또는 MATCHED) -->
+    <update id="updateTripArticleStatusBasedOnParticipants" parameterType="long">
+        UPDATE trip_article ta
+        LEFT JOIN (
+            SELECT cr.trip_article_id, COUNT(cp.id) AS active_participants
+            FROM chat_room cr
+            JOIN chat_participants cp ON cr.id = cp.chat_room_id
+            WHERE cp.status = 'ACTIVE'
+            AND cr.trip_article_id = #{tripId}
+            GROUP BY cr.trip_article_id
+        ) AS participants_count ON ta.id = participants_count.trip_article_id
+        SET ta.status = CASE
+                            WHEN COALESCE(participants_count.active_participants, 0) >= ta.max_participants THEN 'MATCHED'
+                            ELSE 'OPEN'
+                        END
+        WHERE ta.id = #{tripId}
+        AND ta.status IN ('OPEN', 'MATCHED')
+    </update>
 </mapper>

@@ -20,4 +20,6 @@ public interface ChatParticipantsMapper {
 	int updateStatusToCompleted(@Param("list") List<Long> endedTripIds);
 	// 여행별 ACTIVE 참가자 수 반환
 	int countActiveParticipantsByTripArticleId(@Param("tripArticleId") Long tripArticleId);
+	// 채팅 참가자 상태 업데이트
+    int updateParticipantStatus(@Param("chatRoomId") Long chatRoomId, @Param("userId") Long userId, @Param("status") String status);
 }

@@ -24,12 +24,33 @@
         AND host_user_id = #{hostUserId}
         AND applicant_user_id = #{applicantUserId}
     </update>
+    <!-- 여행참가 신청 취소 -->
+    <update id="cancelJoinRequest" parameterType="com.wakutabi.domain.TravelJoinRequestDto">
+        UPDATE trip_join_request
+        SET status = 'CANCELED'
+        WHERE trip_article_id = #{tripArticleId}
+        AND applicant_user_id = #{applicantUserId}
+        AND status IN ('PENDING', 'ACCEPTED')
+    </update>
+    <!-- 여행참가 신청 조회 (trip_article_id와 applicant_user_id로) -->
+    <select id="findJoinRequestByTripAndApplicant" parameterType="map" resultType="com.wakutabi.domain.TravelJoinRequestDto">
+        SELECT
+            id,
+            trip_article_id,
+            host_user_id,
+            applicant_user_id,
+            status,
+            created_at
+        FROM trip_join_request
+        WHERE trip_article_id = #{tripId}
+        AND applicant_user_id = #{applicantUserId}
+    </select>
     <select id="existJoinRequest" parameterType="map" resultType="map">
         SELECT
             EXISTS(
                 SELECT 1
                 FROM trip_join_request
-                WHERE trip_article_id = #{travelArticleId}
+                WHERE trip_article_id = #{tripId}
                 AND applicant_user_id = #{applicantUserId}
                 AND status IN ('PENDING')
             ) AS has_pending,
@@ -38,9 +59,9 @@
                 FROM chat_participants cp
                 JOIN chat_room cr
                 ON cp.chat_room_id = cr.id
-                WHERE cr.trip_article_id = #{travelArticleId}
-                  AND cp.user_id = #{applicantUserId}
-                  AND cp.status = 'ACTIVE'
+                WHERE cr.trip_article_id = #{tripId}
+                    AND cp.user_id = #{applicantUserId}
+                    AND cp.status = 'ACTIVE'
             ) AS has_active
     </select>
 </mapper>

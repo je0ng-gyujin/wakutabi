@@ -29,9 +29,7 @@ public class TravelJoinFacadeService {
 			throw new IllegalStateException("호스트는 참가신청 할 수 없습니다.");
 		}
 		// 중복신청 체크(PENDING/ACTIVE)
-		Map<String,Object> check = travelJoinRequestMapper.existJoinRequest(
-				Map.of("travelArticleId", travelJoinRequest.getTripArticleId(),
-						"applicantUserId", userId));
+		Map<String,Object> check = travelJoinRequestMapper.existJoinRequest(travelJoinRequest.getTripArticleId(), userId);
 		int hasPending =((Number) check.get("has_pending")).intValue();
 		int hasActive = ((Number) check.get("has_active")).intValue();
 		if(hasPending > 0){

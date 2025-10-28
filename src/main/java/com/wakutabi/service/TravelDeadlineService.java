@@ -26,4 +26,9 @@ public class TravelDeadlineService {
 	public boolean travelDeadlineHostClick(Long travelArticleId){
 		return travelDeadlineMapper.travelDeadlineHostClick(travelArticleId) > 0;
 	}
+
+	// 참가자 변동에 따른 여행상태 업데이트
+	public void updateTravelStatus(Long tripId) {
+		travelDeadlineMapper.updateTripArticleStatusBasedOnParticipants(tripId);
+	}
 }

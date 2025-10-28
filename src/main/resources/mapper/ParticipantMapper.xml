@@ -28,9 +28,9 @@
             FROM chat_participants cp
             JOIN users u ON cp.user_id = u.id
             JOIN chat_room cr ON cp.chat_room_id = cr.id
-            WHERE cr.trip_article_id = #{tripArticleId}
-              AND cp.role = 'PARTICIPANT'
-        )
+                    WHERE cr.trip_article_id = #{tripArticleId}
+                      AND cp.role = 'PARTICIPANT'
+                      AND cp.status = 'ACTIVE'        )
         
         ORDER BY
             CASE

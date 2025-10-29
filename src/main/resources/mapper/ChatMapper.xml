@@ -35,7 +35,7 @@ LEFT JOIN
 LEFT JOIN
     users AS latest_sender ON latest_message.user_id = latest_sender.id
 WHERE
-    p.user_id = #{userId} AND p.status = 'ACTIVE'
+    p.user_id = #{userId} AND p.status IN ('ACTIVE', 'COMPLETED')
 ORDER BY
     p.created_at
   </select>

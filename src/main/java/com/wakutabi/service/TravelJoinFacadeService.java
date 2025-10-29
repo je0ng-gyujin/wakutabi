@@ -1,11 +1,17 @@
 package com.wakutabi.service;
 
+import com.wakutabi.domain.TravelEditDto;
 import com.wakutabi.domain.TravelJoinRequestDto;
+import com.wakutabi.domain.UserUpdateDto;
 import com.wakutabi.mapper.TravelJoinRequestMapper;
+import com.wakutabi.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -18,6 +24,9 @@ public class TravelJoinFacadeService {
 	private final TravelJoinRequestService travelJoinRequestService;
 	private final NotificationService notificationService;
 	private final TravelJoinRequestMapper travelJoinRequestMapper;
+	private final TravelEditService travelEditService;
+	private final UserMapper userMapper;
+
 	@Transactional
 	public String joinTravel(TravelJoinRequestDto travelJoinRequest,
 							  Long chatRoomId,
@@ -38,6 +47,37 @@ public class TravelJoinFacadeService {
 		if(hasActive > 0){
 			throw new IllegalStateException("이미 참가중인 여행입니다.");
 		}
+
+		// 제한 사항 확인
+		TravelEditDto travel = travelEditService.findTravelById(travelJoinRequest.getTripArticleId());
+		String username = userMapper.getUsernameById(userId);
+		UserUpdateDto user = userMapper.getUserInfo(username);
+
+		// 성별 제한 확인
+		String genderLimit = travel.getGenderLimit();
+		if (!"N".equals(genderLimit)) {
+			String fullGenderLimit = getFullGenderName(genderLimit);
+			if (!fullGenderLimit.equalsIgnoreCase(user.getGender().name())) {
+				throw new IllegalStateException("성별 제한에 맞지 않습니다.");
+			}
+		}
+
+		// 나이 제한 확인
+		String ageLimit = travel.getAgeLimit();
+		if (!"NO".equals(ageLimit)) {
+			String[] ageRanges = ageLimit.split(",");
+			LocalDate birthDate = user.getBirth();
+			int age = Period.between(birthDate, LocalDate.now()).getYears();
+			boolean ageMatch = Arrays.stream(ageRanges).anyMatch(range -> {
+				int startAge = Integer.parseInt(range);
+				int endAge = startAge + 9;
+				return age >= startAge && age <= endAge;
+			});
+			if (!ageMatch) {
+				throw new IllegalStateException("나이 제한에 맞지 않습니다.");
+			}
+		}
+
 		// 참가자 insert
 		travelJoinRequest.setApplicantUserId(userId);
 		travelJoinRequestService.insertTravelJoinRequest(travelJoinRequest);
@@ -55,5 +95,15 @@ public class TravelJoinFacadeService {
 
 		boolean closed = travelDeadlineService.travelDeadline(params);
 		return closed ? "인원이 다 찼습니다." : "참가 신청이 완료되었습니다.";
+	}
+
+	private String getFullGenderName(String shortGender) {
+		switch (shortGender.toUpperCase()) {
+			case "M": return "MALE";
+			case "F": return "FEMALE";
+			case "O": return "OTHER";
+			case "N": return "NONE";
+			default: return shortGender; // 알 수 없는 약어인 경우 원래 값을 반환
+		}
 	}
 }

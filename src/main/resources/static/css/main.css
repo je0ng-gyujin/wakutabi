@@ -1,3 +1,14 @@
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0; /* Remove default body margin */
+}
+
 :root {
 	--primary-color: #60B5FF;
 	--secondary-color: #AFDDFF;
@@ -57,6 +68,7 @@
 }
 
 .bg-gradient-custom {
+	flex-grow: 1;
 	background: linear-gradient(135deg, var(--background-color) 0%,
 		var(--secondary-color) 100%) !important;
 }
@@ -103,7 +115,6 @@
 }
 
 section {
-  margin-top: 120px;
 }
 
 .hero-title {

@@ -121,7 +121,12 @@ public class UserController {
     @PostMapping("/update")
     public String userInfoUpdate(
             UserUpdateDto user,
-            @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
+            @RequestParam("profileImage") MultipartFile profileImage,
+            Principal principal) throws IOException {
+
+        // 현재 로그인된 사용자 정보 가져오기
+        String username = principal.getName();
+        UserUpdateDto currentUser = userService.getUserInfo(username);
 
         // --- 파일 처리 로직 시작 ---
         if (profileImage != null && !profileImage.isEmpty()) {
@@ -143,6 +148,9 @@ public class UserController {
             // 5. DB에는 웹 접근 경로를 저장합니다.
             // 예: "/upload/고유한이름_파일.jpg"
             user.setImagePath(webPath + storedFilename);
+        } else {
+            // 새 이미지가 업로드되지 않았다면 기존 이미지 경로 유지
+            user.setImagePath(currentUser.getImagePath());
         }
         // --- 파일 처리 로직 끝 ---
 

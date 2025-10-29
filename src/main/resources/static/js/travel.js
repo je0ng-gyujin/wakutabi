@@ -385,7 +385,7 @@ $(document).ready(function () {
   $(document).on("click", ".cancel-application-btn", function () {
     const tripId = $(this).data("trip-id");
 
-    Swal.fire({
+    SwalDefault.fire({
       title: '정말 신청을 취소하시겠습니까?',
       text: "취소하면 다시 신청해야 합니다.",
       icon: 'warning',
@@ -402,7 +402,7 @@ $(document).ready(function () {
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
-            Swal.fire(
+            SwalDefault.fire(
               '취소 완료!',
               '여행 참가를 취소했습니다.',
               'success'
@@ -410,7 +410,7 @@ $(document).ready(function () {
               location.reload();
             });
           } else {
-            Swal.fire(
+            SwalDefault.fire(
               '오류',
               data.message,
               'error'
@@ -419,7 +419,7 @@ $(document).ready(function () {
         })
         .catch(error => {
           console.error('Error:', error);
-          Swal.fire(
+          SwalDefault.fire(
             '오류',
             '요청 중 오류가 발생했습니다.',
             'error'

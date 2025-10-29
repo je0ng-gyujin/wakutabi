@@ -13,7 +13,7 @@
 
 .sticky-top {
     /* 내비게이션 바 높이 등을 고려하여 적절한 여백을 설정합니다. */
-    top: 70px !important; 
+    top: 70px !important;
 }
 
 .tag-filter {
@@ -119,11 +119,13 @@
 	color: var(--gray-color);
 	font-size: 0.9rem;
 }
-
+.col-lg-3{
+    margin-top: 55px;
+}
 .filter-section {
 	background: rgba(255, 255, 255, 0.9);
 	backdrop-filter: blur(10px);
-	border-radius: 15px;
+	border-radius: 10px;
 }
 
 .month-btn-container {

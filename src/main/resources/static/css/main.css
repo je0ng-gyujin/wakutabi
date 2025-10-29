@@ -9,6 +9,16 @@ body {
   margin: 0; /* Remove default body margin */
 }
 
+main section + section {
+  margin-top: 100px;
+}
+
+.bg-gradient-custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 :root {
 	--primary-color: #60B5FF;
 	--secondary-color: #AFDDFF;

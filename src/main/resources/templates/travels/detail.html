@@ -7,10 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/travel_detail.css}" />
-    <!-- GLightbox 라이브러리 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css"/>
     <title>여행 상세</title>
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
     <script defer th:src="@{/js/travel_detail.js}"></script>
     <script th:inline="javascript" th:if="${errorMessage != null}">
         alert([[${errorMessage}]]);
@@ -206,12 +203,8 @@
                                             </p>
                                             <!-- 리뷰 이미지 -->
                                             <div class="d-flex flex-wrap gap-2" th:if="${review.images != null}">
-                                                <a th:each="img : ${review.images}" th:href="${img.imagePath}"
-                                                    class="glightbox" data-gallery="review-gallery" th:data-title="${review.title}">
-                                                    <img th:src="${img.imagePath}" class="rounded-3 border"
-                                                        style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;"
-                                                    />
-                                                </a>
+                                                <img th:each="img : ${review.images}" th:src="${img.imagePath}" class="rounded-3 review-image"
+                                                     style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" />
                                             </div>
                                         </div>
                                     </div>

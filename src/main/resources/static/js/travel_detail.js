@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // (별도) 이미지 모달
 document.addEventListener('DOMContentLoaded', () => {
-  const images = document.querySelectorAll('.travel-image');
+  const images = document.querySelectorAll('.travel-image, .review-image');
   const modal = document.getElementById('imageModal');
   const modalImg = document.getElementById('modalImage');
 

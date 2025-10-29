@@ -35,13 +35,13 @@ public class ReviewService {
     }
     @Transactional
     public void insertReview(ReviewTravelDto reviewTravleDto) throws IOException {
-        String uploadPath = FilePathConfig.getUploadPath();
+        String uploadDir = FilePathConfig.getUploadPath();
         reviewMapper.insertTravleReview(reviewTravleDto);
         // 업로드 및 DB 저장
         List<MultipartFile> imageFiles = reviewTravleDto.getImageFiles();
         if (imageFiles != null && !imageFiles.isEmpty()) {
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+            File dir = new File(uploadPath);
+            if (!dir.exists() && !dir.mkdirs()) {
                 throw new IOException("업로드 폴더 생성 실패: " + uploadPath);
             }
 
@@ -50,10 +50,12 @@ public class ReviewService {
 
                 String uuid = UUID.randomUUID().toString();
                 String fileName = uuid + "_" + file.getOriginalFilename();
-                File saveFile = new File(uploadDir, fileName);
-
-                file.transferTo(saveFile);
-                reviewMapper.insertTravleReviewImage(reviewTravleDto.getId(), fileName);
+                // 로컬 저장 경로
+                String savePath = uploadDir + fileName;
+                file.transferTo(new File(savePath));
+                // DB 저장 경로
+                String webPath = "/upload/" + fileName;
+                reviewMapper.insertTravleReviewImage(reviewTravleDto.getId(), webPath);
             }
         }
         // 여행리뷰DTO안에 있는 사용자리뷰DTO안에 데이터가 있다면 실행

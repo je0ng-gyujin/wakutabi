@@ -30,7 +30,7 @@
         UPDATE trip_article
         SET status = 'MATCHED'
         WHERE status = 'OPEN'
-        AND NOW() >= recruit_end_date
+        AND NOW() >= DATE_ADD(recruit_end_date, INTERVAL 1 DAY)
     </update>
     <!-- 참가자 수에 따라 여행 상태를 업데이트 (OPEN 또는 MATCHED) -->
     <update id="updateTripArticleStatusBasedOnParticipants" parameterType="long">

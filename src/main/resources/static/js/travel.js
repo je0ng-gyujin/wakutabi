@@ -341,6 +341,16 @@ $(document).ready(function () {
     params.delete('groupSize');
     selectedGroupSizes.forEach(size => params.append('groupSize', size));
 
+    // Add startDate and endDate to params
+    const startDate = $("#startDate").val();
+    const endDate = $("#endDate").val();
+    if (startDate) {
+        params.set('startDate', startDate);
+    }
+    if (endDate) {
+        params.set('endDate', endDate);
+    }
+
     // 폼 액션 URL 업데이트
     $(this).attr('action', '/schedule/search?' + params.toString());
 

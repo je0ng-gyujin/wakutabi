@@ -5,17 +5,17 @@
     <insert id="insertTravelEdit" parameterType="com.wakutabi.domain.TravelEditDto" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO trip_article
         (host_user_id, location, start_date, recruit_end_date,end_date,max_participants,
-         age_limit, gender_limit, title, content, estimated_cost, status)
+            age_limit, gender_limit, title, content, estimated_cost, status)
         VALUES
         (#{hostUserId}, #{location}, #{startDate}, #{recruitEndDate},#{endDate},#{maxParticipants},
-         #{ageLimit}, #{genderLimit}, #{title}, #{content}, #{estimatedCost}, #{status})
+            #{ageLimit}, #{genderLimit}, #{title}, #{content}, #{estimatedCost}, #{status})
     </insert>
     <!-- 여행id로 호스트id 구하기 -->
     <select id="hostIdFindById" resultType="Long">
-        SELECT host_user_id from trip_article where id = #{id}
+        SELECT host_user_id FROM trip_article WHERE id = #{id}
     </select>
 
-    	<select id="findById" resultType="com.wakutabi.domain.TravelEditDto">
+    <select id="findById" resultType="com.wakutabi.domain.TravelEditDto">
         SELECT * FROM trip_article WHERE id = #{id} AND deleted_at IS NULL
     </select>
     
@@ -70,6 +70,13 @@
                     </choose>
                 </foreach>
             )
+        </if>
+
+        <if test="genderLimit != null and genderLimit != ''">
+            AND gender_limit = #{genderLimit}
+        </if>
+        <if test="ageLimit != null and ageLimit != ''">
+            AND age_limit = #{ageLimit}
         </if>
 		
 		<if test="status != null and status != ''">
@@ -156,6 +163,13 @@
                     </choose>
                 </foreach>
                 )
+            </if>
+
+            <if test="genderLimit != null and genderLimit != ''">
+                AND gender_limit = #{genderLimit}
+            </if>
+            <if test="ageLimit != null and ageLimit != ''">
+                AND age_limit = #{ageLimit}
             </if>
         </where>
     </select>

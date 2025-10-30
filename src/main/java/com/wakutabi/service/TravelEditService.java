@@ -59,7 +59,7 @@ public class TravelEditService {
     // 복합 검색 및 필터링 기능을 위한 메서드
     public List<TravelEditDto> findFilteredTravels(String query, Integer minPrice, Integer maxPrice,
             String region, LocalDateTime startDate, LocalDateTime endDate,
-            List<String> tags, List<String> groupSize, String status, int offset, int size) {
+            List<String> tags, List<String> groupSize, String genderLimit, String ageLimit, String status, int offset, int size) {
 
         String translatedQuery = null;
         if (query != null && !query.isEmpty()) {
@@ -80,6 +80,8 @@ public class TravelEditService {
         params.put("endDate", endDate);
         params.put("tagsList", tags); // Mapper XML에서 <foreach collection="tagsList"> 사용
         params.put("groupSize", groupSize);
+        params.put("genderLimit", genderLimit);
+        params.put("ageLimit", ageLimit);
         params.put("status", status);
         params.put("offset", offset);
         params.put("size", size);
@@ -100,7 +102,7 @@ public class TravelEditService {
 
     public int countFilteredTravels(String query, Integer minPrice, Integer maxPrice,
             String region, LocalDateTime startDate, LocalDateTime endDate,
-            List<String> tags, List<String> groupSize, String status) {
+            List<String> tags, List<String> groupSize, String genderLimit, String ageLimit, String status) {
 
         String translatedQuery = null;
         if (query != null && !query.isEmpty()) {
@@ -119,6 +121,8 @@ public class TravelEditService {
         params.put("endDate", endDate);
         params.put("tagsList", tags);
         params.put("groupSize", groupSize);
+        params.put("genderLimit", genderLimit);
+        params.put("ageLimit", ageLimit);
         params.put("status", status);
 
         return travelEditmapper.countFilteredTravels(params);

@@ -92,6 +92,8 @@ public class TravelsController {
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
             @RequestParam(value = "tags", required = false) List<String> tags,
             @RequestParam(value = "groupSize", required = false) List<String> groupSize,
+            @RequestParam(value = "genderLimit", required = false) String genderLimit,
+            @RequestParam(value = "ageLimit", required = false) String ageLimit,
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "4") int size,
@@ -101,15 +103,15 @@ public class TravelsController {
         LocalDateTime endDateTime = endDate != null ? endDate.atTime(23, 59, 59) : null;
 
         log.info(
-                "Received search request. Query: {}, minPrice: {}, maxPrice: {}, region: {}, startDate: {}, endDate: {}, tags: {}, groupSize: {}, status: {}",
-                query, minPrice, maxPrice, region, startDate, endDate, tags, groupSize, status); // ⬅️ 로그 추가
+                "Received search request. Query: {}, minPrice: {}, maxPrice: {}, region: {}, startDate: {}, endDate: {}, tags: {}, groupSize: {}, genderLimit: {}, ageLimit: {}, status: {}",
+                query, minPrice, maxPrice, region, startDate, endDate, tags, groupSize, genderLimit, ageLimit, status); // ⬅️ 로그 추가
 
         int offset =(page -1) * size;
 
         List<TravelEditDto> travels = travelEditService.findFilteredTravels(query, minPrice, maxPrice, region,
-                startDateTime, endDateTime, tags, groupSize, status, offset, size); // ⬅️ status 파라미터 추가
+                startDateTime, endDateTime, tags, groupSize, genderLimit, ageLimit, status, offset, size); // ⬅️ status 파라미터 추가
         int totalCount = travelEditService.countFilteredTravels(query, minPrice, maxPrice, region,
-                startDateTime, endDateTime, tags, groupSize, status);
+                startDateTime, endDateTime, tags, groupSize, genderLimit, ageLimit, status);
         int totalPages = (int) Math.ceil((double) totalCount / size);
         log.info("검색 날짜 파라미터 - startDateTime: {}, endDateTime: {}", startDateTime, endDateTime);
 
@@ -168,6 +170,8 @@ public class TravelsController {
         model.addAttribute("endDate", endDate);
         model.addAttribute("tags", tags);
         model.addAttribute("groupSize", groupSize);
+        model.addAttribute("genderLimit", genderLimit);
+        model.addAttribute("ageLimit", ageLimit);
         model.addAttribute("status", status);
         model.addAttribute("currentPage",page);
         model.addAttribute("totalPages", totalPages);

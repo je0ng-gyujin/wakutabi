@@ -15,4 +15,7 @@ public interface ParticipantMapper {
      * @return 호스트와 참여자 목록 (호스트가 항상 첫 번째)
      */
     List<ParticipantDto> findParticipantsByTripId(@Param("tripArticleId") Long tripArticleId);
+
+    // 5. 여행 참여 여부
+    int isParticipants(@Param("userId")Long userId, @Param("tripArticleId")Long tripArticleId);
 }

@@ -338,6 +338,7 @@ public class TravelsController {
     // ---------------------------------------------
     @GetMapping("/detail")
     public String travelDetail(@RequestParam("id") Long id,
+                               @ModelAttribute("userId")Long userId,
                                Model model, Principal principal) {
 
         // 1. 여행 게시글 정보 조회
@@ -424,16 +425,22 @@ public class TravelsController {
         } catch (Exception ex) {
             log.warn("참여자 목록 조회 중 오류", ex);
         }
-        // 7. 리뷰 불러오기
+        // 7. 여행 참여자
+        boolean isParticipants = tripService.isParticipants(userId, id);
+
+        // 8. 여행 종료 여부 확인
+        boolean isTripEnded = "CLOSED".equalsIgnoreCase(dbStatus);
+        // 8. 리뷰 불러오기
         List<ReviewTravelDto> reviews = reviewService.getReviewList(id);
 
-        // 8. Model에 모든 정보 담기
+        // 9. Model에 모든 정보 담기
         model.addAttribute("travel", travel);
         model.addAttribute("images", images);
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("chatRoomId", chatRoomId);
         model.addAttribute("author", author);
-        model.addAttribute("participants", participants);
+        model.addAttribute("isParticipants", isParticipants);
+        model.addAttribute("isTripEnded", isTripEnded);
         model.addAttribute("reviews", reviews);
         
 

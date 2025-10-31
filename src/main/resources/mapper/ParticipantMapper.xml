@@ -39,5 +39,14 @@
             END,
             userId;
     </select>
-
+    <!-- 여행 참여 여부 -->
+    <select id="isParticipants" resultType="int">
+        SELECT COUNT(*)
+        FROM chat_participants
+        WHERE user_id = #{userId}
+            AND chat_room_id IN (
+                SELECT id FROM chat_room WHERE trip_article_id = #{tripArticleId}
+        )
+        AND status = 'COMPLETED'
+    </select>
 </mapper>

@@ -2,6 +2,9 @@ package com.wakutabi.service;
 
 import java.util.List;
 
+import com.wakutabi.mapper.ParticipantMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wakutabi.domain.TripJoinRequestDto;
@@ -11,14 +14,12 @@ import com.wakutabi.mapper.TripMapper;
 import jakarta.transaction.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class TripService {
 	
 	private final TripMapper tripMapper; // MyBatis Mapper 의존성 주입
+    private final ParticipantMapper participantMapper;
 
-    public TripService(TripMapper tripMapper) { // 생성자 주입
-        this.tripMapper = tripMapper;
-    }
-    
     public List<TripListDto> getRegisteredTrips(Long userId) {
         
         return tripMapper.findRegisteredTripsByHostId(userId); 
@@ -32,7 +33,12 @@ public class TripService {
         // 실제로는 UserMapper를 사용해야 하지만, 일단 TripMapper에 정의할 예정
         return tripMapper.findUserIdByUsername(username); 
     }
-    
+
+    public boolean isParticipants(Long userId, Long tripArticleId){
+        int result = participantMapper.isParticipants(userId, tripArticleId);
+        return result > 0;
+    }
+
     public List<TripJoinRequestDto> getPendingJoinRequests(Long tripArticleId) {
         return tripMapper.findJoinRequestsByTripId(tripArticleId);
     }

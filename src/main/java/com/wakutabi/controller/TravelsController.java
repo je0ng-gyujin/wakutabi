@@ -99,6 +99,8 @@ public class TravelsController {
             @RequestParam(value = "size", defaultValue = "4") int size,
             Model model) {
 
+        log.info("검색 날짜 파라미터 - startDate: {}, endDate: {}", startDate, endDate);
+
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = endDate != null ? endDate.atTime(23, 59, 59) : null;
 

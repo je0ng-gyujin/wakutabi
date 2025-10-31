@@ -41,10 +41,17 @@
             AND location = #{region}
         </if>
 
-        <if test="startDate != null and endDate != null">
-            AND start_date &gt;= #{startDate}
-            AND end_date &lt;= #{endDate}
-        </if>
+        <choose>
+            <when test="startDate != null and endDate != null">
+                AND start_date &gt;= #{startDate} AND end_date &lt;= #{endDate}
+            </when>
+            <when test="startDate != null">
+                AND DATE(start_date) = DATE(#{startDate})
+            </when>
+            <when test="endDate != null">
+                AND DATE(end_date) = DATE(#{endDate})
+            </when>
+        </choose>
 
         <!-- 다중 태그 검색 -->
         <if test="tagsList != null and tagsList.size() > 0">
@@ -136,10 +143,17 @@
                 AND location = #{region}
             </if>
 
-            <if test="startDate != null and endDate != null">
-                AND start_date &gt;= #{startDate}
-                AND end_date &lt;= #{endDate}
-            </if>
+            <choose>
+                <when test="startDate != null and endDate != null">
+                    AND start_date &gt;= #{startDate} AND end_date &lt;= #{endDate}
+                </when>
+                <when test="startDate != null">
+                    AND DATE(start_date) = DATE(#{startDate})
+                </when>
+                <when test="endDate != null">
+                    AND DATE(end_date) = DATE(#{endDate})
+                </when>
+            </choose>
 
             <if test="tagsList != null and tagsList.size() > 0">
                 AND id IN (

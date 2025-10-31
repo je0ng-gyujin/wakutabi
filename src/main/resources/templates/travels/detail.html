@@ -154,7 +154,13 @@
                             <div class="card-body p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h4 class="card-title fw-hold mb-0">여행 후기</h4>
-                                    <div><!-- 후기 작성 버튼 조건부 노출 자리 --></div>
+                                    <div th:if="${isTripEnded}">
+                                        <button th:if="${isParticipants}"
+                                                class="btn btn-outline-primary btn-sm"
+                                                th:onclick="|location.href='@{/travels/review(tripId=${travel.id})}'|">
+                                            리뷰 등록
+                                        </button>
+                                    </div>
                                 </div>
                                 <!-- 리뷰 없음 -->
                                 <div th:if="${#lists.isEmpty(reviews)}" class="text-center text-muted py-4">

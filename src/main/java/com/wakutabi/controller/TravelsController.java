@@ -236,7 +236,7 @@ public class TravelsController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate startDate = LocalDate.parse(uploadDto.getStartDate(), formatter);
         LocalDate endDate = LocalDate.parse(uploadDto.getEndDate(), formatter);
-        
+
         dto.setStartDate(startDate);
         dto.setEndDate(endDate);
 
@@ -244,9 +244,9 @@ public class TravelsController {
         LocalDate recruitEndDate;
         if (uploadDto.getRecruitEndDate() != null && !uploadDto.getRecruitEndDate().isEmpty()) {
             recruitEndDate = LocalDate.parse(uploadDto.getRecruitEndDate(), formatter);
-            
+
             log.info("유효성 검사 - 모집종료일: {}, 출발일: {}, 오늘: {}", recruitEndDate, startDate, LocalDate.now());
-            
+
             // 모집종료일 유효성 검사
             if (recruitEndDate.isBefore(LocalDate.now())) {
                 log.warn("모집종료일이 오늘보다 이전: {} < {}", recruitEndDate, LocalDate.now());
@@ -260,7 +260,7 @@ public class TravelsController {
                 result.put("message", "모집종료일은 출발일 이전으로 선택해주세요.");
                 return result;
             }
-            
+
             dto.setRecruitEndDate(recruitEndDate);
         } else {
             dto.setRecruitEndDate(endDate);  // 기본값: 여행종료일과 동일
@@ -300,10 +300,10 @@ public class TravelsController {
                     String filename = imageOrder.getUuid() + "_" + file.getOriginalFilename();
                     String savePath = uploadDir + filename;
                     file.transferTo(new File(savePath));
-                    
+
                     // 웹 접근 경로 생성
                     String webPath = "/upload/" + filename;
-                    
+
                     // 이미지 DTO 생성 및 DB 저장
                     TravelImageDto imgDto = new TravelImageDto();
                     imgDto.setTripArticleId(dto.getId()); // 방금 생성된 게시글 ID
@@ -445,6 +445,7 @@ public class TravelsController {
         model.addAttribute("isOwner", isOwner);
         model.addAttribute("chatRoomId", chatRoomId);
         model.addAttribute("author", author);
+        model.addAttribute("participants", participants);
         model.addAttribute("isParticipants", isParticipants);
         model.addAttribute("isTripEnded", isTripEnded);
         model.addAttribute("reviews", reviews);

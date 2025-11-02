@@ -1,6 +1,10 @@
 $(document).ready(function () {
-  // 사용 가능한 태그 동적 생성
-  initializeAvailableTags();
+  // URL에서 'tags' 파라미터 읽기
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedTagsFromUrl = urlParams.get('tags');
+
+  // 사용 가능한 태그 동적 생성 및 선택 상태 복원
+  initializeAvailableTags(selectedTagsFromUrl);
 
   // 태그 클릭 이벤트 (동적 생성된 태그에도 적용되도록 이벤트 위임 사용)
   $(document).off("click", ".tag-item").on("click", ".tag-item", function (e) {
@@ -10,7 +14,6 @@ $(document).ready(function () {
     updateSelectedTags();
   });
 
-  // ✅ 체크박스·셀렉트 변경 시 필터 업데이트 (존재할 때만)
   // ✅ 체크박스·셀렉트 변경 시 필터 업데이트 (존재할 때만)
   // groupSize 체크박스는 서버 필터링을 위해 클라이언트 측 updateSearch 호출을 제거합니다.
   if ($("select").length > 0) {
@@ -243,7 +246,7 @@ $(document).ready(function () {
   }
 
   // 🏷️ 태그 매핑 테이블 (detail.js와 동일)
-  function initializeAvailableTags() {
+  function initializeAvailableTags(selectedTags) {
     const tagsContainer = document.getElementById("availableTags");
     
     if (!tagsContainer) {
@@ -273,11 +276,16 @@ $(document).ready(function () {
       const list = raw.split(",").map((t) => t.trim()).filter(Boolean);
       tagsContainer.innerHTML = "";
       
+      const selected = selectedTags ? selectedTags.split(',') : [];
+      
       list.forEach((key) => {
         const span = document.createElement("span");
         span.className = "badge tag-item px-3 py-2 rounded-pill";
         span.setAttribute("data-tag", key);
         span.textContent = tagMapping[key] || key;
+        if (selected.includes(key)) {
+          span.classList.add('active');
+        }
         tagsContainer.appendChild(span);
       });
     }
@@ -321,40 +329,40 @@ $(document).ready(function () {
 
   // 필터 폼 제출 시 태그/지역 값 최신화 보장
   $("#filterForm").on("submit", function(e) {
+    e.preventDefault(); // 기본 제출 동작 방지
     // 태그 값 최신화
     updateSelectedTags();
-    // 지역 값 최신화 (이미 버튼 클릭 시 반영되지만 혹시 몰라 재설정)
-    var selectedRegion = $(".region-item.active").val() || "";
-    $("#regionInput").val(selectedRegion);
-    // groupSize 값 최신화
-    const selectedGroupSizes = $("input[name='groupSize']:checked")
-      .map(function () {
-        return $(this).val();
-      })
-      .get();
-
-    // 기존 URL 파라미터 유지
-    const currentUrl = new URL(window.location.href);
-    const params = new URLSearchParams(currentUrl.search);
-
-    // groupSize 파라미터 제거 후 다시 추가
-    params.delete('groupSize');
-    selectedGroupSizes.forEach(size => params.append('groupSize', size));
-
-    // Add startDate and endDate to params
+    // 모든 필터 값 가져오기
+    const query = $("#searchInput").val();
+    const minPrice = $("#minPrice").val();
+    const maxPrice = $("#maxPrice").val();
+    const region = $("#regionInput").val();
     const startDate = $("#startDate").val();
     const endDate = $("#endDate").val();
-    if (startDate) {
-        params.set('startDate', startDate);
-    }
-    if (endDate) {
-        params.set('endDate', endDate);
-    }
+    const tags = $("#tagsInput").val();
+    const groupSize = $("input[name='groupSize']:checked").map(function() { return $(this).val(); }).get();
+    const ageLimit = $("input[name='ageLimit']:checked").val();
+    const genderLimit = $("input[name='genderLimit']:checked").val();
+    const status = $("input[name='status']:checked").val();
 
-    // 폼 액션 URL 업데이트
-    $(this).attr('action', '/schedule/search?' + params.toString());
+    // URL 파라미터 생성
+    const params = new URLSearchParams();
+    if (query) params.set('keyward', query);
+    if (minPrice) params.set('minPrice', minPrice);
+    if (maxPrice) params.set('maxPrice', maxPrice);
+    if (region) params.set('region', region); 
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
+    if (tags) params.set('tags', tags);
+    if (groupSize.length > 0) {
+        groupSize.forEach(size => params.append('groupSize', size));
+    }
+    if (ageLimit) params.set('ageLimit', ageLimit);
+    if (genderLimit) params.set('genderLimit', genderLimit);
+    if (status) params.set('status', status);
 
-    // 폼은 그대로 제출
+    // 새 URL로 리디렉션
+    window.location.href = '/schedule/search?' + params.toString();
   });
   
   // 필터 초기화 버튼 기능

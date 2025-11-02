@@ -58,8 +58,8 @@
                                 <h5 class="mb-3">예상 비용</h5>
                                 <div id="slider" style="margin: 15px"></div>
                                 <div class="d-flex mt-2 mb-3">
-                                    <input type="number" id="minPrice" name="minPrice" class="form-control me-2" placeholder="최소"/>
-                                    <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="최대"/>
+                                    <input type="number" id="minPrice" name="minPrice" class="form-control me-2" placeholder="최소" th:value="${minPrice}"/>
+                                    <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="최대" th:value="${maxPrice}"/>
                                 </div>
                             </div>
                             <!-- 지역 필터 -->
@@ -76,7 +76,7 @@
                                     </h2>
                                     <div id="collapseRegion" class="accordion-collapse collapse" aria-labelledby="headingRegion" data-bs-parent="#regionAccordion">
                                         <div class="accordion-body">
-                                            <input type="hidden" id="regionInput" name="region"/>
+                                            <input type="hidden" id="regionInput" name="region" th:value="${region}"/>
                                             <div class="region-list">
                                                 <button type="button" value="hokkaido" class="region-item">홋카이도</button>
                                                 <button type="button" value="tohoku" class="region-item">도호쿠</button>
@@ -98,11 +98,11 @@
                                 <p id="selectedPeriod" class="text-primary fw-bold"></p> <!-- 선택한 기간 표시 -->
                                 <div class="mb-3">
                                     <label for="startDate" class="form-label">출발일</label>
-                                    <input type="date" id="startDate" name="startDate" class="form-control form-control-lg">
+                                    <input type="date" id="startDate" name="startDate" class="form-control form-control-lg" th:value="${startDate}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="endDate" class="form-label">도착일</label>
-                                    <input type="date" id="endDate" name="endDate" class="form-control form-control-lg">
+                                    <input type="date" id="endDate" name="endDate" class="form-control form-control-lg" th:value="${endDate}">
                                 </div>
                             </div>
                             <!-- 태그(여행 테마) 필터 -->

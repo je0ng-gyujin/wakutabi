@@ -5,6 +5,9 @@ $(document).ready(function () {
 
   // 사용 가능한 태그 동적 생성 및 선택 상태 복원
   initializeAvailableTags(selectedTagsFromUrl);
+  
+  // ✅ 지역 필터 상태 복원
+  initializeRegionFilter();
 
   // 태그 클릭 이벤트 (동적 생성된 태그에도 적용되도록 이벤트 위임 사용)
   $(document).off("click", ".tag-item").on("click", ".tag-item", function (e) {
@@ -214,8 +217,12 @@ $(document).ready(function () {
   const maxInput = document.getElementById("maxPrice");
 
   if (slider && typeof noUiSlider !== "undefined" && !slider.noUiSlider) {
+    // ✅ 초기 시작 값을 input 필드에서 가져오도록 수정
+    const initialMin = minInput.value ? parseInt(minInput.value, 10) : 0;
+    const initialMax = maxInput.value ? parseInt(maxInput.value, 10) : 2000000;
+
     noUiSlider.create(slider, {
-      start: [0, 2000000],
+      start: [initialMin, initialMax], // ✅ 동적 시작 값 설정
       connect: true,
       range: { min: 0, max: 2000000 },
 	  // 👇 이 부분을 추가하거나 1000으로 수정합니다.
@@ -288,6 +295,28 @@ $(document).ready(function () {
         }
         tagsContainer.appendChild(span);
       });
+    }
+  }
+
+  // ✅ 지역 필터 상태 복원 함수
+  function initializeRegionFilter() {
+    const regionInput = $("#regionInput");
+    const selectedRegion = regionInput.val();
+
+    if (selectedRegion) {
+      // 모든 버튼에서 active 클래스 제거
+      $(".region-item").removeClass("active");
+
+      // 선택된 지역 값과 일치하는 버튼을 찾아 active 클래스 추가
+      const selectedButton = $(".region-item[value='" + selectedRegion + "']");
+      if (selectedButton.length > 0) {
+        selectedButton.addClass("active");
+
+        // 아코디언 헤더 텍스트를 선택된 지역명으로 업데이트
+        const selectedRegionName = selectedButton.text();
+        $("#headingRegion button").html(selectedRegionName +
+          ' <span id="selectedRegionText" class="ms-2 text-primary"></span>');
+      }
     }
   }
 
